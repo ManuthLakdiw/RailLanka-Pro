@@ -3,6 +3,7 @@ package lk.ijse.raillankaprobackend.util;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,22 +16,24 @@ import java.util.Date;
  * @github https://github.com/ManuthLakdiw
  */
 @Component
-public class jwtUtil {
+@RequiredArgsConstructor
+public class JwtUtil {
 
-    @Value("${jwt.expiration.time}")
-    private long expirationTime;
+    @Value("${access.token.expiration.time}")
+    private long accessTokenExpirationTime;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    public String generateToken(String username) {
+    public String generateAccessToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpirationTime))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
+
 
     public String extractUserName(String token) {
         return Jwts.parserBuilder()
@@ -41,7 +44,7 @@ public class jwtUtil {
                 .getSubject();
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateAccessToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
@@ -52,5 +55,6 @@ public class jwtUtil {
             return false;
         }
     }
+
 
 }
