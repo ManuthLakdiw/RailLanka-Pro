@@ -1,0 +1,37 @@
+package lk.ijse.raillankaprobackend.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import lombok.*;
+
+/**
+ * @author manuthlakdiv
+ * @email manuthlakdiv2006.com
+ * @project RailLanka Pro - Backend
+ * @github https://github.com/ManuthLakdiw
+ */
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+public class StationMaster {
+
+    @Id
+    private String stationMasterId;
+    private String title;
+    private String name;
+    private String idNumber;
+    private String phoneNumber;
+    private String email;
+    private boolean active;
+
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+}
