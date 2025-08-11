@@ -1,7 +1,11 @@
 package lk.ijse.raillankaprobackend.controller;
 
 import lk.ijse.raillankaprobackend.dto.PassengerDto;
+import lk.ijse.raillankaprobackend.dto.StaffDto;
+import lk.ijse.raillankaprobackend.service.AdminService;
+import lk.ijse.raillankaprobackend.service.CounterService;
 import lk.ijse.raillankaprobackend.service.PassengerService;
+import lk.ijse.raillankaprobackend.service.StationMasterService;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,7 @@ public class AuthController {
     private final PassengerService passengerService;
     private final AdminService adminService;
     private final StationMasterService stationMasterService;
+    private final CounterService counterService;
 
 
     @PostMapping("/register/passenger")
@@ -52,6 +57,15 @@ public class AuthController {
                 201,
                 "StationMaster Registration",
                 stationMasterService.registerStationMaster(staffDto)
+        ),HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register/counter")
+    public ResponseEntity<ApiResponse<String>> registerCounter(@RequestBody StaffDto staffDto){
+        return new ResponseEntity<>(new ApiResponse<>(
+                201,
+                "Counter Registration",
+                counterService.registerCounter(staffDto)
         ),HttpStatus.CREATED);
     }
 
