@@ -4,6 +4,7 @@ import lk.ijse.raillankaprobackend.dto.StaffDto;
 import lk.ijse.raillankaprobackend.entity.Admin;
 import lk.ijse.raillankaprobackend.entity.SystemUserRole;
 import lk.ijse.raillankaprobackend.entity.User;
+import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
 import lk.ijse.raillankaprobackend.repository.AdminRepository;
 import lk.ijse.raillankaprobackend.repository.UserRepository;
@@ -81,7 +82,7 @@ public class AdminServiceImpl implements AdminService {
                 prefixNumber++;
 
                 if (prefixNumber > 99999){
-                    throw new RuntimeException("All available Admin IDs have been used. Please contact the system administrator");
+                    throw new IdGenerateLimitReachedException("All available Admin IDs have been used. Please contact the system administrator");
                 }
             }
 

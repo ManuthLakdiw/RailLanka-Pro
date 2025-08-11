@@ -5,6 +5,7 @@ import lk.ijse.raillankaprobackend.entity.Admin;
 import lk.ijse.raillankaprobackend.entity.StationMaster;
 import lk.ijse.raillankaprobackend.entity.SystemUserRole;
 import lk.ijse.raillankaprobackend.entity.User;
+import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
 import lk.ijse.raillankaprobackend.repository.StationMasterRepository;
 import lk.ijse.raillankaprobackend.repository.UserRepository;
@@ -81,7 +82,7 @@ public class StationMasterServiceImpl implements StationMasterService {
                 suffixNumber = 1;
                 prefixNumber++;
                 if (prefixNumber > 99999){
-                    throw new RuntimeException("All available Station Master IDs have been used. Please contact the system administrator");
+                    throw new IdGenerateLimitReachedException("All available Station Master IDs have been used. Please contact the system administrator");
                 }
             }
             return String.format("STM%05d-%05d", prefixNumber, suffixNumber);
