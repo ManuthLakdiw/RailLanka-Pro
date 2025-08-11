@@ -29,7 +29,7 @@ public class AuthController {
     @PostMapping("/register/passenger")
     public ResponseEntity<ApiResponse<String>> registerPassenger(@RequestBody PassengerDto passengerDto){
         return new ResponseEntity<>(new ApiResponse<>(
-                200,
+                201,
                 "Passenger Registration",
                 passengerService.registerPassenger(passengerDto)
         ), HttpStatus.CREATED);
