@@ -41,7 +41,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public String generateRefreshToken(String userName) {
 
-        User user = userRepository.findByUserName(userName).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .refreshTokenId(generateNewRefreshTokenID())
@@ -87,7 +87,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                         .refreshTokenId(rt.getRefreshTokenId())
                         .token(rt.getToken())
                         .expiryDate(rt.getExpiryDate())
-                        .user(rt.getUser().getUserName())
+                        .user(rt.getUser().getUsername())
                         .build()
                 );
     }

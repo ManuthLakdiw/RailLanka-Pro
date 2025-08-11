@@ -9,7 +9,6 @@ import lk.ijse.raillankaprobackend.repository.UserRepository;
 import lk.ijse.raillankaprobackend.service.PassengerService;
 import lk.ijse.raillankaprobackend.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,13 +35,13 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public String registerPassenger(PassengerDto passengerDto) {
 
-        if (userRepository.findByUserName(passengerDto.getUserName()).isPresent()){
+        if (userRepository.findByUsername(passengerDto.getUsername()).isPresent()){
             throw new UserNameAlreadyExistsException("User name already exists");
         }
 
         User user = User.builder()
                 .userId(userService.generateNewUserId())
-                .userName(passengerDto.getUserName())
+                .username(passengerDto.getUsername())
                 .password(passwordEncoder.encode(passengerDto.getPassword()))
                 .role(SystemUserRole.PASSENGER)
                 .createdDate(LocalDate.now())

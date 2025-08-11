@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 public interface UserRepository extends JpaRepository <User,String> {
 
-    Optional<User> findByUserName(String userName);
+    Optional<User> findByUsername(String userName);
 
     @Query(value = "SELECT user_id FROM user ORDER BY user_id DESC LIMIT 1 FOR UPDATE", nativeQuery = true)
     Optional<String> getLastUserid();

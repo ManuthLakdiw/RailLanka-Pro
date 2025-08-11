@@ -1,11 +1,7 @@
 package lk.ijse.raillankaprobackend.controller;
 
-import lk.ijse.raillankaprobackend.dto.PassengerDto;
-import lk.ijse.raillankaprobackend.dto.StaffDto;
-import lk.ijse.raillankaprobackend.service.AdminService;
-import lk.ijse.raillankaprobackend.service.CounterService;
-import lk.ijse.raillankaprobackend.service.PassengerService;
-import lk.ijse.raillankaprobackend.service.StationMasterService;
+import lk.ijse.raillankaprobackend.dto.*;
+import lk.ijse.raillankaprobackend.service.*;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +27,7 @@ public class AuthController {
     private final AdminService adminService;
     private final StationMasterService stationMasterService;
     private final CounterService counterService;
+    private final AuthService authService;
 
 
     @PostMapping("/register/passenger")
@@ -68,5 +65,24 @@ public class AuthController {
                 counterService.registerCounter(staffDto)
         ),HttpStatus.CREATED);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<AuthResponseDto>> login(@RequestBody AuthDto authDto) {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "login",
+                authService.authenticate(authDto)
+        ));
+    }
+
+    @PostMapping("refreshtoken")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenDto refreshTokenDto) {
+        return  ResponseEntity.ok(new ApiResponse(
+                200,
+                "OK",
+                authService.reGenerateAccessTokenUsingRefreshToken(refreshTokenDto.getToken())
+        ));
+    }
+
 
 }

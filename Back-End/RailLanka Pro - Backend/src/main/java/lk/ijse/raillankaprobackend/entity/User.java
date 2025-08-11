@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author manuthlakdiv
@@ -21,7 +22,7 @@ import java.time.LocalDate;
 public class User {
     @Id
     private String userId;
-    private String userName;
+    private String username;
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -39,4 +40,7 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Counter counter;
+
+    @OneToMany(mappedBy = "user")
+    private List<RefreshToken> refreshToken;
 }

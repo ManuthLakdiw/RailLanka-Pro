@@ -1,7 +1,5 @@
 package lk.ijse.raillankaprobackend.dto;
 
-import lk.ijse.raillankaprobackend.entity.IdType;
-import lk.ijse.raillankaprobackend.entity.PassengerType;
 import lombok.*;
 
 /**
@@ -22,7 +20,7 @@ public class PassengerDto {
     private String title;
     private String firstName;
     private String lastName;
-    private String userName;
+    private String username;
     private String password;
     private String passengerType;
     private String idType;

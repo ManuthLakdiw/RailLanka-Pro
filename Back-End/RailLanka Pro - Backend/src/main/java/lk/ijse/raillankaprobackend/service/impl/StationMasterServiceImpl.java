@@ -36,13 +36,13 @@ public class StationMasterServiceImpl implements StationMasterService {
     @Transactional
     @Override
     public String registerStationMaster(StaffDto staffDto) {
-        if (userRepository.findByUserName(staffDto.getUserName()).isPresent()){
+        if (userRepository.findByUsername(staffDto.getUserName()).isPresent()){
             throw new UserNameAlreadyExistsException("User name already exists");
         }
 
         User user = User.builder()
                 .userId(userService.generateNewUserId())
-                .userName(staffDto.getUserName())
+                .username(staffDto.getUserName())
                 .password(passwordEncoder.encode(staffDto.getPassword()))
                 .role(SystemUserRole.STATION_MASTER)
                 .createdDate(LocalDate.now())

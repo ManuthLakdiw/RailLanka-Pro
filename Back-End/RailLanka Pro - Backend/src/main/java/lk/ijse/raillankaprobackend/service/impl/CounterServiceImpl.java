@@ -37,13 +37,13 @@ public class CounterServiceImpl implements CounterService {
     @Transactional
     @Override
     public String registerCounter(StaffDto staffDto) {
-        if (userRepository.findByUserName(staffDto.getUserName()).isPresent()){
+        if (userRepository.findByUsername(staffDto.getUserName()).isPresent()){
             throw new UserNameAlreadyExistsException("User name already exists");
         }
 
         User user = User.builder()
                 .userId(userService.generateNewUserId())
-                .userName(staffDto.getUserName())
+                .username(staffDto.getUserName())
                 .password(passwordEncoder.encode(staffDto.getPassword()))
                 .role(SystemUserRole.COUNTER)
                 .createdDate(LocalDate.now())
