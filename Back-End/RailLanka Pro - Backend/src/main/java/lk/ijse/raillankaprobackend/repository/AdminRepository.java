@@ -14,6 +14,6 @@ import java.util.Optional;
  */
 public interface AdminRepository extends JpaRepository<Admin,String> {
 
-    @Query(value = "SELECT admin_id FROM admin ORDER BY admin_id DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT admin_id FROM admin ORDER BY admin_id DESC LIMIT 1 FOR UPDATE", nativeQuery = true)
     Optional<String> getLastAdminId();
 }

@@ -14,6 +14,6 @@ import java.util.Optional;
  */
 public interface PassengerRepository extends JpaRepository <Passenger,String> {
 
-    @Query(value = "SELECT passenger_id FROM passenger ORDER BY passenger_id DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT passenger_id FROM passenger ORDER BY passenger_id DESC LIMIT 1 FOR UPDATE", nativeQuery = true)
     Optional<String> getLastPassengerId();
 }
