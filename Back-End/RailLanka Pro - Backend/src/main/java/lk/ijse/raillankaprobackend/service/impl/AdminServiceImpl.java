@@ -37,13 +37,13 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public String registerAdmin(StaffDto staffDto) {
 
-        if (userRepository.findByUserName(staffDto.getUserName()).isPresent()){
+        if (userRepository.findByUsername(staffDto.getUserName()).isPresent()){
             throw new UserNameAlreadyExistsException("User name already exists");
         }
 
         User user = User.builder()
                 .userId(userService.generateNewUserId())
-                .userName(staffDto.getUserName())
+                .username(staffDto.getUserName())
                 .password(passwordEncoder.encode(staffDto.getPassword()))
                 .role(SystemUserRole.ADMIN)
                 .createdDate(LocalDate.now())
