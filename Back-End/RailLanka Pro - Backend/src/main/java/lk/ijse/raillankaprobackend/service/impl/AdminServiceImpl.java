@@ -1,0 +1,95 @@
+package lk.ijse.raillankaprobackend.service.impl;
+
+import lk.ijse.raillankaprobackend.dto.StaffDto;
+import lk.ijse.raillankaprobackend.entity.Admin;
+import lk.ijse.raillankaprobackend.entity.SystemUserRole;
+import lk.ijse.raillankaprobackend.entity.User;
+import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
+import lk.ijse.raillankaprobackend.repository.AdminRepository;
+import lk.ijse.raillankaprobackend.repository.UserRepository;
+import lk.ijse.raillankaprobackend.service.AdminService;
+import lk.ijse.raillankaprobackend.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+
+/**
+ * @author manuthlakdiv
+ * @email manuthlakdiv2006.com
+ * @project RailLanka Pro - Backend
+ * @github https://github.com/ManuthLakdiw
+ */
+
+@Service
+@RequiredArgsConstructor
+public class AdminServiceImpl implements AdminService {
+
+    private final AdminRepository adminRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    @Override
+    public String registerAdmin(StaffDto staffDto) {
+
+        if (userRepository.findByUserName(staffDto.getUserName()).isPresent()){
+            throw new UserNameAlreadyExistsException("User name already exists");
+        }
+
+        User user = User.builder()
+                .userId(userService.generateNewUserId())
+                .userName(staffDto.getUserName())
+                .password(passwordEncoder.encode(staffDto.getPassword()))
+                .role(SystemUserRole.ADMIN)
+                .createdDate(LocalDate.now())
+                .build();
+
+        userRepository.save(user);
+
+        Admin admin = Admin.builder()
+                .adminId(generateNewAdminId())
+                .title(staffDto.getTitle())
+                .name(staffDto.getName())
+                .idNumber(staffDto.getIdNumber())
+                .phoneNumber(staffDto.getPhoneNumber())
+                .email(staffDto.getEmail())
+                .active(true)
+                .user(user)
+                .build();
+
+        adminRepository.save(admin);
+
+        return "Admin Registered Successfully";
+    }
+
+    @Override
+    public String generateNewAdminId() {
+        if (adminRepository.getLastAdminId().isPresent()){
+            String lastAdminId = adminRepository.getLastAdminId().get();
+            String[] split = lastAdminId.split("-");
+            int prefixNumber = Integer.parseInt(split[0].substring(3));
+            int suffixNumber = Integer.parseInt(split[1]);
+
+            suffixNumber++;
+
+            if (suffixNumber > 99999){
+                suffixNumber = 1;
+                prefixNumber++;
+
+                if (prefixNumber > 99999){
+                    throw new RuntimeException("All available Admin IDs have been used. Please contact the system administrator");
+                }
+            }
+
+
+            return String.format("ADM%05d-%05d", prefixNumber, suffixNumber);
+
+        }
+        return "ADM00000-00001";
+
+    }
+}
