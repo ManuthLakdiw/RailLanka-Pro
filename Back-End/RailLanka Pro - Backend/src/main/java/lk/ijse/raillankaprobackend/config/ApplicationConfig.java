@@ -8,12 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> {
-            Optional<User> optionalUser = userRepository.findByUserName(username);
+            Optional<User> optionalUser = userRepository.findByUsername(username);
             if (optionalUser.isPresent()){
                 User user = optionalUser.get();
 
@@ -43,7 +41,7 @@ public class ApplicationConfig {
                 grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 
                 return new org.springframework.security.core.userdetails.User(
-                        user.getUserName(),
+                        user.getUsername(),
                         user.getPassword(),
                         grantedAuthorities
                 );
