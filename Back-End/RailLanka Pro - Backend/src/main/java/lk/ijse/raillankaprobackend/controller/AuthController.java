@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final PassengerService passengerService;
+    private final AdminService adminService;
+    private final StationMasterService stationMasterService;
 
 
     @PostMapping("/register/passenger")
@@ -33,6 +35,24 @@ public class AuthController {
                 "Passenger Registration",
                 passengerService.registerPassenger(passengerDto)
         ), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register/admin")
+    public ResponseEntity<ApiResponse<String>> registerAdmin(@RequestBody StaffDto staffDto){
+        return new ResponseEntity<>(new ApiResponse<>(
+                201,
+                "Admin Registration",
+                adminService.registerAdmin(staffDto)
+        ),HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register/stationmaster")
+    public ResponseEntity<ApiResponse<String>> registerStationMaster(@RequestBody StaffDto staffDto){
+        return new ResponseEntity<>(new ApiResponse<>(
+                201,
+                "StationMaster Registration",
+                stationMasterService.registerStationMaster(staffDto)
+        ),HttpStatus.CREATED);
     }
 
 }
