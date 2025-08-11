@@ -44,7 +44,7 @@ public class PassengerServiceImpl implements PassengerService {
                 .userId(userService.generateNewUserId())
                 .userName(passengerDto.getUserName())
                 .password(passwordEncoder.encode(passengerDto.getPassword()))
-                .role(SystemUserRole.valueOf(passengerDto.getRole()))
+                .role(SystemUserRole.PASSENGER)
                 .createdDate(LocalDate.now())
                 .build();
 
