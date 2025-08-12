@@ -36,7 +36,7 @@ public class PassengerServiceImpl implements PassengerService {
     public String registerPassenger(PassengerDto passengerDto) {
 
         if (userRepository.findByUsername(passengerDto.getUsername()).isPresent()){
-            throw new UserNameAlreadyExistsException("User name already exists");
+            throw new UserNameAlreadyExistsException("This username is already taken. Please choose a different one.");
         }
 
         User user = User.builder()

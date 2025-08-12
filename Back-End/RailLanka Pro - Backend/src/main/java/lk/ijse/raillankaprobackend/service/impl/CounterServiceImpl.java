@@ -38,7 +38,7 @@ public class CounterServiceImpl implements CounterService {
     @Override
     public String registerCounter(StaffDto staffDto) {
         if (userRepository.findByUsername(staffDto.getUserName()).isPresent()){
-            throw new UserNameAlreadyExistsException("User name already exists");
+            throw new UserNameAlreadyExistsException("This username is already taken. Please choose a different one.");
         }
 
         User user = User.builder()
