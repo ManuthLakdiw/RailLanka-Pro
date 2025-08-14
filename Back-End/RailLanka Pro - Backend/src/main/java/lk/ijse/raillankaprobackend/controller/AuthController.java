@@ -6,10 +6,7 @@ import lk.ijse.raillankaprobackend.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author manuthlakdiv
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/raillankapro/auth")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AuthController {
 
     private final PassengerService passengerService;
@@ -83,6 +81,8 @@ public class AuthController {
                 authService.reGenerateAccessTokenUsingRefreshToken(refreshTokenDto.getToken())
         ));
     }
+
+
 
 
 }
