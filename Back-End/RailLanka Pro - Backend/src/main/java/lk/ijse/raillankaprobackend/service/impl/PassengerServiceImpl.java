@@ -72,7 +72,7 @@ public class PassengerServiceImpl implements PassengerService {
 
         passengerRepository.save(passenger);
 
-        return "Passenger Registered Successfully";
+        return "Your account has been created successfully.";
     }
 
 
