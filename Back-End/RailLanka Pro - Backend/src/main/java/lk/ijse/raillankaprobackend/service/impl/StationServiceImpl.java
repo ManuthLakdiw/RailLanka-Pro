@@ -3,9 +3,14 @@ package lk.ijse.raillankaprobackend.service.impl;
 import lk.ijse.raillankaprobackend.dto.StationDto;
 import lk.ijse.raillankaprobackend.entity.Station;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
+import lk.ijse.raillankaprobackend.exception.StationNameAlreadyExists;
 import lk.ijse.raillankaprobackend.repository.StationRepository;
 import lk.ijse.raillankaprobackend.service.StationService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StationServiceImpl implements StationService {
 
     private final StationRepository stationRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public String generateNewStationId() {
@@ -46,14 +52,21 @@ public class StationServiceImpl implements StationService {
         return "STN00000-00001";
     }
 
+
     @Transactional
     @Override
     public String registerStation(StationDto stationDto) {
+
+        if (stationRepository.findByName(stationDto.getName()).isPresent()){
+            throw new StationNameAlreadyExists("This station name is already taken. Please choose a different one.");
+        }
+
+        String formattedProvince = formatProvinceName(stationDto.getProvince());
         Station station = Station.builder()
                 .stationId(generateNewStationId())
                 .name(stationDto.getName())
                 .stationCode(stationDto.getStationCode().toUpperCase())
-                .province(stationDto.getProvince())
+                .province(formattedProvince)
                 .district(stationDto.getDistrict())
                 .noOfPlatforms(stationDto.getNoOfPlatforms())
                 .platformLength(Long.parseLong(stationDto.getPlatformLength()))
@@ -65,4 +78,32 @@ public class StationServiceImpl implements StationService {
 
         return "Station has been successfully registered.";
     }
+
+    @Override
+    public String formatProvinceName(String province) {
+        if (province == null || province.trim().isEmpty()) {
+            return province;
+        }
+
+        String trimmed = province.trim();
+        if (!trimmed.toLowerCase().endsWith("province")) {
+            return trimmed + " Province";
+        }
+
+        return trimmed;
+    }
+
+    @Override
+    public Page<StationDto> getAllStations(int pageNo, int pageSize) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+        Page<Station> studentPage = stationRepository.findAll(pageable);
+
+        return studentPage.map(student -> modelMapper.map(student, StationDto.class));
+
+    }
+
 }

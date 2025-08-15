@@ -1,6 +1,7 @@
 package lk.ijse.raillankaprobackend.service;
 
 import lk.ijse.raillankaprobackend.dto.StationDto;
+import org.springframework.data.domain.Page;
 
 /**
  * @author manuthlakdiv
@@ -13,4 +14,8 @@ public interface StationService {
     String generateNewStationId();
 
     String registerStation(StationDto stationDto);
+
+    String formatProvinceName(String province);
+
+    Page<StationDto> getAllStations(int pageNo, int pageSize);
 }
