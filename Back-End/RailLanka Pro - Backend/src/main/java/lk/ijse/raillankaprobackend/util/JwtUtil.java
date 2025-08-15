@@ -1,5 +1,6 @@
 package lk.ijse.raillankaprobackend.util;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -51,8 +52,10 @@ public class JwtUtil {
                     .build()
                     .parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException e) {
+            throw e;
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException("Invalid JWT token", e);
         }
     }
 
