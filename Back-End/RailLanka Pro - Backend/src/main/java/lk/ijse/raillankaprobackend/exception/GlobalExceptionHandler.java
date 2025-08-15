@@ -1,9 +1,9 @@
 package lk.ijse.raillankaprobackend.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -63,6 +63,36 @@ public class GlobalExceptionHandler {
     public ApiResponse<String> runtimeExceptionHandler(RuntimeException ex){
         return new ApiResponse<>(
                 500,
+                ex.getMessage(),
+                null
+        );
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResponse<String> expiredJwtExceptionHandler(ExpiredJwtException ex){
+        return new ApiResponse<>(
+                500,
+                ex.getMessage(),
+                null
+        );
+    }
+
+    @ExceptionHandler(StationNameAlreadyExists.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiResponse<String> stationNameAlreadyExistsExceptionHandler(StationNameAlreadyExists ex){
+        return new ApiResponse<>(
+                409,
+                ex.getMessage(),
+                null
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Object> illegalArgumentExceptionHandler(IllegalArgumentException ex){
+        return new ApiResponse<>(
+                400,
                 ex.getMessage(),
                 null
         );
