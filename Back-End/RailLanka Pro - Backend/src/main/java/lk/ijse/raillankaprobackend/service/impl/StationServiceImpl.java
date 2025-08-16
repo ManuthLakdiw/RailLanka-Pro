@@ -61,6 +61,12 @@ public class StationServiceImpl implements StationService {
             throw new StationNameAlreadyExists("This station name is already taken. Please choose a different one.");
         }
 
+        String name = stationDto.getName();
+        String formattedName = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+
+        String district = stationDto.getDistrict();
+        String formattedDistrict = district.substring(0, 1).toUpperCase() + district.substring(1).toLowerCase();
+
         String formattedProvince = formatProvinceName(stationDto.getProvince());
         Station station = Station.builder()
                 .stationId(generateNewStationId())
@@ -86,8 +92,11 @@ public class StationServiceImpl implements StationService {
         }
 
         String trimmed = province.trim();
-        if (!trimmed.toLowerCase().endsWith("province")) {
-            return trimmed + " Province";
+
+        String formatted = trimmed.substring(0, 1).toUpperCase() + trimmed.substring(1).toLowerCase();
+
+        if (!formatted.toLowerCase().endsWith("province")) {
+            formatted += " Province";
         }
 
         return trimmed;
