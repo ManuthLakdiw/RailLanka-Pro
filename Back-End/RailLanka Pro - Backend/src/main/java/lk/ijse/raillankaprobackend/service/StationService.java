@@ -18,4 +18,7 @@ public interface StationService {
     String formatProvinceName(String province);
 
     Page<StationDto> getAllStations(int pageNo, int pageSize);
+
+    String changeStationInServiceStatus(String stationId, boolean status);
+
 }

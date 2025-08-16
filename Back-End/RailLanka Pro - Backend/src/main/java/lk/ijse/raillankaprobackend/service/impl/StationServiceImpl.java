@@ -106,4 +106,15 @@ public class StationServiceImpl implements StationService {
 
     }
 
+    @Override
+    public String changeStationInServiceStatus(String stationId, boolean status) {
+        stationRepository.findById(stationId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Station Id"));
+        stationRepository.updateStationServiceStatus(stationId, status);
+
+        return "Station has been successfully set to " + (status ? "In Service" : "Out of Service");
+
+
+    }
+
 }

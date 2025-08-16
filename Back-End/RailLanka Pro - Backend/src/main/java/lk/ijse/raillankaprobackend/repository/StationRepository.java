@@ -2,7 +2,9 @@ package lk.ijse.raillankaprobackend.repository;
 
 import lk.ijse.raillankaprobackend.entity.Station;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +21,9 @@ public interface StationRepository extends JpaRepository <Station,String> {
     Optional<String> getLastStationId();
 
     Optional<Station> findByName(String name);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Station s SET s.inService = ?2 WHERE s.stationId = ?1")
+    void updateStationServiceStatus(String stationId, boolean status);
 }

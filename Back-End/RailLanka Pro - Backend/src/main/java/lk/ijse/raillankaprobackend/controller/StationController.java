@@ -57,4 +57,13 @@ public class StationController {
         );
 
     }
+
+    @PutMapping("/changeInServiceStatus/{stationId}/{status}")
+    public ResponseEntity<ApiResponse<String>> changeInServiceStatus(@PathVariable String stationId, @PathVariable boolean status){
+        return new ResponseEntity<>(new ApiResponse<>(
+                200,
+                "Station in service status changed",
+                stationService.changeStationInServiceStatus(stationId, status)
+        ), HttpStatus.OK);
+    }
 }
