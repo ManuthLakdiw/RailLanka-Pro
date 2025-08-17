@@ -167,4 +167,11 @@ public class StationServiceImpl implements StationService {
         return "station has been successfully updated.";
     }
 
+    @Override
+    public String deleteStation(String stationId) {
+        Station station = stationRepository.findById(stationId).orElseThrow(() -> new IllegalArgumentException("Invalid Station Id"));
+        stationRepository.delete(station);
+        return "station has been successfully deleted.";
+    }
+
 }

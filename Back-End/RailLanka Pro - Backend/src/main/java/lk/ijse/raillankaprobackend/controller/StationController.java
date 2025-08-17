@@ -86,4 +86,14 @@ public class StationController {
                 stationService.updateStationDetails(stationDto)
         ), HttpStatus.OK);
     }
+
+    @PutMapping(value = "/delete" , params = {"id"})
+    public ResponseEntity<ApiResponse<String>> deleteStation(@RequestParam("id") String id){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "Station deleted",
+                stationService.deleteStation(id)
+        ));
+    }
+
 }

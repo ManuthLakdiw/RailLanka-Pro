@@ -27,4 +27,6 @@ public interface StationService {
 
     String updateStationDetails(StationDto stationDto);
 
+    String deleteStation(String stationId);
+
 }
