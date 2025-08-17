@@ -77,4 +77,13 @@ public class StationController {
                     stationService.findStationById(id)
             ));
     }
+
+    @PutMapping("update")
+    public ResponseEntity<ApiResponse<String>> updateStationDetails(@RequestBody StationDto stationDto){
+        return new ResponseEntity<>(new ApiResponse<>(
+                200,
+                "Station updated",
+                stationService.updateStationDetails(stationDto)
+        ), HttpStatus.OK);
+    }
 }

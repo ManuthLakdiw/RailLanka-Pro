@@ -25,4 +25,6 @@ public interface StationService {
 
     Optional<StationDto> findStationById(String stationId);
 
+    String updateStationDetails(StationDto stationDto);
+
 }

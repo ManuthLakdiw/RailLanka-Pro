@@ -138,4 +138,33 @@ public class StationServiceImpl implements StationService {
        throw new IllegalArgumentException("Invalid Station Id");
     }
 
+    @Override
+    public String updateStationDetails(StationDto stationDto) {
+        Station station = stationRepository.findById(stationDto.getStationId()).orElseThrow(() -> new IllegalArgumentException("Invalid Station Id"));
+        if (!station.getName().equalsIgnoreCase(stationDto.getName())) {
+            Optional<Station> existingStation = stationRepository.findByName(stationDto.getName());
+            if (existingStation.isPresent()) {
+                Station existing = existingStation.get();
+                if (!existing.getStationId().equals(station.getStationId())) {
+                    throw new StationNameAlreadyExists("This station name is already taken. Please choose a different one.");
+                }
+            }
+        }
+
+
+        String name = stationDto.getName();
+        String formattedName = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+
+        station.setName(formattedName);
+        station.setStationCode(stationDto.getStationCode().toUpperCase());
+        station.setProvince(formatProvinceName(stationDto.getProvince()));
+        station.setDistrict(stationDto.getDistrict());
+        station.setNoOfPlatforms(stationDto.getNoOfPlatforms());
+        station.setPlatformLength(Long.parseLong(stationDto.getPlatformLength()));
+        station.setOtherFacilities(stationDto.getOtherFacilities());
+        station.setInService(stationDto.isInService());
+        stationRepository.save(station);
+        return "station has been successfully updated.";
+    }
+
 }
