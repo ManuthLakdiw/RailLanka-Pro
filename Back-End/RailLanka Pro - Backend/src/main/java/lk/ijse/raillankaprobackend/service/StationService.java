@@ -3,6 +3,8 @@ package lk.ijse.raillankaprobackend.service;
 import lk.ijse.raillankaprobackend.dto.StationDto;
 import org.springframework.data.domain.Page;
 
+import java.util.Optional;
+
 /**
  * @author manuthlakdiv
  * @email manuthlakdiv2006.com
@@ -20,5 +22,7 @@ public interface StationService {
     Page<StationDto> getAllStations(int pageNo, int pageSize);
 
     String changeStationInServiceStatus(String stationId, boolean status);
+
+    Optional<StationDto> findStationById(String stationId);
 
 }

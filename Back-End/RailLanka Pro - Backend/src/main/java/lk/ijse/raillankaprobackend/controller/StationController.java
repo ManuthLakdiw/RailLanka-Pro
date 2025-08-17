@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author manuthlakdiv
@@ -59,11 +60,21 @@ public class StationController {
     }
 
     @PutMapping("/changeInServiceStatus/{stationId}/{status}")
-    public ResponseEntity<ApiResponse<String>> changeInServiceStatus(@PathVariable String stationId, @PathVariable boolean status){
+    public ResponseEntity<ApiResponse<Boolean>> changeInServiceStatus(@PathVariable String stationId, @PathVariable boolean status){
         return new ResponseEntity<>(new ApiResponse<>(
                 200,
-                "Station in service status changed",
-                stationService.changeStationInServiceStatus(stationId, status)
+                stationService.changeStationInServiceStatus(stationId, status),
+                status
+
         ), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getStationById" , params = {"id"})
+    public ResponseEntity<ApiResponse<Optional<StationDto>>> getStationById (@RequestParam("id") String id) {
+            return ResponseEntity.ok(new ApiResponse<>(
+                    200,
+                    "fetched by " + id + " id",
+                    stationService.findStationById(id)
+            ));
     }
 }

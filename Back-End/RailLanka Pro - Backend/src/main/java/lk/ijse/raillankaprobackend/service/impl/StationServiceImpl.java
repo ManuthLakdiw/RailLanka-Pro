@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * @author manuthlakdiv
  * @email manuthlakdiv2006.com
@@ -70,10 +72,10 @@ public class StationServiceImpl implements StationService {
         String formattedProvince = formatProvinceName(stationDto.getProvince());
         Station station = Station.builder()
                 .stationId(generateNewStationId())
-                .name(stationDto.getName())
+                .name(formattedName)
                 .stationCode(stationDto.getStationCode().toUpperCase())
                 .province(formattedProvince)
-                .district(stationDto.getDistrict())
+                .district(formattedDistrict)
                 .noOfPlatforms(stationDto.getNoOfPlatforms())
                 .platformLength(Long.parseLong(stationDto.getPlatformLength()))
                 .otherFacilities(stationDto.getOtherFacilities())
@@ -99,7 +101,7 @@ public class StationServiceImpl implements StationService {
             formatted += " Province";
         }
 
-        return trimmed;
+        return formatted;
     }
 
     @Override
@@ -124,6 +126,16 @@ public class StationServiceImpl implements StationService {
         return "Station has been successfully set to " + (status ? "In Service" : "Out of Service");
 
 
+    }
+
+    @Override
+    public Optional<StationDto> findStationById(String stationId) {
+        Optional<Station> station = stationRepository.findById(stationId);
+        if (station.isPresent()){
+            StationDto stationDto = modelMapper.map(station.get(), StationDto.class);
+            return Optional.ofNullable(stationDto);
+        }
+       throw new IllegalArgumentException("Invalid Station Id");
     }
 
 }
