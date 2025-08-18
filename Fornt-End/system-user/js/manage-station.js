@@ -612,7 +612,7 @@ function fetchStations(page, keyword = "") {
                             </div>
                             <div class="ml-4">
                               <div class="text-sm font-medium text-gray-900">${station.name}</div>
-                              <div class="text-sm text-gray-500">${station.stationId}</div>
+                              <div class="text-sm text-gray-500">ID: ${station.stationId}</div>
                             </div>
                           </div>
                         </td>
