@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RailLanka Pro | Station Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f0f9ff;
+        overflow-x: hidden;
+      }
+      .sidebar {
+        background: linear-gradient(to bottom, #1d4ed8, #2563eb);
+        transition: all 0.3s ease;
+      }
+      .dashboard-card {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+      .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      }
+      .nav-link.active {
+        background: rgba(255, 255, 255, 0.15);
+        border-left: 4px solid white;
+      }
+      .nav-link:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .status-active {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+      .status-inactive {
+        background-color: #fee2e2;
+        color: #b91c1c;
+      }
+      .modal {
+        transition: all 0.3s ease;
+        opacity: 0;
+        visibility: hidden;
+      }
+      .modal.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .modal-content {
+        transform: translateY(-20px);
+        transition: transform 0.3s ease;
+      }
+      .modal.active .modal-content {
+        transform: translateY(0);
+      }
+      .btn-update {
+        background: linear-gradient(to right, #10b981, #059669);
+      }
+      .btn-update:hover {
+        background: linear-gradient(to right, #059669, #047857);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 min-h-screen text-white flex flex-col">
+      <div class="p-5 border-b border-blue-400">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-train text-2xl"></i>
+          <h1 class="text-xl font-bold">RailLanka Pro</h1>
+        </div>
+        <p class="text-blue-200 text-sm mt-2">Admin Dashboard</p>
+      </div>
+
+      <div class="p-4 flex-1">
+        <ul class="space-y-1">
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-tachometer-alt mr-3"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-subway mr-3"></i>
+              <span>Manage Trains</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-road mr-3"></i>
+              <span class="font-bold">Manage Stations</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-user-tie mr-3"></i>
+              <span>Station Masters</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-user-friends mr-3"></i>
+              <span>Counter Staff</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-file-invoice mr-3"></i>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-cog mr-3"></i>
+              <span>System Settings</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-8 p-4 bg-blue-700 rounded-lg">
+          <h3 class="font-medium">Quick Stats</h3>
+          <div class="mt-3 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Active Stations</span>
+              <span class="font-bold">42</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Staff Members</span>
+              <span class="font-bold">86</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Today's Revenue</span>
+              <span class="font-bold">LKR 1.2M</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-blue-400">
+        <div class="flex items-center space-x-3">
+          <div
+            class="bg-blue-200 text-blue-800 w-10 h-10 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <p class="font-medium">Admin User</p>
+            <p class="text-blue-200 text-sm">admin@raillanka.lk</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-sm">
+        <div class="max-w-full mx-auto px-6 py-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">
+                Station Management
+              </h2>
+              <p class="text-gray-600 text-sm">
+                Manage all railway stations in the RailLanka network
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                  <i class="fas fa-bell text-gray-600"></i>
+                  <span
+                    class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+                  ></span>
+                </button>
+              </div>
+
+              <div class="relative">
+                <button class="flex items-center space-x-2 text-gray-700">
+                  <div
+                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
+                  >
+                    <i class="fas fa-user text-blue-700"></i>
+                  </div>
+                  <span>Admin User</span>
+                  <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Action Bar -->
+      <div class="px-6 py-4 bg-white shadow-sm">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <div class="flex items-center">
+            <div class="relative">
+              <input
+                id="filterStation"
+                type="text"
+                placeholder="Search stations..."
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <i
+                class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
+            </div>
+          </div>
+          <div></div>
+          <div class="flex space-x-3">
+            <!-- <button
+              class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center"
+            >
+              <i class="fas fa-filter mr-2"></i>
+              Filter
+            </button> -->
+            <button
+              id="addStationBtn"
+              class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition flex items-center"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              Add New Station
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stations Table -->
+      <div class="px-6 py-4 flex-1">
+        <div class="dashboard-card bg-white rounded-xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table
+              id="stationTable"
+              class="min-w-full divide-y divide-gray-200"
+            >
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Station
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Code
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Location
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Platforms
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <!-- <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div
+                        class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center"
+                      >
+                        <i class="fas fa-train text-blue-600"></i>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">
+                          Colombo Fort
+                        </div>
+                        <div class="text-sm text-gray-500">Main Station</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 font-mono">CMB</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">Colombo</div>
+                    <div class="text-sm text-gray-500">Western Province</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    12
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span
+                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-active"
+                    >
+                      Active
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <div class="flex space-x-2">
+                      <button class="text-blue-600 hover:text-blue-900">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="text-red-600 hover:text-red-900">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      <button class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-toggle-on"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr> -->
+                <tr>
+                  <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                    Loading data...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            class="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200"
+          >
+            <div class="text-sm text-gray-700">
+              Showing <span id="currentPage" class="font-medium">1</span> to
+              <span id="selectedLastRowData" class="font-medium">7</span> of
+              <span id="totalPage" class="font-medium">42</span> stations
+            </div>
+            <div class="flex space-x-2">
+              <abbr title="First Page">
+                <button
+                  id="btnFirst"
+                  class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  <i class="fas fa-angle-double-left"></i>
+                </button>
+              </abbr>
+              <abbr title="Previous Page">
+                <button
+                  id="btnBack"
+                  class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  <i class="fas fa-angle-left"></i>
+                </button>
+              </abbr>
+
+              <div id="pageNumbers" class="flex items-center gap-1">
+                <!-- Page numbers will be inserted here -->
+              </div>
+
+              <abbr
+                title="Next Page"
+                class="cursor-help underline decoration-dotted text-blue-600 hover:text-blue-800"
+              >
+                <button
+                  id="btnNext"
+                  class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="fas fa-angle-right"></i>
+                </button>
+              </abbr>
+
+              <abbr title="Last Page">
+                <button
+                  id="btnLast"
+                  class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  <i class="fas fa-angle-double-right"></i>
+                </button>
+              </abbr>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Station Registration Modal -->
+
+    <div
+      id="stationRegisterModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-xl w-full max-w-2xl overflow-hidden"
+      >
+        <form id="stationRegisterForm">
+          <!-- Modal Header -->
+          <div
+            class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white"
+          >
+            <div class="flex justify-between items-center">
+              <h3 class="text-xl font-bold flex items-center">
+                <i class="fas fa-road mr-3"></i>
+                Register New Station
+              </h3>
+              <button
+                id="closeRegisterModal"
+                class="text-white hover:text-gray-200 text-xl"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <p class="mt-2 text-blue-200">
+              Add a new railway station to the RailLanka network
+            </p>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6 max-h-[70vh] overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Station Details -->
+              <div class="md:col-span-2">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                  Station Information
+                </h4>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Station Name</label
+                >
+                <input
+                  id="stationName"
+                  type="text"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g. Colombo Fort Station"
+                  required
+                />
+                <p
+                  id="stationNameMsg"
+                  class="text-xs text-gray-500 mt-2 ml-1"
+                ></p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Station Code</label
+                >
+                <input
+                  type="text"
+                  id="stationCode"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g. CMB"
+                  required
+                />
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Location</label
+                >
+                <input
+                  id="stationLocation"
+                  type="text"
+                  pattern="^[A-Za-z \-]+(?:,\s*[A-Za-z \-]+)+$"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g. Colombo, Western Province"
+                  title="Format: District, Province (letters and spaces only)"
+                  required
+                />
+                <p id="locationMsg" class="text-xs text-gray-500 mt-2 ml-1">
+                  Manual Format: District, Province (e.g., Colombo, Western
+                  Province)
+                </p>
+                <input id="stationProvince" type="text" hidden />
+                <input id="stationDistrict" type="text" hidden />
+              </div>
+
+              <!-- Platform Information -->
+              <div class="md:col-span-2 mt-4">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-train text-blue-500 mr-2"></i>
+                  Platform Information
+                </h4>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Number of Platforms</label
+                >
+                <select
+                  id="platformNumbersSelection"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value="" disabled selected>Select number</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Platform Length (meters)</label
+                >
+                <input
+                  id="platformLength"
+                  type="number"
+                  min="1"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g. 250"
+                  required
+                />
+              </div>
+
+              <!-- Facilities -->
+              <div class="md:col-span-2 mt-4">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-building text-blue-500 mr-2"></i>
+                  Other Station Facilities
+                </h4>
+              </div>
+
+              <div class="md:col-span-2">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="facilities"
+                      value="Waiting Room"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Waiting Room</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="facilities"
+                      value="Restrooms"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Restrooms</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="facilities"
+                      value="Parking"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Parking</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="facilities"
+                      value="Food Court"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Food Court</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="facilities"
+                      value="WiFi"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">WiFi</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="facilities"
+                      value="ATM"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">ATM</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="facilities"
+                      value="Accessibility"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Accessibility</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+            <button
+              id="cancelRegisterBtn"
+              class="px-5 py-2 text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              Register Station
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Station Update Modal -->
+
+    <div
+      id="stationUpdateModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-xl w-full max-w-2xl overflow-hidden"
+      >
+        <form id="stationUpdateForm">
+          <!-- Modal Header -->
+          <div
+            class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white"
+          >
+            <div class="flex justify-between items-center">
+              <h3 class="text-xl font-bold flex items-center">
+                <i class="fas fa-edit mr-3"></i>
+                Update Station
+              </h3>
+              <button
+                type="button"
+                id="closeUpdateModal"
+                class="text-white hover:text-gray-200 text-xl"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <p class="mt-2 text-blue-200">
+              Update details for this railway station
+            </p>
+          </div>
+
+          <!-- Hidden station ID -->
+          <input type="hidden" id="updateStationId" />
+
+          <!-- Modal Body -->
+          <div class="p-6 max-h-[70vh] overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Station Details -->
+              <div class="md:col-span-2">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                  Station Information
+                </h4>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Station Name</label
+                >
+                <input
+                  id="updateStationName"
+                  type="text"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g. Colombo Fort Station"
+                  required
+                />
+                <p
+                  id="updateStationNameMsg"
+                  class="text-xs text-gray-500 mt-2 ml-1"
+                ></p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Station Code</label
+                >
+                <input
+                  type="text"
+                  id="updateStationCode"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g. CMB"
+                  required
+                />
+              </div>
+              <input id="updateStationDistrict" type="text" hidden />
+              <input id="updateStationProvince" type="text" hidden />
+
+              <!-- Platform Information -->
+              <div class="md:col-span-2 mt-4">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-train text-blue-500 mr-2"></i>
+                  Platform Information
+                </h4>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Number of Platforms</label
+                >
+                <select
+                  id="updatePlatformNumbersSelection"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value="" disabled selected>Select number</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Platform Length (meters)</label
+                >
+                <input
+                  id="updatePlatformLength"
+                  type="number"
+                  min="1"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g. 250"
+                  required
+                />
+              </div>
+
+              <!-- Facilities -->
+              <div class="md:col-span-2 mt-4">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-building text-blue-500 mr-2"></i>
+                  Other Station Facilities
+                </h4>
+              </div>
+
+              <div class="md:col-span-2">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="updateFacilities"
+                      value="Waiting Room"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Waiting Room</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="updateFacilities"
+                      value="Restrooms"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Restrooms</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="updateFacilities"
+                      value="Parking"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Parking</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="updateFacilities"
+                      value="Food Court"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Food Court</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="updateFacilities"
+                      value="WiFi"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">WiFi</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="updateFacilities"
+                      value="ATM"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">ATM</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="updateFacilities"
+                      value="Accessibility"
+                      class="rounded text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">Accessibility</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Status -->
+              <div class="md:col-span-2 mt-4">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-power-off text-blue-500 mr-2"></i>
+                  Station Status
+                </h4>
+                <div class="flex space-x-4">
+                  <label class="flex items-center">
+                    <input
+                      id="inServiceRadio"
+                      type="radio"
+                      name="updateStatus"
+                      value="true"
+                      class="text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">in-service</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      id="outOfServiceRadio"
+                      type="radio"
+                      name="updateStatus"
+                      value="false"
+                      class="text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">out-of-service</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+            <button
+              type="button"
+              id="cancelUpdateBtn"
+              type="button"
+              class="px-5 py-2 text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2 btn-update text-white rounded-lg transition"
+            >
+              <i class="fas fa-save mr-2"></i>
+              Update Station
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/icon-colors.js"></script>
+    <script src="../js/manage-station.js"></script>
+
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl2xlKmHMjwVyb6iUdMFAPhN7YZ1L4G2Q&libraries=places&callback=initAutocomplete"
+    ></script>
+  </body>
+</html>
