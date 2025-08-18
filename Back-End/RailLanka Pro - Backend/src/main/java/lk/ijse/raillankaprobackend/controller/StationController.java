@@ -59,6 +59,30 @@ public class StationController {
 
     }
 
+    @GetMapping(value = "/filter/{pageNo}/{pageSize}" , params = "keyword")
+    public ResponseEntity<ApiResponse<List<StationDto>>> getStationsByKeyword(
+            @RequestParam("keyword") String keyword,
+            @PathVariable  int pageNo,
+            @PathVariable int pageSize){
+
+        Page<StationDto> allPaginatedStations = stationService.filterStationsByKeyword(keyword, pageNo, pageSize);
+        int startNumber = allPaginatedStations.getNumber() * allPaginatedStations.getSize() + 1;
+        int endNumber = Math.min(startNumber + allPaginatedStations.getSize() - 1, (int) allPaginatedStations.getTotalElements());
+
+        return ResponseEntity.ok(
+                PaginatedResponse.<List<StationDto>>builder()
+                        .code(HttpStatus.OK.value())
+                        .message("fetched filtered stations")
+                        .currentPage(allPaginatedStations.getNumber()+1)
+                        .totalItems(allPaginatedStations.getTotalElements())
+                        .totalPages(allPaginatedStations.getTotalPages())
+                        .startNumber(startNumber)
+                        .endNumber(endNumber)
+                        .data(allPaginatedStations.getContent())
+                        .build()
+        );
+    }
+
     @PutMapping("/changeInServiceStatus/{stationId}/{status}")
     public ResponseEntity<ApiResponse<Boolean>> changeInServiceStatus(@PathVariable String stationId, @PathVariable boolean status){
         return new ResponseEntity<>(new ApiResponse<>(
@@ -95,5 +119,7 @@ public class StationController {
                 stationService.deleteStation(id)
         ));
     }
+
+
 
 }

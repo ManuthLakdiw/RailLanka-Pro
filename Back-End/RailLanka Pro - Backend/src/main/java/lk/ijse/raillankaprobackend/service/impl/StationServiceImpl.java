@@ -8,12 +8,12 @@ import lk.ijse.raillankaprobackend.repository.StationRepository;
 import lk.ijse.raillankaprobackend.service.StationService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.modelmapper.TypeToken;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -45,7 +45,8 @@ public class StationServiceImpl implements StationService {
                 prefixNumber++;
 
                 if (prefixNumber > 99999){
-                    throw new IdGenerateLimitReachedException("All available Station IDs have been used. Please contact the system administrator");
+                    throw new IdGenerateLimitReachedException(
+                            "All available Station IDs have been used. Please contact the system administrator");
                 }
             }
 
@@ -95,10 +96,18 @@ public class StationServiceImpl implements StationService {
 
         String trimmed = province.trim();
 
+        String lowerTrimmed = trimmed.toLowerCase();
+
+        if (lowerTrimmed.equals("sri lanka") || lowerTrimmed.equals("sri-lanka") || lowerTrimmed.equals("srilanka")) {
+//            return trimmed.substring(0,1).toUpperCase() + trimmed.substring(1);
+                return "Sri-Lanka";
+
+        }
+
         String formatted = trimmed.substring(0, 1).toUpperCase() + trimmed.substring(1).toLowerCase();
 
         if (!formatted.toLowerCase().endsWith("province")) {
-            formatted += " Province";
+            formatted += " province";
         }
 
         return formatted;
@@ -113,7 +122,7 @@ public class StationServiceImpl implements StationService {
 
         Page<Station> studentPage = stationRepository.findAll(pageable);
 
-        return studentPage.map(student -> modelMapper.map(student, StationDto.class));
+        return studentPage.map(station -> modelMapper.map(station, StationDto.class));
 
     }
 
@@ -140,13 +149,15 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public String updateStationDetails(StationDto stationDto) {
-        Station station = stationRepository.findById(stationDto.getStationId()).orElseThrow(() -> new IllegalArgumentException("Invalid Station Id"));
+        Station station = stationRepository.findById(stationDto.getStationId()).orElseThrow(
+                () -> new IllegalArgumentException("Invalid Station Id"));
         if (!station.getName().equalsIgnoreCase(stationDto.getName())) {
             Optional<Station> existingStation = stationRepository.findByName(stationDto.getName());
             if (existingStation.isPresent()) {
                 Station existing = existingStation.get();
                 if (!existing.getStationId().equals(station.getStationId())) {
-                    throw new StationNameAlreadyExists("This station name is already taken. Please choose a different one.");
+                    throw new StationNameAlreadyExists(
+                            "This station name is already taken. Please choose a different one.");
                 }
             }
         }
@@ -169,9 +180,26 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public String deleteStation(String stationId) {
-        Station station = stationRepository.findById(stationId).orElseThrow(() -> new IllegalArgumentException("Invalid Station Id"));
+        Station station = stationRepository.findById(stationId).orElseThrow(
+                () -> new IllegalArgumentException("Invalid Station Id"));
         stationRepository.delete(station);
         return "station has been successfully deleted.";
     }
+
+
+
+    @Override
+    public Page<StationDto> filterStationsByKeyword(String keyword, int pageNo, int pageSize) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+        Page<Station> stationsPage = stationRepository.filterStationsByKeyword(keyword, pageable);
+
+        return stationsPage.map(station -> modelMapper.map(station, StationDto.class));
+
+    }
+
 
 }
