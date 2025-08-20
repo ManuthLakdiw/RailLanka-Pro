@@ -31,6 +31,8 @@ public interface StationService {
 
     String deleteStation(String stationId);
 
-    Page<StationDto> filterStationsByKeyword(String keyword, int pageNo, int PageSize);
+    Page<StationDto> filterStationsByKeyword(String keyword, int pageNo, int pageSize);
+
+    List<StationDto> getAllStationNamesAndCodes();
 
 }

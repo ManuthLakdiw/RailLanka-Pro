@@ -13,6 +13,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -200,6 +201,13 @@ public class StationServiceImpl implements StationService {
         return stationsPage.map(station -> modelMapper.map(station, StationDto.class));
 
     }
+
+    @Override
+    public List<StationDto> getAllStationNamesAndCodes() {
+        List<Station> allStations = stationRepository.findAll();
+        return modelMapper.map(allStations, new TypeToken<List<StationDto>>(){}.getType());
+    }
+
 
 
 }

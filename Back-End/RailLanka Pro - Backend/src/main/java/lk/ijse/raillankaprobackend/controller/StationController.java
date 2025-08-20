@@ -120,6 +120,15 @@ public class StationController {
         ));
     }
 
+    @GetMapping("/getall/names/and/codes")
+    public ResponseEntity<ApiResponse<List<StationDto>>> getAllStationNamesAndCodes(){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "fetched all station names and codes",
+                stationService.getAllStationNamesAndCodes()
+        ));
+    }
+
 
 
 }
