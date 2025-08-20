@@ -24,7 +24,8 @@ public class Counter {
     @Id
     private String counterId;
     private String title;
-    private String name;
+    private String firstname;
+    private String lastname;
     private String idNumber;
     private String phoneNumber;
     private String email;
