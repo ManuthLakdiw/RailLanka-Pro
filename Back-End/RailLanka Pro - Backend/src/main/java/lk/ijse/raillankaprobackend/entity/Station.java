@@ -3,6 +3,7 @@ package lk.ijse.raillankaprobackend.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 
 /**
@@ -31,4 +32,7 @@ public class Station {
     private long platformLength;
     private String otherFacilities;
     private boolean inService;
+
+    @OneToOne(mappedBy = "station")
+    private StationMaster stationMaster;
 }
