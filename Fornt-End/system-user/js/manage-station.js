@@ -132,9 +132,10 @@ $("#stationRegisterForm").on("submit", function (e) {
         }
 
         if (result.code === 201) {
-            resetRegisterFields();
             toastr.success(result.data);
             fetchStations(currentPage);
+            closeRegisterModal();
+            
 
 
         }
@@ -267,6 +268,7 @@ $("#stationUpdateForm").on("submit", function (e) {
             toastr.success(result.data);
             fetchStations(currentPage);
             resetUpdateFields();
+            
         }
       })
       .catch((error) => console.error(error));
@@ -612,7 +614,8 @@ function fetchStations(page, keyword = "") {
                             </div>
                             <div class="ml-4">
                               <div class="text-sm font-medium text-gray-900">${station.name}</div>
-                              <div class="text-sm text-gray-500">ID: ${station.stationId}</div>
+                              <span class ="text-sm text-gray-500">ID:</span>
+                              <div class="text-sm text-gray-500 inline">${station.stationId}</div>
                             </div>
                           </div>
                         </td>
