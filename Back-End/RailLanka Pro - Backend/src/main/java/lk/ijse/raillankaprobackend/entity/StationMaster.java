@@ -1,10 +1,9 @@
 package lk.ijse.raillankaprobackend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 
 /**
  * @author manuthlakdiv
@@ -23,15 +22,22 @@ public class StationMaster {
 
     @Id
     private String stationMasterId;
-    private String title;
-    private String name;
+    private String firstname;
+    private String lastname;
     private String idNumber;
     private String phoneNumber;
     private String email;
+    private String address;
+    private LocalDate dob;
+    private int yearsOfExperience;
     private boolean active;
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne
+    @JoinColumn(name = "station_id")
+    private Station station;
 }
