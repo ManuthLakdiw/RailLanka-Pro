@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author manuthlakdiv
@@ -94,6 +95,25 @@ public class StationMasterController {
                         .build()
         );
     }
+
+    @GetMapping(value = "/getstationmaster" , params = {"id"})
+    public ResponseEntity<ApiResponse<Optional<StaffDto>>> getStationMasterById(@RequestParam("id") String id){
+       return  ResponseEntity.ok(new ApiResponse<>(
+               200,
+               "fetched by " + id + " id",
+               stationMasterService.findStationMasterById(id)
+       ));
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<ApiResponse<String>> updateStationMasterDetails(@RequestBody StaffDto staffDto){
+        return new ResponseEntity<>(new ApiResponse<>(
+                200,
+                "Station updated",
+                stationMasterService.updateStationMasterDetails(staffDto)
+        ), HttpStatus.OK);
+    }
+
 
 
 

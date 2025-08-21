@@ -6,6 +6,7 @@ import lk.ijse.raillankaprobackend.dto.StationDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author manuthlakdiv
@@ -27,4 +28,8 @@ public interface StationMasterService {
     String deleteStationMaster(String stationMasterId);
 
     Page<StaffDto> filterStationMastersByKeyword(String keyword, int pageNo, int pageSize);
+
+    String updateStationMasterDetails(StaffDto staffDto);
+
+    Optional<StaffDto> findStationMasterById(String stationMasterId);
 }

@@ -169,7 +169,6 @@ public class StationMasterServiceImpl implements StationMasterService {
 
     }
 
-
     @Override
     @Transactional
     public String deleteStationMaster(String stationMasterId) {
@@ -221,6 +220,70 @@ public class StationMasterServiceImpl implements StationMasterService {
             }
             return dto;
         });
+    }
+
+    @Override
+    public String updateStationMasterDetails(StaffDto staffDto) {
+        if (stationMasterRepository.findById(staffDto.getId()).isPresent()){
+            StationMaster stationMaster = stationMasterRepository.findById(staffDto.getId()).get();
+
+            Station station = stationRepository.findByName(staffDto.getRailwayStation()).orElseThrow(
+                    () -> new IllegalArgumentException("This railway station does not exist."));
+
+            String formattedFirstName = staffDto.getFirstname().substring(0, 1).toUpperCase() +
+                    staffDto.getFirstname().substring(1).toLowerCase();
+
+            String formattedLastName = staffDto.getLastname().substring(0, 1).toUpperCase() +
+                    staffDto.getLastname().substring(1).toLowerCase();
+
+            stationMaster.setFirstname(formattedFirstName);
+            stationMaster.setLastname(formattedLastName);
+            stationMaster.setIdNumber(staffDto.getIdNumber());
+            stationMaster.setDob(staffDto.getDob());
+            stationMaster.setPhoneNumber(staffDto.getPhoneNumber());
+            stationMaster.setEmail(staffDto.getEmail());
+            stationMaster.setAddress(staffDto.getAddress());
+            stationMaster.setYearsOfExperience(staffDto.getYearsOfExperience());
+            stationMaster.setStation(station);
+            stationMaster.setActive(staffDto.isActive());
+
+            stationMasterRepository.save(stationMaster);
+
+            return "Station Master details updated successfully.";
+        }
+        throw new IllegalArgumentException("Station Master not found for ID: " + staffDto.getId());
+    }
+
+    @Override
+    public Optional<StaffDto> findStationMasterById(String stationMasterId) {
+        StationMaster stationMaster = stationMasterRepository.findById(stationMasterId).orElseThrow(
+                () -> new IllegalArgumentException("Station Master not found for ID: " + stationMasterId));
+
+        StaffDto dto = new StaffDto();
+
+
+        dto.setId(stationMaster.getStationMasterId());
+        dto.setFirstname(stationMaster.getFirstname());
+        dto.setLastname(stationMaster.getLastname());
+        dto.setIdNumber(stationMaster.getIdNumber());
+        dto.setPhoneNumber(stationMaster.getPhoneNumber());
+        dto.setEmail(stationMaster.getEmail());
+        dto.setAddress(stationMaster.getAddress());
+        dto.setDob(stationMaster.getDob());
+        dto.setYearsOfExperience(stationMaster.getYearsOfExperience());
+        dto.setActive(stationMaster.isActive());
+
+        if (stationMaster.getUser() != null) {
+            dto.setUserName(stationMaster.getUser().getUsername());
+        }
+
+        if (stationMaster.getStation() != null) {
+            dto.setRailwayStation(stationMaster.getStation().getName());
+        }
+
+        return Optional.of(dto);
+
+
     }
 
 }
