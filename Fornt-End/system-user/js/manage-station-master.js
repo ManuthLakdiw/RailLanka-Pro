@@ -20,6 +20,7 @@ $(document).ready(function () {
     // Open register modal
     addBtn.on("click", function () {
         modal.addClass("active");
+        loadStationNamesWithCodes();
     });
 
     // Close register modal
@@ -59,76 +60,133 @@ $(document).ready(function () {
     
     
     //////////////////////////////////////////// load station for selection box ////////////////////////////////////////////////////////////
-    function loadStationNamesWithCodes() {
+    async function loadStationNamesWithCodes(selectedStation = null) {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTU5OTIxMCwiZXhwIjoxMDc1NTU5OTIxMH0.fMuIkZFjmOqiz1qhaTckVlcoVIaZdIP7hphhIodzrvw");
 
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", 
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTU5OTIxMCwiZXhwIjoxMDc1NTU5OTIxMH0.fMuIkZFjmOqiz1qhaTckVlcoVIaZdIP7hphhIodzrvw");
-
-        const requestOptions = {
+    const requestOptions = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow"
-        };
+    };
 
-        let selectedStations = [];
+    try {
+        const assignedResponse = await fetch("http://localhost:8080/api/v1/raillankapro/stationmaster/getall/assigned/stations", requestOptions);
+        const assignedStations = await assignedResponse.json();
+        const selectedStations = assignedStations.map(s => s.trim().toLowerCase());
 
+        const allStationsResponse = await fetch("http://localhost:8080/api/v1/raillankapro/station/getall/names/and/codes", requestOptions);
+        const result = await allStationsResponse.json();
 
-        fetch("http://localhost:8080/api/v1/raillankapro/stationmaster/getall/assigned/stations", requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-            selectedStations = result;
-            console.log(selectedStations)
-        })
-        .catch((error) => console.error(error));
+        if (result.code === 200) {
+            const allStations = result.data;
+            allStations.sort((a, b) => a.name.localeCompare(b.name));
 
-        fetch("http://localhost:8080/api/v1/raillankapro/station/getall/names/and/codes", requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-            console.log(result)
-            if (result.code === 200) {
-                const allStations = result.data;
-                allStations.sort((a, b) => a.name.localeCompare(b.name));
-                 $("#smasterStationSelection").empty();
-                 $("#smasterStationSelection").append(
-                    `<option disabled selected value="">
-                         Select a Station
-                    </option>`
-                    
-                 );
+            const $select = $(".smasterStationSelection");
+            $select.empty();
+            $select.append('<option disabled selected value="">Select a Station</option>');
 
-                allStations.forEach(station => {
-                    if (selectedStations.some(s => s.trim().toLowerCase() === station.name.trim().toLowerCase())) {
-                        $("#smasterStationSelection").append(
-                            `<option disabled value="">
-                                ${station.name} (${station.stationCode} - assigned)
-                            </option>`
-                        );
-                        return;
+            allStations.forEach(station => {
+                const stationNameLower = station.name.trim().toLowerCase();
+                let optionHtml = "";
+
+                if (selectedStations.includes(stationNameLower)) {
+
+                    if (selectedStation && selectedStation.trim().toLowerCase() === stationNameLower) {
+                        optionHtml = `<option value="${station.name}" selected>${station.name} (${station.stationCode})</option>`;
+                    } else {
+                        optionHtml = `<option disabled value="${station.name}">${station.name} (${station.stationCode} - assigned)</option>`;
                     }
+                } else if (!station.inService) {
+                    optionHtml = `<option disabled value="${station.name}">${station.name} (${station.stationCode} - out-of-service)</option>`;
+                } else {
+                    optionHtml = `<option value="${station.name}">${station.name} (${station.stationCode})</option>`;
+                }
 
-                    if (!station.inService) {
-                        $("#smasterStationSelection").append(
-                        `<option disabled  value="">
-                                ${station.name} (${station.stationCode} - out-of-service)
-                         </option>`
-                        
-                        );
-                        return;
-                    }
-                    $("#smasterStationSelection").append(
-                        `<option value="${station.name}">
-                                ${station.name} (${station.stationCode})
-                         </option>`
-                    );
-                });
+                $select.append(optionHtml);
+            });
+
+            if (selectedStation) {
+                $select.val(selectedStation);
             }
-        })
-        .catch((error) => console.error(error));
 
+            
+        }
+
+    } catch (error) {
+        console.error(error);
     }
+}
+    // async function loadStationNamesWithCodes(selectedStation = null) {
+    //     const myHeaders = new Headers();
+    //     myHeaders.append("Authorization", 
+    //         "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTU5OTIxMCwiZXhwIjoxMDc1NTU5OTIxMH0.fMuIkZFjmOqiz1qhaTckVlcoVIaZdIP7hphhIodzrvw");
+
+    //     const requestOptions = {
+    //         method: "GET",
+    //         headers: myHeaders,
+    //         redirect: "follow"
+    //     };
+
+    //     try {
+    //         const assignedResponse = await fetch("http://localhost:8080/api/v1/raillankapro/stationmaster/getall/assigned/stations", requestOptions);
+    //         const assignedStations = await assignedResponse.json(); 
+    //         console.log("Assigned stations:", assignedStations);
+
+            
+    //         const allResponse = await fetch("http://localhost:8080/api/v1/raillankapro/station/getall/names/and/codes", requestOptions);
+    //         const allResult = await allResponse.json();
+    //         console.log("All stations result:", allResult);
+
+    //         if (allResult.code === 200) {
+    //             const allStations = allResult.data;
+    //             allStations.sort((a, b) => a.name.localeCompare(b.name));
+
+    //             const $select = $(".smasterStationSelection");
+    //             $select.empty();
+    //             $select.append(`<option disabled selected value="">Select a Station</option>`);
+
+    //             allStations.forEach(station => {
+    //                 let optionHtml = "";
+
+    //                 if (selectedStation) {
+    //                         if (assignedStations.includes(selectedStation)) {
+    //                     optionHtml = `<option enable value="${station.name}">
+    //                                     ${station.name} (${station.stationCode})
+    //                                 </option>`;
+    //                 }
+    //                 }
+
+                    
+
+    //                 if (assignedStations.includes(station.name)) {
+    //                     optionHtml = `<option disabled value="${station.name}">
+    //                                     ${station.name} (${station.stationCode} - assigned)
+    //                                 </option>`;
+    //                 } else if (!station.inService) {
+    //                     optionHtml = `<option disabled value="${station.name}">
+    //                                     ${station.name} (${station.stationCode} - out-of-service)
+    //                                 </option>`;
+    //                 } else {
+    //                     optionHtml = `<option value="${station.name}">
+    //                                     ${station.name} (${station.stationCode})
+    //                                 </option>`;
+    //                 }
+
+    //                 $select.append(optionHtml);
+    //             });
+
+    //             console.log("Dropdown values:", $select.find("option").map(function(){ return $(this).val(); }).get());
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
+
 
     ////////////////////////////////////////// password validation ////////////////////////////////////////////////////////////
+    
+    
     $("#smasterPassword").on("input", function () {
     const password = $(this).val();
     let strength = 0;
@@ -178,7 +236,7 @@ $(document).ready(function () {
         const smasterUsername = $("#smasterUsername").val().trim();
         const smasterPassword = $("#smasterPassword").val().trim();
         const smasterYearsOfExperience = $("#smasterYearsOfExperience").val().trim();
-        const smasterStationSelection = $("#smasterStationSelection").val().trim();
+        const smasterStationSelection = $("#masterModal .smasterStationSelection").val().trim();
 
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -217,7 +275,7 @@ $(document).ready(function () {
             if (result.code === 201) {
                 toastr.success(result.data);
                 fetchSmasters(currentPage);
-                fetchSmasters(currentPage);
+                loadStationNamesWithCodes();
                 closeModal();
 
             }
@@ -413,7 +471,7 @@ $(document).ready(function () {
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div class="flex space-x-2">
-                        <button class="text-blue-600 hover:text-blue-900">
+                        <button id="updateSmasterBtn" class="text-blue-600 hover:text-blue-900" data-id="${smaster.id}">
                             <i class="fas fa-edit"></i>
                         </button>
                         <button id = "deleteSmasterBtn" class="text-red-600 hover:text-red-900" data-id="${smaster.id}" >
@@ -441,6 +499,7 @@ $(document).ready(function () {
 
     ///////////////////////////////////////// delete station ////////////////////////////////////////////////////////////
     $(document).on("click", "#deleteSmasterBtn", function () {
+        
         const id = $(this).data("id");
         Swal.fire({
             title: "Are you sure?",
@@ -469,7 +528,7 @@ $(document).ready(function () {
                 .then((response) => response.json())
                 .then((result) => {
                         fetchSmasters(currentPage)
-                        fetchSmasters(currentPage);
+                        loadStationNamesWithCodes();
                         console.log(result);
                         Swal.fire({
                         title: "Deleted!",
@@ -529,6 +588,7 @@ $(document).ready(function () {
             console.log(result)
             if (result.code === 200) {
                 fetchSmasters(currentPage)
+                loadStationNamesWithCodes();
                 $("#filterSmaster").val("")
                 if (result.data) {
                     toastr.success(result.message);
@@ -548,6 +608,131 @@ $(document).ready(function () {
         fetchSmasters(currentPage, currentKeyword);
     });
 
+
+     /////////////////////////////////// update model ////////////////////////////////////////////////////////////////////////////////////////////////
+    const updateModal = $("#smasterUpdateModal");
+    const closeUpdateModelBtn = $("#closeUpdateModal");
+    const cancelUpdateModelBtn = $("#cancelUpdateBtn");
+
+    function closeUpdateModal() {
+        updateModal.removeClass("active");
+        resetRegisterForm();
+        $('#updateSmasterId').val("")
+    }
+
+    closeUpdateModelBtn.on("click", closeUpdateModal);
+    cancelUpdateModelBtn.on("click", closeUpdateModal);
+
+    updateModal.on("click", function (e) {
+        if (e.target === this) {
+            updateModal.removeClass("active");
+        }
+    });
+
+    $(document).on("click", "#updateSmasterBtn", function() {
+        $("#smasterUpdateModal").addClass("active");
+
+        const id = $(this).data("id");
+
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTY3NTI4MSwiZXhwIjoxMDc1NTY3NTI4MX0.TOojMUE9rxEDSm_Oykf4WCsyZIlGdwXVgPXMUf-QdQg");
+
+        const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+        };
+
+        fetch(`http://localhost:8080/api/v1/raillankapro/stationmaster/getstationmaster?id=${id}`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            console.log(result)
+            let data = result.data
+            $('#updateSmasterId').val(data.id);
+            $('#updateSmasterFirstname').val(data.firstname);
+            $('#updateSmasterLastname').val(data.lastname);
+            $('#updateSmasterNIC').val(data.idNumber);
+            $('#updateSmasterDOB').val(data.dob);
+            $('#updateSmasterContactNumber').val(data.phoneNumber);
+            $('#updateSmasterEmail').val(data.email);
+            $('#updateSmasterAddress').val(data.address);
+            $('#updateSmasterUsername').val(data.userName);
+            $('#updateSmasterYearsOfExperience').val(data.yearsOfExperience);
+            loadStationNamesWithCodes(data.railwayStation.trim());
+            // $(".smasterStationSelection").val(data.railwayStation); 
+            // console.log(data.railwayStation)
+
+
+            if (data.active) {
+                $("#activeRadio").prop("checked",true)
+                return;
+            }
+
+            $("#inactiveRadio").prop("checked",true)
+
+        })
+        .catch((error) => console.error(error));  
+
+    });
+
+    $("#smasterUpdateForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const smasterID = $('#updateSmasterId').val().trim();
+        const smasterFisrtname = $('#updateSmasterFirstname').val().trim();
+        const smasterLastName = $('#updateSmasterLastname').val().trim();
+        const smasterNIC = $('#updateSmasterNIC').val().trim();
+        const smasterDOB = $('#updateSmasterDOB').val().trim();
+        const smasterContactNumber = $('#updateSmasterContactNumber').val().trim();
+        const smasterEmail =  $('#updateSmasterEmail').val().trim();
+        const smasterAddress = $('#updateSmasterAddress').val().trim();
+        const smasterYOE = $('#updateSmasterYearsOfExperience').val().trim();
+        const smasterStation = $("#smasterUpdateForm .smasterStationSelection").val(); 
+        console.log("Fuck My Station :"+smasterStation)
+        const statusValue = $("input[name='updateStatus']:checked").val();  
+        const boolChecked = (statusValue === "true");
+
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTcyMTMwNywiZXhwIjoxMDc1NTcyMTMwN30.fqgg1WQau07Y1NLxfqWiousT3p5HTeb5f6M7Bsz3arg");
+
+        const raw = JSON.stringify({
+            "id": smasterID,
+            "firstname": smasterFisrtname,
+            "lastname": smasterLastName,
+            "idNumber": smasterNIC,
+            "phoneNumber": smasterContactNumber,
+            "railwayStation":smasterStation,
+            "dob": smasterDOB,
+            "email": smasterEmail,
+            "address": smasterAddress,
+            "yearsOfExperience": smasterYOE,
+            "active": boolChecked
+        });
+
+        const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        fetch("http://localhost:8080/api/v1/raillankapro/stationmaster/update", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            console.log(result)
+            $("#smasterUpdateModal").removeClass("active");
+            toastr.success(result.data);
+            fetchSmasters(currentPage);
+            loadStationNamesWithCodes();
+        })
+        .catch((error) => console.error(error));  
+    });
+
+
+    /////////////////////////////////////
+
     function resetRegisterForm() {
 
         $("#smasterFirstname").val("");
@@ -560,7 +745,7 @@ $(document).ready(function () {
         $("#smasterUsername").val("");
         $("#smasterPassword").val("");
         $("#smasterYearsOfExperience").val("");
-        $("#smasterStationSelection").val(""); 
+        $(".smasterStationSelection").val(""); 
         $("#smasterUsernameMsg").text("").removeClass("text-red-500")
 
 
@@ -575,6 +760,9 @@ $(document).ready(function () {
         lastColorIndex = index;
         return iconColors[index];
     }
+
+
+   
 
 
 });
