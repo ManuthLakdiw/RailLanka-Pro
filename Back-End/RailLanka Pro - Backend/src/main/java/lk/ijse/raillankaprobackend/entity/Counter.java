@@ -1,10 +1,9 @@
 package lk.ijse.raillankaprobackend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 
 /**
  * @author manuthlakdiv
@@ -23,15 +22,23 @@ public class Counter {
 
     @Id
     private String counterId;
-    private String title;
+
+    @Enumerated(EnumType.STRING)
+    private CounterNumber counterNumber;
     private String firstname;
     private String lastname;
     private String idNumber;
     private String phoneNumber;
     private String email;
+    private String address;
+    private LocalDate dob;
+    private int yearsOfExperience;
     private boolean active;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    private Station station;
 }

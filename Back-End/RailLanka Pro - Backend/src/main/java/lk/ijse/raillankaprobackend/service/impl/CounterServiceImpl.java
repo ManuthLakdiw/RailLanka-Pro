@@ -1,22 +1,24 @@
 package lk.ijse.raillankaprobackend.service.impl;
 
 import jakarta.transaction.Transactional;
+import lk.ijse.raillankaprobackend.dto.CounterDto;
 import lk.ijse.raillankaprobackend.dto.StaffDto;
-import lk.ijse.raillankaprobackend.entity.Counter;
-import lk.ijse.raillankaprobackend.entity.StationMaster;
-import lk.ijse.raillankaprobackend.entity.SystemUserRole;
-import lk.ijse.raillankaprobackend.entity.User;
+import lk.ijse.raillankaprobackend.entity.*;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
 import lk.ijse.raillankaprobackend.repository.CounterRepository;
+import lk.ijse.raillankaprobackend.repository.StationRepository;
 import lk.ijse.raillankaprobackend.repository.UserRepository;
 import lk.ijse.raillankaprobackend.service.CounterService;
+import lk.ijse.raillankaprobackend.service.EmailService;
 import lk.ijse.raillankaprobackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author manuthlakdiv
@@ -33,37 +35,61 @@ public class CounterServiceImpl implements CounterService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final StationRepository stationRepository;
+    private final EmailService emailService;
 
     @Transactional
     @Override
-    public String registerCounter(StaffDto staffDto) {
-        if (userRepository.findByUsername(staffDto.getUserName()).isPresent()){
+    public String registerCounter(CounterDto counterDto) {
+
+        System.out.println(counterDto.getCounterNumber());
+
+        if (userRepository.findByUsername(counterDto.getUserName()).isPresent()){
             throw new UserNameAlreadyExistsException("This username is already taken. Please choose a different one.");
         }
 
+        Station station = stationRepository.findByName(counterDto.getRailwayStation()).orElseThrow(
+                () -> new IllegalArgumentException("This railway station does not exist."));
+
+
         User user = User.builder()
                 .userId(userService.generateNewUserId())
-                .username(staffDto.getUserName())
-                .password(passwordEncoder.encode(staffDto.getPassword()))
+                .username(counterDto.getUserName())
+                .password(passwordEncoder.encode(counterDto.getPassword()))
                 .role(SystemUserRole.COUNTER)
                 .createdDate(LocalDate.now())
                 .build();
 
         userRepository.save(user);
 
+        String formattedFirstName = counterDto.getFirstname().substring(0, 1).toUpperCase() +
+                counterDto.getFirstname().substring(1).toLowerCase();
+
+        String formattedLastName = counterDto.getLastname().substring(0, 1).toUpperCase() +
+                counterDto.getLastname().substring(1).toLowerCase();
+
         Counter counter = Counter.builder()
                 .counterId(generateNewCounterId())
-                .title(staffDto.getTitle())
-                .name(staffDto.getName())
-                .idNumber(staffDto.getIdNumber())
-                .phoneNumber(staffDto.getPhoneNumber())
-                .email(staffDto.getEmail())
+                .firstname(formattedFirstName)
+                .lastname(formattedLastName)
+                .idNumber(counterDto.getIdNumber())
+                .phoneNumber(counterDto.getPhoneNumber())
+                .email(counterDto.getEmail())
+                .address(counterDto.getAddress())
+                .dob(counterDto.getDob())
+                .yearsOfExperience(counterDto.getYearsOfExperience())
+                .counterNumber(CounterNumber.valueOf(counterDto.getCounterNumber()))
                 .active(true)
                 .user(user)
+                .station(station)
                 .build();
         counterRepository.save(counter);
 
-        return "Counter Registered Successfully";
+        new Thread(() -> {
+            emailService.sendStaffCredentials(counterDto , "Station Counter");
+        }).start();
+
+        return "Counter has been registered successfully";
     }
 
     @Override
@@ -88,5 +114,15 @@ public class CounterServiceImpl implements CounterService {
         }
         return "CTR00000-00001";
 
+    }
+
+    @Override
+    public List<String> getCounterNumberByStationName(String stationName) {
+
+        if (stationRepository.findByName(stationName).isEmpty()){
+            throw new IllegalArgumentException("This railway station does not exist.");
+        }
+
+        return counterRepository.findCounterNumberByStationName(stationName);
     }
 }

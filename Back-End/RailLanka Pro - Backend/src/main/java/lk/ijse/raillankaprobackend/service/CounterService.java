@@ -1,6 +1,10 @@
 package lk.ijse.raillankaprobackend.service;
 
+import lk.ijse.raillankaprobackend.dto.CounterDto;
 import lk.ijse.raillankaprobackend.dto.StaffDto;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author manuthlakdiv
@@ -10,7 +14,9 @@ import lk.ijse.raillankaprobackend.dto.StaffDto;
  */
 public interface CounterService {
 
-    String registerCounter(StaffDto staffDto);
+    String registerCounter(CounterDto counterDto);
 
     String generateNewCounterId();
+
+    List<String> getCounterNumberByStationName(String stationName);
 }
