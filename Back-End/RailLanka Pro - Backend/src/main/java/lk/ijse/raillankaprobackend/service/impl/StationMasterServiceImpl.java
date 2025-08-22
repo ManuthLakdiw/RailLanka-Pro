@@ -87,10 +87,10 @@ public class StationMasterServiceImpl implements StationMasterService {
         stationMasterRepository.save(stationMaster);
 
         new Thread(() -> {
-            emailService.sendStaffCredentials(staffDto);
+            emailService.sendStaffCredentials(staffDto , "Station Master");
         }).start();
 
-        return "Station Master Registered Successfully";
+        return "Station Master has been Registered Successfully";
 
     }
 
