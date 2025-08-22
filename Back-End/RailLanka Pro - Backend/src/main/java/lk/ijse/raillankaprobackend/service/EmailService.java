@@ -10,5 +10,5 @@ import lk.ijse.raillankaprobackend.dto.StaffDto;
  */
 public interface EmailService {
 
-    void sendStaffCredentials(StaffDto staffDto);
+    void sendStaffCredentials(StaffDto staffDto , String role);
 }

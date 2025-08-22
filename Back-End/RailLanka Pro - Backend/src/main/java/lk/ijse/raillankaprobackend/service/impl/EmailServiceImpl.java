@@ -23,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
     private final TemplateEngine templateEngine;
 
     @Override
-    public void sendStaffCredentials(StaffDto staffDto) {
+    public void sendStaffCredentials(StaffDto staffDto , String role) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -34,10 +34,11 @@ public class EmailServiceImpl implements EmailService {
 
             Context context = new Context();
             context.setVariable("staffName", staffDto.getFirstname() + " " + staffDto.getLastname());
+            context.setVariable("id", staffDto.getId());
             context.setVariable("username", staffDto.getUserName());
             context.setVariable("password", staffDto.getPassword());
             context.setVariable("station", staffDto.getRailwayStation());
-            context.setVariable("role", "Station Master");
+            context.setVariable("role", role);
 
             String htmlContent = templateEngine.process("emailForStaffRegistration", context);
 
