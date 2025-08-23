@@ -553,7 +553,7 @@ $(document).ready(function () {
                 text: "Something went wrong while deleting.",
                 icon: "error"
             });
-});
+        });
     });
 
     ///////////////////////////////////////// change status ////////////////////////////////////////////////////////////
