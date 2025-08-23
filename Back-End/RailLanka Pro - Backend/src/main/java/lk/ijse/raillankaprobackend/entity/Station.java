@@ -1,10 +1,9 @@
 package lk.ijse.raillankaprobackend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 /**
  * @author manuthlakdiv
@@ -35,4 +34,7 @@ public class Station {
 
     @OneToOne(mappedBy = "station")
     private StationMaster stationMaster;
+
+    @OneToMany(mappedBy = "station")
+    private List<Counter> counters;
 }
