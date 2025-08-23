@@ -1,5 +1,6 @@
 package lk.ijse.raillankaprobackend.service;
 
+import lk.ijse.raillankaprobackend.dto.CounterDto;
 import lk.ijse.raillankaprobackend.dto.StaffDto;
 
 /**
@@ -10,5 +11,8 @@ import lk.ijse.raillankaprobackend.dto.StaffDto;
  */
 public interface EmailService {
 
-    void sendStaffCredentials(StaffDto staffDto , String role);
+    void sendStationMasterCredentials(String template , StaffDto staffDto , String id);
+
+    void sendCounterCredentials(String template , CounterDto counterDto , String id);
+
 }

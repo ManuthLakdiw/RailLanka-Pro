@@ -100,20 +100,6 @@
             flex-direction: column;
         }
 
-        .logo-icon {
-            font-size: 28px;
-            background: rgba(255, 255, 255, 0.2);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            margin-bottom: 10px;
-        }
-
         .logo-text {
             font-size: 24px;
             font-weight: bold;
@@ -507,7 +493,7 @@
         }
 
         /* High contrast mode support */
-        @media (prefers-contrast: high) {
+        @media (prefers-contrast: more) {
             .credentials-box {
                 border: 2px solid #1e40af;
             }
@@ -541,9 +527,9 @@
 <div class="container">
     <div class="header">
         <div class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-train"></i>
-            </div>
+<!--            <div class="logo-icon">-->
+<!--                <i class="fas fa-train"></i>-->
+<!--            </div>-->
             <div class="logo-text">RailLanka Pro</div>
         </div>
         <h1>Staff Account Credentials</h1>
@@ -564,7 +550,7 @@
         </p>
 
         <div class="credentials-box">
-            <div class="credential-item">
+                <div class="credential-item">
                 <span class="credential-label">
                     <i class="fas fa-map-marker-alt"></i>Station:
                 </span>
@@ -578,7 +564,7 @@
             </div>
             <div class="credential-item">
                 <span class="credential-label">
-                    <i class="fas fa-user-circle"></i>Your id:
+                      <i class="fas fa-id-card"></i> Your id:
                 </span>
                 <span class="credential-value highlight" th:text="${id}">sm_colombo</span>
             </div>

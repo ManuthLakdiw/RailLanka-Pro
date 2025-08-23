@@ -2,7 +2,6 @@ package lk.ijse.raillankaprobackend.service.impl;
 
 import jakarta.transaction.Transactional;
 import lk.ijse.raillankaprobackend.dto.CounterDto;
-import lk.ijse.raillankaprobackend.dto.StaffDto;
 import lk.ijse.raillankaprobackend.entity.*;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author manuthlakdiv
@@ -86,7 +84,11 @@ public class CounterServiceImpl implements CounterService {
         counterRepository.save(counter);
 
         new Thread(() -> {
-            emailService.sendStaffCredentials(counterDto , "Station Counter");
+            emailService.sendCounterCredentials(
+                    "CounterRegTemplate",
+                    counterDto ,
+                    counter.getCounterId()
+                    );
         }).start();
 
         return "Counter has been registered successfully";

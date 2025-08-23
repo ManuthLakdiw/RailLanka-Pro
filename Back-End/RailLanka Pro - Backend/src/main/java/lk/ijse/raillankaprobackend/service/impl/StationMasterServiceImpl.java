@@ -1,7 +1,6 @@
 package lk.ijse.raillankaprobackend.service.impl;
 
 import lk.ijse.raillankaprobackend.dto.StaffDto;
-import lk.ijse.raillankaprobackend.dto.StationDto;
 import lk.ijse.raillankaprobackend.entity.*;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
@@ -87,7 +86,12 @@ public class StationMasterServiceImpl implements StationMasterService {
         stationMasterRepository.save(stationMaster);
 
         new Thread(() -> {
-            emailService.sendStaffCredentials(staffDto , "Station Master");
+            emailService.sendStationMasterCredentials(
+                    "StationMasterRegTemplate",
+                    staffDto ,
+                    stationMaster.getStationMasterId()
+            );
+
         }).start();
 
         return "Station Master has been Registered Successfully";
