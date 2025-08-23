@@ -365,104 +365,6 @@
                     </div>
                   </td>
                 </tr>
-                <!-- Staff 2 -->
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div
-                        class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center"
-                      >
-                        <i class="fas fa-user text-blue-600"></i>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          Priya Fernando
-                        </div>
-                        <div class="text-sm text-gray-500">ID: CS-002</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">072-4567890</div>
-                    <div class="text-sm text-gray-500">priya@raillanka.lk</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">Kandy - Counter 2</div>
-                    <div class="text-sm text-gray-500">KDY-C2</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    2 years
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-active"
-                    >
-                      Active
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div class="flex space-x-2">
-                      <button class="text-blue-600 hover:text-blue-900">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                      <button class="text-red-600 hover:text-red-900">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                      <button class="text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-toggle-on"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <!-- Staff 3 -->
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div
-                        class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center"
-                      >
-                        <i class="fas fa-user text-blue-600"></i>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          Ravi Perera
-                        </div>
-                        <div class="text-sm text-gray-500">ID: CS-003</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">077-5678901</div>
-                    <div class="text-sm text-gray-500">ravi@raillanka.lk</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">Galle - Counter 1</div>
-                    <div class="text-sm text-gray-500">GLE-C1</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    1 year
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-inactive"
-                    >
-                      Inactive
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div class="flex space-x-2">
-                      <button class="text-blue-600 hover:text-blue-900">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                      <button class="text-red-600 hover:text-red-900">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                      <button class="text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-toggle-off"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </div>
@@ -774,8 +676,7 @@
                   >Assigned Station</label
                 >
                 <select
-                  id="staffStationSelection"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 stationSelection"
                   required
                 >
                   <!-- <option disabled selected value="">Select a Station</option>
@@ -792,8 +693,7 @@
                   >Counter Number</label
                 >
                 <select
-                  id="staffCounterSelection"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 counterNumberSelection"
                   required
                 >
                   <!-- <option disabled selected value="">Select a Counter</option>
@@ -1028,16 +928,15 @@
                   >Assigned Station</label
                 >
                 <select
-                  id="updateStaffStationSelection"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 stationSelection"
                   required
                 >
-                  <option disabled selected value="">Select a Station</option>
+                  <!-- <option disabled selected value="">Select a Station</option>
                   <option>Colombo Fort (CMB)</option>
                   <option>Kandy (KDY)</option>
                   <option>Galle (GLE)</option>
                   <option>Jaffna (JFN)</option>
-                  <option>Badulla (BAD)</option>
+                  <option>Badulla (BAD)</option> -->
                 </select>
               </div>
 
@@ -1045,13 +944,16 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1"
                   >Counter Number</label
                 >
-                <input
-                  id="updateStaffCounterNumber"
-                  type="text"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Counter 1"
+                <select
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 counterNumberSelection"
                   required
-                />
+                >
+                  <option disabled selected value="">Select a Counter</option>
+                  <option value="COUNTER_1">counter 1</option>
+                  <option value="COUNTER_2">counter 2</option>
+                  <option value="COUNTER_3">counter 3</option>
+                  <option value="NONE">None</option>
+                </select>
               </div>
 
               <!-- Status -->
@@ -1110,6 +1012,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/icon-colors.js"></script>
     <script src="../js/manage-counter.js"></script>
   </body>
 </html>
