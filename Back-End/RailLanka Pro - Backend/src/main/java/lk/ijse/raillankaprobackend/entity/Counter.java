@@ -35,7 +35,7 @@ public class Counter {
     private int yearsOfExperience;
     private boolean active;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private User user;
 

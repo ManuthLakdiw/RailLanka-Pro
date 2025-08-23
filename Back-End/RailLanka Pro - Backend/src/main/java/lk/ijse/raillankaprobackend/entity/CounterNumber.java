@@ -10,4 +10,5 @@ public enum CounterNumber {
     COUNTER_1,
     COUNTER_2,
     COUNTER_3,
+    NONE,
 }

@@ -2,6 +2,8 @@ package lk.ijse.raillankaprobackend.service.impl;
 
 import jakarta.transaction.Transactional;
 import lk.ijse.raillankaprobackend.dto.CounterDto;
+import lk.ijse.raillankaprobackend.dto.StaffDto;
+import lk.ijse.raillankaprobackend.dto.StationDto;
 import lk.ijse.raillankaprobackend.entity.*;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
@@ -12,11 +14,16 @@ import lk.ijse.raillankaprobackend.service.CounterService;
 import lk.ijse.raillankaprobackend.service.EmailService;
 import lk.ijse.raillankaprobackend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author manuthlakdiv
@@ -35,6 +42,7 @@ public class CounterServiceImpl implements CounterService {
     private final PasswordEncoder passwordEncoder;
     private final StationRepository stationRepository;
     private final EmailService emailService;
+    private final ModelMapper modelMapper;
 
     @Transactional
     @Override
@@ -126,5 +134,150 @@ public class CounterServiceImpl implements CounterService {
         }
 
         return counterRepository.findCounterNumberByStationName(stationName);
+    }
+
+    @Override
+    public Page<CounterDto> getAllCounters(int pageNo, int pageSize) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Counter> counterPage = counterRepository.findAll(pageable);
+
+
+
+        return counterPage.map(counter -> {
+            String phoneNumber = counter.getPhoneNumber();
+            String formattedPhoneNumber = phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3);
+            CounterDto dto = new CounterDto();
+            dto.setId(counter.getCounterId());
+            dto.setFirstname(counter.getFirstname());
+            dto.setLastname(counter.getLastname());
+            dto.setIdNumber(counter.getIdNumber());
+            dto.setPhoneNumber(formattedPhoneNumber);
+            dto.setEmail(counter.getEmail());
+            dto.setAddress(counter.getAddress());
+            dto.setDob(counter.getDob());
+            dto.setYearsOfExperience(counter.getYearsOfExperience());
+            dto.setActive(counter.isActive());
+            dto.setCounterNumber(counter.getCounterNumber().toString());
+
+            if (counter.getUser() != null) {
+                dto.setUserName(counter.getUser().getUsername());
+            }
+
+            if (counter.getStation() != null) {
+                dto.setRailwayStation(counter.getStation().getName()+","+counter.getStation().getStationCode());
+            }
+            return dto;
+        });
+    }
+
+    @Override
+    public String changeCounterStatus(String counterId, boolean status) {
+        counterRepository.findById(counterId).orElseThrow(
+                () -> new IllegalArgumentException("Counter not found for ID: " + counterId));
+        counterRepository.updateCounterStatus(counterId, status);
+
+        return "Counter has been successfully set to " + (status ? "Active" : "Inactive");
+    }
+
+    @Override
+    public String deleteCounter(String counterId) {
+        Counter counter = counterRepository.findById(counterId)
+                .orElseThrow(() -> new IllegalArgumentException("Station Master not found for ID: " + counterId));
+
+        if (counter.getUser() != null) {
+            userRepository.delete(counter.getUser());
+        }
+
+        counterRepository.delete(counter);
+
+        return "Counter has been successfully deleted.";
+    }
+
+    @Override
+    public Page<CounterDto> filterCountersByKeyword(String keyword, int pageNo, int pageSize) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Counter> counterPage = counterRepository.filterCountersByKeyword(keyword, pageable);
+
+        return counterPage.map(counter -> {
+            String phoneNumber = counter.getPhoneNumber();
+            String formattedPhoneNumber = phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3);
+            CounterDto dto = new CounterDto();
+            dto.setId(counter.getCounterId());
+            dto.setFirstname(counter.getFirstname());
+            dto.setLastname(counter.getLastname());
+            dto.setIdNumber(counter.getIdNumber());
+            dto.setPhoneNumber(formattedPhoneNumber);
+            dto.setEmail(counter.getEmail());
+            dto.setAddress(counter.getAddress());
+            dto.setDob(counter.getDob());
+            dto.setYearsOfExperience(counter.getYearsOfExperience());
+            dto.setCounterNumber(String.valueOf(counter.getCounterNumber()));
+            dto.setActive(counter.isActive());
+
+
+            if (counter.getUser() != null) {
+                dto.setUserName(counter.getUser().getUsername());
+            }
+
+            if (counter.getStation() != null) {
+                dto.setRailwayStation(counter.getStation().getName()+","+counter.getStation().getStationCode());
+            }
+            return dto;
+        });
+    }
+
+    @Override
+    public Optional<CounterDto> findCounterById(String counterId) {
+        Counter counter = counterRepository.findById(counterId).orElseThrow(
+                () -> new IllegalArgumentException("Counter not found for ID: " + counterId));
+
+        CounterDto dto = new CounterDto();
+
+        dto.setId(counter.getCounterId());
+        dto.setFirstname(counter.getFirstname());
+        dto.setLastname(counter.getLastname());
+        dto.setIdNumber(counter.getIdNumber());
+        dto.setPhoneNumber(counter.getPhoneNumber());
+        dto.setEmail(counter.getEmail());
+        dto.setAddress(counter.getAddress());
+        dto.setDob(counter.getDob());
+        dto.setYearsOfExperience(counter.getYearsOfExperience());
+        dto.setCounterNumber(counter.getCounterNumber().toString());
+        dto.setActive(counter.isActive());
+        dto.setUserName(counter.getUser().getUsername());
+        dto.setRailwayStation(counter.getStation().getName());
+
+        return Optional.of(dto);
+
+    }
+
+    @Override
+    public String updateCounterDetails(CounterDto counterDto) {
+        if (counterRepository.findById(counterDto.getId()).isPresent()){
+            Counter counter = counterRepository.findById(counterDto.getId()).get();
+            counter.setFirstname(counterDto.getFirstname());
+            counter.setLastname(counterDto.getLastname());
+            counter.setIdNumber(counterDto.getIdNumber());
+            counter.setPhoneNumber(counterDto.getPhoneNumber());
+            counter.setEmail(counterDto.getEmail());
+            counter.setAddress(counterDto.getAddress());
+            counter.setDob(counterDto.getDob());
+            counter.setYearsOfExperience(counterDto.getYearsOfExperience());
+            counter.setCounterNumber(CounterNumber.valueOf(counterDto.getCounterNumber()));
+            counter.setActive(counterDto.isActive());
+            counter.setStation(stationRepository.findByName(counterDto.getRailwayStation()).orElseThrow(
+                    () -> new IllegalArgumentException("This railway station does not exist.")));
+            counterRepository.save(counter);
+            return "Counter details has been updated successfully";
+
+        }
+        throw new IllegalArgumentException("Counter not found for ID: " + counterDto.getId());
+
     }
 }
