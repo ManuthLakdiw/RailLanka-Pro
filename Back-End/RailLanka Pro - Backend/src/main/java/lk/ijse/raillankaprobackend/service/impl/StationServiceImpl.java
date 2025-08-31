@@ -3,7 +3,7 @@ package lk.ijse.raillankaprobackend.service.impl;
 import lk.ijse.raillankaprobackend.dto.StationDto;
 import lk.ijse.raillankaprobackend.entity.Station;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
-import lk.ijse.raillankaprobackend.exception.StationNameAlreadyExists;
+import lk.ijse.raillankaprobackend.exception.StationNameAlreadyExistsException;
 import lk.ijse.raillankaprobackend.repository.StationRepository;
 import lk.ijse.raillankaprobackend.service.StationService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +61,7 @@ public class StationServiceImpl implements StationService {
     public String registerStation(StationDto stationDto) {
 
         if (stationRepository.findByName(stationDto.getName()).isPresent()){
-            throw new StationNameAlreadyExists("This station name is already taken. Please choose a different one.");
+            throw new StationNameAlreadyExistsException("This station name is already taken. Please choose a different one.");
         }
 
         String name = stationDto.getName();
@@ -123,7 +122,7 @@ public class StationServiceImpl implements StationService {
 
         Page<Station> studentPage = stationRepository.findAll(pageable);
 
-        return studentPage.map(station -> modelMapper.map(station, StationDto.class));
+            return studentPage.map(station -> modelMapper.map(station, StationDto.class));
 
     }
 
@@ -157,7 +156,7 @@ public class StationServiceImpl implements StationService {
             if (existingStation.isPresent()) {
                 Station existing = existingStation.get();
                 if (!existing.getStationId().equals(station.getStationId())) {
-                    throw new StationNameAlreadyExists(
+                    throw new StationNameAlreadyExistsException(
                             "This station name is already taken. Please choose a different one.");
                 }
             }

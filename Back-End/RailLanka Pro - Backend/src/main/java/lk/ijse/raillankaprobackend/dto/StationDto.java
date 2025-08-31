@@ -24,4 +24,7 @@ public class StationDto {
     private String platformLength;
     private String otherFacilities;
     private boolean inService;
+
+    public StationDto(String name, String code) {
+    }
 }

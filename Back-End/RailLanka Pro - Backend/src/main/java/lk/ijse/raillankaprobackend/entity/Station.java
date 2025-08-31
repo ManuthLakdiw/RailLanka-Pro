@@ -37,4 +37,10 @@ public class Station {
 
     @OneToMany(mappedBy = "station")
     private List<Counter> counters;
+
+    @OneToMany(mappedBy = "station")
+    private List<Employee> employees;
+
+    @ManyToMany(mappedBy = "stations" )
+    private List<Train> trains;
 }

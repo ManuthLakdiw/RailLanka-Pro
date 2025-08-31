@@ -6,8 +6,8 @@ package lk.ijse.raillankaprobackend.exception;
  * @project RailLanka Pro - Backend
  * @github https://github.com/ManuthLakdiw
  */
-public class StationNameAlreadyExists extends RuntimeException {
-    public StationNameAlreadyExists(String message) {
+public class StationNameAlreadyExistsException extends RuntimeException {
+    public StationNameAlreadyExistsException(String message) {
         super(message);
     }
 }

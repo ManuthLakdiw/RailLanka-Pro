@@ -36,4 +36,5 @@ public interface StationRepository extends JpaRepository <Station,String> {
             "LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Station> filterStationsByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
+    List<Station> findByNameIn(List<String> attr0);
 }
