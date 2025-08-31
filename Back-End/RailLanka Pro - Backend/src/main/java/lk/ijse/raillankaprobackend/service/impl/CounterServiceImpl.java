@@ -2,9 +2,9 @@ package lk.ijse.raillankaprobackend.service.impl;
 
 import jakarta.transaction.Transactional;
 import lk.ijse.raillankaprobackend.dto.CounterDto;
-import lk.ijse.raillankaprobackend.dto.StaffDto;
-import lk.ijse.raillankaprobackend.dto.StationDto;
 import lk.ijse.raillankaprobackend.entity.*;
+import lk.ijse.raillankaprobackend.entity.Dtypes.CounterNumber;
+import lk.ijse.raillankaprobackend.entity.Dtypes.SystemUserRole;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
 import lk.ijse.raillankaprobackend.repository.CounterRepository;

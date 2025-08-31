@@ -1,4 +1,4 @@
-package lk.ijse.raillankaprobackend.entity;
+package lk.ijse.raillankaprobackend.entity.Dtypes;
 
 /**
  * @author manuthlakdiv

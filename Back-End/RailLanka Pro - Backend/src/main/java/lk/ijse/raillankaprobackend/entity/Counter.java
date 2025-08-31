@@ -1,6 +1,7 @@
 package lk.ijse.raillankaprobackend.entity;
 
 import jakarta.persistence.*;
+import lk.ijse.raillankaprobackend.entity.Dtypes.CounterNumber;
 import lombok.*;
 
 import java.time.LocalDate;
