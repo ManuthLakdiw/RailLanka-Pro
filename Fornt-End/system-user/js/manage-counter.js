@@ -74,7 +74,7 @@ $(document).ready(function () {
     });
 
 
-    ////////////////////////////// load station for seelction /////////////////////////////
+    ////////////////////////////// load station for selction /////////////////////////////
     function loadStationForSelection(selectedStation = null) {
         const myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTk3MTA0MywiZXhwIjoxMDc1NTk3MTA0M30.es7C1MO8rHMFWIK70lOaJmo1D0WGLe1_X9fnGGSbeEg");
@@ -469,7 +469,8 @@ $(document).ready(function () {
                                     <div class="text-sm font-medium text-gray-900">
                                     ${counter.firstname} ${counter.lastname}
                                     </div>
-                                    <div class="text-sm text-gray-500">${counter.id}</div>
+                                    <span class ="text-sm text-gray-500">ID:</span>
+                                    <div class="text-sm text-gray-500 inline">${counter.id}</div>
                                 </div>
                                 </div>
                             </td>
@@ -525,7 +526,6 @@ $(document).ready(function () {
     $(document).on("click", ".fa-toggle-on, .fa-toggle-off", function () {
         const btn = $(this);
         const row = btn.closest("tr");
-        const statusSpan = row.find("td:nth-child(5) span");
 
         let newStatus;
         if (btn.hasClass("fa-toggle-on")) {
