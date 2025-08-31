@@ -1,4 +1,4 @@
-package lk.ijse.raillankaprobackend.entity;
+package lk.ijse.raillankaprobackend.entity.Dtypes;
 
 /**
  * @author manuthlakdiv
@@ -6,7 +6,7 @@ package lk.ijse.raillankaprobackend.entity;
  * @project RailLanka Pro - Backend
  * @github https://github.com/ManuthLakdiw
  */
-public enum IdType {
-    NIC,
-    PASSPORT,
+public enum PassengerType {
+    LOCAL,
+    FOREIGN,
 }

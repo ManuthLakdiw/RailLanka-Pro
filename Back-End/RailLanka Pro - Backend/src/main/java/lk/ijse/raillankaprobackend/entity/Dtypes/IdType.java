@@ -1,4 +1,4 @@
-package lk.ijse.raillankaprobackend.entity;
+package lk.ijse.raillankaprobackend.entity.Dtypes;
 
 /**
  * @author manuthlakdiv
@@ -6,9 +6,7 @@ package lk.ijse.raillankaprobackend.entity;
  * @project RailLanka Pro - Backend
  * @github https://github.com/ManuthLakdiw
  */
-public enum SystemUserRole {
-    ADMIN,
-    PASSENGER,
-    STATION_MASTER,
-    COUNTER
+public enum IdType {
+    NIC,
+    PASSPORT,
 }
