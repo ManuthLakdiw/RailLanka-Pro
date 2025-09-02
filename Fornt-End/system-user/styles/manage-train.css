@@ -1,57 +1,5 @@
-body {
-font-family: "Inter", sans-serif;
-background: #f0f9ff;
-overflow-x: hidden;
-}
-.sidebar {
-background: linear-gradient(to bottom, #1d4ed8, #2563eb);
-transition: all 0.3s ease;
-}
-.dashboard-card {
-transition: all 0.3s ease;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-.dashboard-card:hover {
-transform: translateY(-5px);
-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-}
-.nav-link.active {
-background: rgba(255, 255, 255, 0.15);
-border-left: 4px solid white;
-}
-.nav-link:hover:not(.active) {
-background: rgba(255, 255, 255, 0.1);
-}
-.status-active {
-background-color: #dcfce7;
-color: #166534;
-}
-.status-inactive {
-background-color: #fee2e2;
-color: #b91c1c;
-}
-.modal {
-transition: all 0.3s ease;
-opacity: 0;
-visibility: hidden;
-}
-.modal.active {
-opacity: 1;
-visibility: visible;
-}
-.modal-content {
-transform: translateY(-20px);
-transition: transform 0.3s ease;
-}
-.modal.active .modal-content {
-transform: translateY(0);
-}
-.pagination-btn {
-@apply px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100;
-}
-.pagination-btn.active {
-@apply bg-blue-600 text-white border-blue-600 hover:bg-blue-700;
-}
+
+
 .station-badge {
 @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800;
 }
