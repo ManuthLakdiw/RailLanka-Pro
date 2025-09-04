@@ -1,4 +1,9 @@
-
+toastr.options = {
+      closeButton: true,
+      progressBar: true,
+      positionClass: "toast-bottom-right",
+      timeOut: 2000,
+};
 const stringOnlyPattern = /^[A-Za-z\s]+$/;
 const addBtn = $("#addStationBtn");
 

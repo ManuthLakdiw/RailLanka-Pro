@@ -1,5 +1,12 @@
 $(document).ready(function () {
 
+    toastr.options = {
+          closeButton: true,
+          progressBar: true,
+          positionClass: "toast-bottom-right",
+          timeOut: 2000,
+    };
+
     let selectedStations = [];
     let currentPage = 1;
     let totalPages = 0;

@@ -1,4 +1,11 @@
 $(document).ready(function () {
+
+    toastr.options = {
+          closeButton: true,
+          progressBar: true,
+          positionClass: "toast-bottom-right",
+          timeOut: 2000,
+    };
     console.log("manage-station-master js loaded");
 
     let currentPage = 1;

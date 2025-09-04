@@ -1,5 +1,12 @@
 $(document).ready(function() {
 
+    toastr.options = {
+          closeButton: true,
+          progressBar: true,
+          positionClass: "toast-bottom-right",
+          timeOut: 2000,
+    };
+
     let currentPage = 1;
     let totalPages = 0;
     const maxVisiblePages = 5;
@@ -818,6 +825,35 @@ $(document).ready(function() {
         fetchEmployees(currentPage, currentKeyword);
     }
     });
+
+    $("#exportBtn").on("click" , function() {
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1Njk4MzM4MSwiZXhwIjoxMDc1Njk4MzM4MX0.IZXH8px-C5D1hzk87isH5X-CTzJnp9vJ3SX4BCVpoPI");
+
+        const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+        };
+
+        fetch("http://localhost:8080/api/v1/raillankapro/pdf/getemployees/by/station?station=Batapola", requestOptions)
+        .then((response) => response.blob())
+        .then((result) => {
+            const url = window.URL.createObjectURL(result);
+
+            // <a> tag එක dynamically හදලා click කරනවා
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "employees.pdf"; // ගොනුවේ නම
+            document.body.appendChild(a);
+            a.click();
+
+            // Clean up
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch((error) => console.error(error));
+            })
 
 });
   
