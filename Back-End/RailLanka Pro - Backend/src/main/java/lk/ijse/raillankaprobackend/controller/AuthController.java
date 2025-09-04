@@ -56,11 +56,11 @@ public class AuthController {
     }
 
     @PostMapping("/register/counter")
-    public ResponseEntity<ApiResponse<String>> registerCounter(@RequestBody StaffDto staffDto){
+    public ResponseEntity<ApiResponse<String>> registerCounter(@RequestBody CounterDto counterDto){
         return new ResponseEntity<>(new ApiResponse<>(
                 201,
                 "Counter Registration",
-                counterService.registerCounter(staffDto)
+                counterService.registerCounter(counterDto)
         ),HttpStatus.CREATED);
     }
 
