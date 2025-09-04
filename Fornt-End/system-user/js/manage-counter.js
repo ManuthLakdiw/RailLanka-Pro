@@ -523,49 +523,49 @@ $(document).ready(function () {
     }
 
     //////////////////////////////  counter status change //////////////////////////////
-    $(document).on("click", ".fa-toggle-on, .fa-toggle-off", function () {
-        const btn = $(this);
-        const row = btn.closest("tr");
+        $(document).on("click", ".fa-toggle-on, .fa-toggle-off", function () {
+            const btn = $(this);
+            const row = btn.closest("tr");
 
-        let newStatus;
-        if (btn.hasClass("fa-toggle-on")) {
-            btn.removeClass("fa-toggle-on").addClass("fa-toggle-off");
-            newStatus = false;
-        } else {
-            btn.removeClass("fa-toggle-off").addClass("fa-toggle-on");
-            newStatus = true;
-        }
-
-        const counterId = row.find("td:nth-child(1) div.text-sm.text-gray-500").text().trim(); 
-
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTk0NTM4MywiZXhwIjoxMDc1NTk0NTM4M30.ymySMHJcEdMcymm49RPRttY_yszNx44_WFZ1SJWgAkI");
-
-        const requestOptions = {
-            method: "PUT",
-            headers: myHeaders,
-            redirect: "follow"
-        };
-
-        fetch(`http://localhost:8080/api/v1/raillankapro/counter/changestatus/${counterId}/${newStatus}`, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-            console.log(result)
-            if (result.code === 200) {
-                loadStationForSelection();
-                fetchCounters(currentPage);
-                $("#filterStaff").val("")
-                if (result.data) {
-                    toastr.success(result.message);
-                }else {
-                    toastr.warning(result.message);  
-                }
-
+            let newStatus;
+            if (btn.hasClass("fa-toggle-on")) {
+                btn.removeClass("fa-toggle-on").addClass("fa-toggle-off");
+                newStatus = false;
+            } else {
+                btn.removeClass("fa-toggle-off").addClass("fa-toggle-on");
+                newStatus = true;
             }
-        })
-        .catch((error) => console.error(error));
 
-    });
+            const counterId = row.find("td:nth-child(1) div.text-sm.text-gray-500").text().trim(); 
+
+            const myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTk0NTM4MywiZXhwIjoxMDc1NTk0NTM4M30.ymySMHJcEdMcymm49RPRttY_yszNx44_WFZ1SJWgAkI");
+
+            const requestOptions = {
+                method: "PUT",
+                headers: myHeaders,
+                redirect: "follow"
+            };
+
+            fetch(`http://localhost:8080/api/v1/raillankapro/counter/changestatus/${counterId}/${newStatus}`, requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                console.log(result)
+                if (result.code === 200) {
+                    loadStationForSelection();
+                    fetchCounters(currentPage);
+                    $("#filterStaff").val("")
+                    if (result.data) {
+                        toastr.success(result.message);
+                    }else {
+                        toastr.warning(result.message);  
+                    }
+
+                }
+            })
+            .catch((error) => console.error(error));
+
+        });
 
     //////////////////////////////  filter counter //////////////////////////////
     $("#filterStaff").on("input", function () {
