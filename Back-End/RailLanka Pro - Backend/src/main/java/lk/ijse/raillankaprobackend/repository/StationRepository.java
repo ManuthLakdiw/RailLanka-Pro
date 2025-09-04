@@ -1,6 +1,7 @@
 package lk.ijse.raillankaprobackend.repository;
 
 import lk.ijse.raillankaprobackend.entity.Station;
+import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,5 +37,108 @@ public interface StationRepository extends JpaRepository <Station,String> {
             "LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Station> filterStationsByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
-    List<Station> findByNameIn(List<String> attr0);
+
+    @Query(value = "SELECT CONCAT(c.firstname, ' ', c.lastname) AS name, " +
+            "c.counter_id AS id, c.email AS email, c.phone_number AS telephone, 'COUNTER' AS position " +
+            "FROM counter c " +
+            "JOIN station s ON c.station_station_id = s.station_id " +
+            "WHERE s.name = :stationName " +
+            "UNION ALL " +
+            "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, " +
+            "e.employee_id AS id, e.email AS email, e.contact_number AS telephone, e.position AS position " +
+            "FROM employee e " +
+            "JOIN station s ON e.station_id = s.station_id " +
+            "WHERE s.name = :stationName " +
+            "UNION ALL " +
+            "SELECT CONCAT(sm.firstname, ' ', sm.lastname) AS name, " +
+            "sm.station_master_id AS id, sm.email AS email, sm.phone_number AS telephone, 'STATION_MASTER' AS position " +
+            "FROM station_master sm " +
+            "JOIN station s ON sm.station_id = s.station_id " +
+            "WHERE s.name = :stationName",
+            nativeQuery = true)
+    List<StaffProjection> findAllStaffByStationName(@Param("stationName") String stationName);
+
+
+
+    @Query(value = "SELECT CONCAT(c.firstname, ' ', c.lastname) AS name, " +
+            "c.counter_id AS id, " +
+            "c.email AS email, " +
+            "c.phone_number AS telephone, " +
+            "'COUNTER' AS position " +
+            "FROM counter c " +
+            "JOIN station s ON c.station_station_id = s.station_id " +
+            "WHERE s.name = :stationName " +
+            "AND 'COUNTER' = :position " +
+            "UNION ALL " +
+            "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, " +
+            "e.employee_id AS id, " +
+            "e.email AS email, " +
+            "e.contact_number AS telephone, " +
+            "e.position AS position " +
+            "FROM employee e " +
+            "JOIN station s ON e.station_id = s.station_id " +
+            "WHERE s.name = :stationName " +
+            "AND e.position = :position " +
+            "UNION ALL " +
+            "SELECT CONCAT(sm.firstname, ' ', sm.lastname) AS name, " +
+            "sm.station_master_id AS id, " +
+            "sm.email AS email, " +
+            "sm.phone_number AS telephone, " +
+            "'STATION_MASTER' AS position " +
+            "FROM station_master sm " +
+            "JOIN station s ON sm.station_id = s.station_id " +
+            "WHERE s.name = :stationName " +
+            "AND 'STATION_MASTER' = :position",
+            nativeQuery = true)
+    List<StaffProjection> findStaffByStationAndPosition(@Param("stationName") String stationName, @Param("position") String position);
+
+
+    @Query(value = "SELECT CONCAT(c.firstname, ' ', c.lastname) AS name, " +
+            "c.counter_id AS id, " +
+            "c.email AS email, " +
+            "c.phone_number AS telephone, " +
+            "'COUNTER' AS position " +
+            "FROM counter c " +
+            "JOIN station s ON c.station_station_id = s.station_id " +
+            "WHERE s.name = :stationName " +
+            "AND (CONCAT(c.firstname, ' ', c.lastname) LIKE %:keyword% " +
+            "     OR c.email LIKE %:keyword% " +
+            "     OR c.phone_number LIKE %:keyword%) " +
+
+            "UNION ALL " +
+
+            "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, " +
+            "e.employee_id AS id, " +
+            "e.email AS email, " +
+            "e.contact_number AS telephone, " +
+            "e.position AS position " +
+            "FROM employee e " +
+            "JOIN station s ON e.station_id = s.station_id " +
+            "WHERE s.name = :stationName " +
+            "AND (CONCAT(e.first_name, ' ', e.last_name) LIKE %:keyword% " +
+            "     OR e.email LIKE %:keyword% " +
+            "     OR e.contact_number LIKE %:keyword%) " +
+
+            "UNION ALL " +
+
+            "SELECT CONCAT(sm.firstname, ' ', sm.lastname) AS name, " +
+            "sm.station_master_id AS id, " +
+            "sm.email AS email, " +
+            "sm.phone_number AS telephone, " +
+            "'STATION_MASTER' AS position " +
+            "FROM station_master sm " +
+            "JOIN station s ON sm.station_id = s.station_id " +
+            "WHERE s.name = :stationName " +
+            "AND (CONCAT(sm.firstname, ' ', sm.lastname) LIKE %:keyword% " +
+            "     OR sm.email LIKE %:keyword% " +
+            "     OR sm.phone_number LIKE %:keyword%)",
+            nativeQuery = true)
+    List<StaffProjection> findStaffByStationAndKeyword(
+            @Param("stationName") String stationName,
+            @Param("keyword") String keyword
+    );
+
+
+
+
 }

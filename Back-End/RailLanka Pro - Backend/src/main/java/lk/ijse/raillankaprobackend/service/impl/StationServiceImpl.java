@@ -2,6 +2,7 @@ package lk.ijse.raillankaprobackend.service.impl;
 
 import lk.ijse.raillankaprobackend.dto.StationDto;
 import lk.ijse.raillankaprobackend.entity.Station;
+import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.StationNameAlreadyExistsException;
 import lk.ijse.raillankaprobackend.repository.StationRepository;
@@ -207,6 +208,31 @@ public class StationServiceImpl implements StationService {
         return modelMapper.map(allStations, new TypeToken<List<StationDto>>(){}.getType());
     }
 
+    @Override
+    public List<StaffProjection> getStaffByStation(String name) {
+        stationRepository.findByName(name).orElseThrow(
+                () -> new IllegalArgumentException("Invalid Station Name"));
+
+        return stationRepository.findAllStaffByStationName(name);
+    }
+
+    @Override
+    public List<StaffProjection> getStaffByStationAndPosition(String name, String position) {
+        stationRepository.findByName(name).orElseThrow(
+                () -> new IllegalArgumentException("Invalid Station Name"));
+
+        return stationRepository.findStaffByStationAndPosition(name,position);
+
+    }
+
+    @Override
+    public List<StaffProjection> getStaffByStationAndKeyword(String name, String keyword) {
+        stationRepository.findByName(name).orElseThrow(
+                () -> new IllegalArgumentException("Invalid Station Name"));
+
+        return stationRepository.findStaffByStationAndKeyword(name,keyword);
+
+    }
 
 
 }

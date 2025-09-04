@@ -1,6 +1,7 @@
 package lk.ijse.raillankaprobackend.service;
 
 import lk.ijse.raillankaprobackend.dto.StationDto;
+import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -34,5 +35,11 @@ public interface StationService {
     Page<StationDto> filterStationsByKeyword(String keyword, int pageNo, int pageSize);
 
     List<StationDto> getAllStationNamesAndCodes();
+
+    List<StaffProjection> getStaffByStation(String name);
+
+    List<StaffProjection> getStaffByStationAndPosition(String name , String position);
+
+    List<StaffProjection> getStaffByStationAndKeyword(String name , String keyword);
 
 }

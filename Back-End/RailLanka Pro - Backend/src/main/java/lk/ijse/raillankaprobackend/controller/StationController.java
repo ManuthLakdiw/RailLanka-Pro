@@ -1,6 +1,7 @@
 package lk.ijse.raillankaprobackend.controller;
 
 import lk.ijse.raillankaprobackend.dto.StationDto;
+import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import lk.ijse.raillankaprobackend.service.StationService;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
 import lk.ijse.raillankaprobackend.util.PaginatedResponse;
@@ -126,6 +127,37 @@ public class StationController {
                 200,
                 "fetched all station names and codes",
                 stationService.getAllStationNamesAndCodes()
+        ));
+    }
+
+
+    @GetMapping(value = "/getall/staff/by" , params ="station")
+    public ResponseEntity<ApiResponse<List<StaffProjection>>> getStaffByStation(@RequestParam("station") String station){
+       return ResponseEntity.ok(new ApiResponse<>(
+               200,
+               "fetched staff by station",
+               stationService.getStaffByStation(station)
+       ));
+    }
+
+    @GetMapping(value = "/getall/staff/by" , params ={"station","position"})
+    public ResponseEntity<ApiResponse<List<StaffProjection>>> getStaffByStation(
+            @RequestParam("station") String station , @RequestParam("position") String position){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "fetched staff by station and position",
+                stationService.getStaffByStationAndPosition(station , position)
+        ));
+    }
+
+    @GetMapping(value = "/getall/staff/by" , params ={"station","keyword"})
+    public ResponseEntity<ApiResponse<List<StaffProjection>>> getStaffByStationAndKeyword(
+            @RequestParam("station") String station ,
+            @RequestParam("keyword") String keyword ){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "fetched staff by station and keyword",
+                stationService.getStaffByStationAndKeyword(station ,keyword)
         ));
     }
 
