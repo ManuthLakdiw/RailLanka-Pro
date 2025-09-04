@@ -18,9 +18,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNameAlreadyExistsException.class)
+    @ExceptionHandler({
+            StationNameAlreadyExistsException.class,
+            TrainNameAlreadyExistsException.class,
+            UserNameAlreadyExistsException.class
+    })
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiResponse<String> userNameAlreadyExistsExceptionHandler(UserNameAlreadyExistsException ex){
+    public ApiResponse<String> userNameAlreadyExistsExceptionHandler(Exception ex){
         return new ApiResponse<>(
                 409,
                 ex.getMessage(),
@@ -78,15 +82,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(StationNameAlreadyExists.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiResponse<String> stationNameAlreadyExistsExceptionHandler(StationNameAlreadyExists ex){
-        return new ApiResponse<>(
-                409,
-                ex.getMessage(),
-                null
-        );
-    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
