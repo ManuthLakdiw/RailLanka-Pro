@@ -295,13 +295,14 @@ public class TrainServiceImpl implements TrainService {
                         .orElseThrow(() -> new RuntimeException(
                                 "Station '" + name + "' does not exist in the database"
                         )))
-                .collect(Collectors.toList()); // mutable ArrayList
+                .collect(Collectors.toList());
 
 
         train.setName(formattedTrainName(trainDto.getTrainName()));
         train.setCategory(TrainCategory.valueOf(trainDto.getCategory()));
         train.setTrainType(TrainType.valueOf(trainDto.getTrainType()));
         train.setClasses(trainDto.getClasses());
+        train.setActive(trainDto.isActive());
         train.setStations(stations);
 
 
