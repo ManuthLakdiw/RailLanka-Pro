@@ -101,6 +101,8 @@ $(document).ready(function () {
 
         const trainId = $("#updateTrainId").val();
         const trainName = $("#updateTrainName").val();
+        const statusValue = $("input[name='updateStatus']:checked").val();  
+        const boolChecked = (statusValue === "true");
         let trainCategory = "";
         let trainType = "";
         let classes = "";
@@ -109,6 +111,7 @@ $(document).ready(function () {
         let specialTrainType = "";
         let specialFeature = "";
         let selStations = [];
+
 
         if ($("#updateTrainCategory").val() === "PASSENGER") {
             trainCategory = $("#updateTrainCategory").val();
@@ -169,7 +172,9 @@ $(document).ready(function () {
         "specialFeatures": specialFeature,
         "specialTrainType": specialTrainType,
         "cargoType": cargoType,
-        "capacity": capacity
+        "capacity": capacity,
+        "active": boolChecked
+
         });
 
         const requestOptions = {
@@ -264,6 +269,12 @@ $(document).ready(function () {
                 $("#updateSpecialFeatureTxt").val(data.specialFeatures)
                 $("#updateGoodsSelection").val(data.cargoType)
                 $("#updateGoodsCapacity").val(data.capacity)
+            
+                if (data.active) {
+                    $("#activeRadio").prop("checked", true);
+                }else {
+                    $("#inactiveRadio").prop("checked", true);
+                }
 
                 if (data.classes) {
                     const classesArray = data.classes.split(",");

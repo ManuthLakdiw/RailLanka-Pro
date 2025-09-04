@@ -899,6 +899,36 @@
                   <!-- Stop items will be dynamically added here -->
                 </div>
               </div>
+
+              <!-- Status -->
+              <div class="md:col-span-2 mt-4">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-power-off text-blue-500 mr-2"></i>
+                  Train Status
+                </h4>
+                <div class="flex space-x-4">
+                  <label class="flex items-center">
+                    <input
+                      id="activeRadio"
+                      type="radio"
+                      name="updateStatus"
+                      value="true"
+                      class="text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">active</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      id="inactiveRadio"
+                      type="radio"
+                      name="updateStatus"
+                      value="false"
+                      class="text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">incative</span>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -913,7 +943,7 @@
             </button>
             <button
               type="submit"
-              class="px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition"
+              class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-800 text-white rounded-lg hover:from-green-700 hover:to-green-900 transition"
             >
               <i class="fas fa-save mr-2"></i>
               Update Train
