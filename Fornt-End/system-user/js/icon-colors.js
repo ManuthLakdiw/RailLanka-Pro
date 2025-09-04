@@ -1,0 +1,22 @@
+const iconColors = [
+  "slate",
+  "gray",
+  "stone",
+  "red",
+  "lime",
+  "orange",
+  "amber",
+  "yellow",
+  "green",
+  "emerald",
+  "teal",
+  "sky",
+  "cyan",
+  "blue",
+  "indigo",
+  "viole",
+  "purple",
+  "fuchsia",
+  "pink",
+  "rose"
+];
