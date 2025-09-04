@@ -39,7 +39,7 @@ public class CounterController {
 
 
     @GetMapping("/getall/{pageNo}/{pageSize}")
-    public ResponseEntity<PaginatedResponse<List<CounterDto>>> getAllStationMasters(@PathVariable int pageNo, @PathVariable int pageSize) {
+    public ResponseEntity<PaginatedResponse<List<CounterDto>>> getAllCounters(@PathVariable int pageNo, @PathVariable int pageSize) {
         Page<CounterDto> allCounters = counterService.getAllCounters(pageNo, pageSize);
 
         int startNumber = allCounters.getNumber() * allCounters.getSize() + 1;
@@ -102,7 +102,7 @@ public class CounterController {
     }
 
     @GetMapping(value = "/getcounter" , params = {"id"})
-    public ResponseEntity<ApiResponse<Optional<CounterDto>>> getStationMasterById(@RequestParam("id") String id){
+    public ResponseEntity<ApiResponse<Optional<CounterDto>>> getCounterById(@RequestParam("id") String id){
         return  ResponseEntity.ok(new ApiResponse<>(
                 200,
                 "fetched by " + id + " id",

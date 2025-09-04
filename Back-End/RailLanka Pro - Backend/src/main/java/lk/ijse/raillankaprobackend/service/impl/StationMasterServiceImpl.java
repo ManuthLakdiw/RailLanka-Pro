@@ -2,12 +2,16 @@ package lk.ijse.raillankaprobackend.service.impl;
 
 import lk.ijse.raillankaprobackend.dto.StaffDto;
 import lk.ijse.raillankaprobackend.entity.*;
+import lk.ijse.raillankaprobackend.entity.Dtypes.EmployeePosition;
+import lk.ijse.raillankaprobackend.entity.Dtypes.SystemUserRole;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
+import lk.ijse.raillankaprobackend.repository.EmployeeRepository;
 import lk.ijse.raillankaprobackend.repository.StationMasterRepository;
 import lk.ijse.raillankaprobackend.repository.StationRepository;
 import lk.ijse.raillankaprobackend.repository.UserRepository;
 import lk.ijse.raillankaprobackend.service.EmailService;
+import lk.ijse.raillankaprobackend.service.EmployeeService;
 import lk.ijse.raillankaprobackend.service.StationMasterService;
 import lk.ijse.raillankaprobackend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +44,8 @@ public class StationMasterServiceImpl implements StationMasterService {
     private final StationRepository stationRepository;
     private final EmailService emailService;
     private final ModelMapper modelMapper;
+    private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
 
     @Transactional
     @Override
