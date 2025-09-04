@@ -2,6 +2,9 @@ package lk.ijse.raillankaprobackend.service.impl;
 
 import lk.ijse.raillankaprobackend.dto.PassengerDto;
 import lk.ijse.raillankaprobackend.entity.*;
+import lk.ijse.raillankaprobackend.entity.Dtypes.IdType;
+import lk.ijse.raillankaprobackend.entity.Dtypes.PassengerType;
+import lk.ijse.raillankaprobackend.entity.Dtypes.SystemUserRole;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
 import lk.ijse.raillankaprobackend.repository.PassengerRepository;
