@@ -3,7 +3,7 @@ $(document).ready(function () {
     toastr.options = {
           closeButton: true,
           progressBar: true,
-          positionClass: "toast-bottom-right",
+          positionClass: "toast-top-right",
           timeOut: 2000,
     };
 
