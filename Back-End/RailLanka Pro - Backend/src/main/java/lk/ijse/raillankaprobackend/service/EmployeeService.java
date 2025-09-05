@@ -34,4 +34,5 @@ public interface EmployeeService {
     EmployeeDto getEmployeeDetailsByEmployeeId(String employeeId);
 
     String updateEmployeeDetails(EmployeeDto employeeDto);
+
 }

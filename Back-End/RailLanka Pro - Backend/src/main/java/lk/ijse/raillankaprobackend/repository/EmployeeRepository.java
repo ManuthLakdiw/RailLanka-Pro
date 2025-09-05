@@ -3,6 +3,7 @@ package lk.ijse.raillankaprobackend.repository;
 import lk.ijse.raillankaprobackend.entity.Counter;
 import lk.ijse.raillankaprobackend.entity.Dtypes.EmployeePosition;
 import lk.ijse.raillankaprobackend.entity.Employee;
+import lk.ijse.raillankaprobackend.entity.Station;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,4 +38,6 @@ public interface EmployeeRepository extends JpaRepository <Employee,String> {
 
 
     Page<Employee> findAllByPosition(EmployeePosition position, Pageable pageable);
+
+    List<Employee> findByStation(Station station);
 }
