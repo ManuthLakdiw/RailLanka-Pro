@@ -390,7 +390,7 @@ $(document).ready(function() {
                     // $("#empStaffPositionSelection").addClass("hidden")
                     //  $("#searchIco").addClass("hidden")
                     const emptyState = `
-                        <div class="flex flex-col items-center justify-center py-12 px-4 text-center">
+                        <div id="notFoundEmployee" class="flex flex-col items-center justify-center py-12 px-4 text-center">
                             <div class="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center mb-6">
                                 <i class="fas fa-user-slash text-blue-500 text-4xl"></i>
                             </div>
@@ -591,7 +591,7 @@ $(document).ready(function() {
             }
         })
         .catch((error) => console.error(error));
-            })
+    })
 
     $(document).on("click", "#updateEmployeeBtn", function () {
         employeeUpdateModal.addClass("active")
@@ -633,7 +633,7 @@ $(document).ready(function() {
             }
         })
         .catch((error) => console.error(error));
-            });
+    });
 
     $(document).on("click", "#deleteEmployeeBtn", function () {
         
@@ -826,34 +826,46 @@ $(document).ready(function() {
     }
     });
 
-    $("#exportBtn").on("click" , function() {
+    $("#exportBtn").on("click", function() {
+
+        if ($("#notFoundEmployee").is(":visible")) {
+            return;
+        } 
+        const station = $("#stationFilter").val();
         const myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1Njk4MzM4MSwiZXhwIjoxMDc1Njk4MzM4MX0.IZXH8px-C5D1hzk87isH5X-CTzJnp9vJ3SX4BCVpoPI");
 
         const requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow"
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow"
         };
 
-        fetch("http://localhost:8080/api/v1/raillankapro/pdf/getemployees/by/station?station=Batapola", requestOptions)
-        .then((response) => response.blob())
+        fetch(`http://localhost:8080/api/v1/raillankapro/pdf/download/by/station?station=${station}`, requestOptions)
+        .then((response) => {
+            if (response.status === 204) { 
+                toastr.warning("No employees found for the selected station.");
+            }
+            return response.blob();
+        })
         .then((result) => {
             const url = window.URL.createObjectURL(result);
+            const $a = $('<a />', {
+                href: url,
+                download: `employees_station_${station}_${Date.now()}.pdf`
+            }).appendTo('body');
 
-            // <a> tag එක dynamically හදලා click කරනවා
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "employees.pdf"; // ගොනුවේ නම
-            document.body.appendChild(a);
-            a.click();
-
-            // Clean up
-            a.remove();
+            $a[0].click(); 
+            $a.remove();
             window.URL.revokeObjectURL(url);
         })
-        .catch((error) => console.error(error));
-            })
+        .catch((error) => {
+                console.error(error);
+                toastr.error("Failed to download PDF. Please try again.");
+        
+        });
+    });
+
 
 });
   
