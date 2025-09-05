@@ -39,24 +39,48 @@ public interface StationRepository extends JpaRepository <Station,String> {
 
 
     @Query(value = "SELECT CONCAT(c.firstname, ' ', c.lastname) AS name, " +
-            "c.counter_id AS id, c.email AS email, c.phone_number AS telephone, 'COUNTER' AS position " +
+            "c.counter_id AS id, " +
+            "c.email AS email, " +
+            "c.phone_number AS telephone, " +
+            "'COUNTER' AS position, " +
+            "u.created_date AS joinDate, " +
+            "c.dob AS dob, " +
+            "CONCAT(s.province, ', ', s.district) AS location, " +
+            "c.active AS status " +  // <-- counter active status
             "FROM counter c " +
             "JOIN station s ON c.station_station_id = s.station_id " +
+            "JOIN user u ON c.user_id = u.user_id " +
             "WHERE s.name = :stationName " +
             "UNION ALL " +
             "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, " +
-            "e.employee_id AS id, e.email AS email, e.contact_number AS telephone, e.position AS position " +
+            "e.employee_id AS id, " +
+            "e.email AS email, " +
+            "e.contact_number AS telephone, " +
+            "e.position AS position, " +
+            "e.joining_date AS joinDate, " +
+            "e.date_of_birth AS dob, " +
+            "CONCAT(s.province, ', ', s.district) AS location, " +
+            "e.active AS status " +  // <-- employee active status
             "FROM employee e " +
             "JOIN station s ON e.station_id = s.station_id " +
             "WHERE s.name = :stationName " +
             "UNION ALL " +
             "SELECT CONCAT(sm.firstname, ' ', sm.lastname) AS name, " +
-            "sm.station_master_id AS id, sm.email AS email, sm.phone_number AS telephone, 'STATION_MASTER' AS position " +
+            "sm.station_master_id AS id, " +
+            "sm.email AS email, " +
+            "sm.phone_number AS telephone, " +
+            "'STATION_MASTER' AS position, " +
+            "u.created_date AS joinDate, " +
+            "sm.dob AS dob, " +
+            "CONCAT(s.province, ', ', s.district) AS location, " +
+            "s.in_service AS status " +  // <-- station_master active status
             "FROM station_master sm " +
             "JOIN station s ON sm.station_id = s.station_id " +
+            "JOIN user u ON sm.user_id = u.user_id " +
             "WHERE s.name = :stationName",
             nativeQuery = true)
     List<StaffProjection> findAllStaffByStationName(@Param("stationName") String stationName);
+
 
 
 
