@@ -1,0 +1,61 @@
+
+.status-blocked {
+background-color: #fee2e2;
+color: #b91c1c;
+}
+.passenger-type-badge {
+display: inline-block;
+padding: 4px 12px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 600;
+}
+@keyframes pulse {
+0% {
+    transform: scale(1);
+}
+50% {
+    transform: scale(1.1);
+}
+100% {
+    transform: scale(1);
+}
+}
+ .export-option {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+  }
+  
+  .export-option:hover {
+    background-color: #f8fafc;
+    border-left-color: #3b82f6;
+  }
+  
+  .export-option[data-report-type="all"]:hover {
+    border-left-color: #3b82f6;
+  }
+  
+  .export-option[data-report-type="local"]:hover,
+  .export-option[data-report-type="active-local"]:hover,
+  .export-option[data-report-type="active"]:hover {
+    border-left-color: #10b981;
+  }
+  
+  .export-option[data-report-type="foreign"]:hover,
+  .export-option[data-report-type="active-foreign"]:hover {
+    border-left-color: #8b5cf6;
+  }
+  
+  .export-option[data-report-type="blocked-local"]:hover,
+  .export-option[data-report-type="blocked-foreign"]:hover,
+  .export-option[data-report-type="blocked"]:hover {
+    border-left-color: #ef4444;
+  }
+
+#viewStatusIndicator {
+animation: pulse 2s infinite;
+}

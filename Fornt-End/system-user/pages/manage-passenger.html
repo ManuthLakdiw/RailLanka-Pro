@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RailLanka Pro | Passenger Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    />
+    <link rel="stylesheet" href="../styles/normalize.css" />
+    <link rel="stylesheet" href="../styles/manage-pasenger.css" />
+  </head>
+  <body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 min-h-screen text-white flex flex-col">
+      <div class="p-5 border-b border-blue-400">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-train text-2xl"></i>
+          <h1 class="text-xl font-bold">RailLanka Pro</h1>
+        </div>
+        <p class="text-blue-200 text-sm mt-2">Admin Dashboard</p>
+      </div>
+
+      <div class="p-4 flex-1">
+        <ul class="space-y-1">
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-tachometer-alt mr-3"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-subway mr-3"></i>
+              <span>Manage Trains</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-road mr-3"></i>
+              <span>Manage Stations</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-user-tie mr-3"></i>
+              <span>Station Masters</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-user-friends mr-3"></i>
+              <span>Counter Staff</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-users mr-3"></i>
+              <span>Employees</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-link active flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-user mr-3"></i>
+              <span class="font-bold">Passengers</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-file-invoice mr-3"></i>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-cog mr-3"></i>
+              <span>System Settings</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-8 p-4 bg-blue-700 rounded-lg">
+          <h3 class="font-medium">Quick Stats</h3>
+          <div class="mt-3 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Total Passengers</span>
+              <span class="font-bold">1,245</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Active Today</span>
+              <span class="font-bold">327</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Blocked Accounts</span>
+              <span class="font-bold">18</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-blue-400">
+        <div class="flex items-center space-x-3">
+          <div
+            class="bg-blue-200 text-blue-800 w-10 h-10 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <p class="font-medium">Admin User</p>
+            <p class="text-blue-200 text-sm">admin@raillanka.lk</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-sm">
+        <div class="max-w-full mx-auto px-6 py-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">
+                Passenger Management
+              </h2>
+              <p class="text-gray-600 text-sm">
+                View and manage passenger accounts
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                  <i class="fas fa-bell text-gray-600"></i>
+                  <span
+                    class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+                  ></span>
+                </button>
+              </div>
+
+              <div class="relative">
+                <button class="flex items-center space-x-2 text-gray-700">
+                  <div
+                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
+                  >
+                    <i class="fas fa-user text-blue-700"></i>
+                  </div>
+                  <span>Admin User</span>
+                  <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Action Bar -->
+      <div class="px-6 py-4 bg-white shadow-sm">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <div class="flex items-center space-x-3">
+            <div class="relative">
+              <input
+                id="filterPassenger"
+                type="text"
+                placeholder="Search passengers..."
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <i
+                class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
+            </div>
+
+            <!-- Status Filter Dropdown -->
+            <div class="relative">
+              <select
+                id="statusFilter"
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">All Status</option>
+                <option value="false">Active</option>
+                <option value="true">Blocked</option>
+              </select>
+              <i
+                class="fas fa-filter absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
+            </div>
+
+            <!-- Passenger Type Filter -->
+            <div class="relative">
+              <select
+                id="typeFilter"
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">All Types</option>
+                <option value="LOCAL">Local</option>
+                <option value="FOREIGN">Foreign</option>
+              </select>
+              <i
+                class="fas fa-user-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
+            </div>
+          </div>
+
+          <div class="flex space-x-3">
+            <div class="relative group">
+              <button
+                id="exportPdfBtn"
+                class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition flex items-center"
+              >
+                <i class="fas fa-file-pdf mr-2"></i>
+                Export PDF
+                <i class="fas fa-chevron-down ml-2 text-sm"></i>
+              </button>
+
+              <div
+                class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100"
+              >
+                <!-- Dropdown header -->
+                <div
+                  class="bg-gradient-to-r from-blue-700 to-blue-900 p-4 text-white"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="w-10 h-10 rounded-full bg-blue-500/30 flex items-center justify-center mr-3"
+                    >
+                      <i class="fas fa-file-export"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold">Export Reports</h3>
+                      <p class="text-blue-200 text-xs">Select report type</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dropdown options -->
+                <div class="max-h-80 overflow-y-auto py-2">
+                  <!-- All Passengers -->
+                  <div class="export-option group" data-report-type="all">
+                    <div
+                      class="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center mr-3 group-hover:bg-blue-200 transition-colors"
+                    >
+                      <i class="fas fa-users text-blue-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">All Passengers</p>
+                      <p class="text-xs text-gray-500">
+                        Complete list of all passengers
+                      </p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-blue-600 ml-2"
+                    ></i>
+                  </div>
+
+                  <!-- Local Passengers -->
+                  <div class="export-option group" data-report-type="local">
+                    <div
+                      class="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors"
+                    >
+                      <i class="fas fa-user text-green-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">Local Passengers</p>
+                      <p class="text-xs text-gray-500">
+                        Local passengers with details
+                      </p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-green-600 ml-2"
+                    ></i>
+                  </div>
+
+                  <!-- Foreign Passengers -->
+                  <div class="export-option group" data-report-type="foreign">
+                    <div
+                      class="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors"
+                    >
+                      <i class="fas fa-globe text-purple-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">
+                        Foreign Passengers
+                      </p>
+                      <p class="text-xs text-gray-500">
+                        Foreign passengers with passport details
+                      </p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-purple-600 ml-2"
+                    ></i>
+                  </div>
+
+                  <!-- Active Local -->
+                  <div
+                    class="export-option group"
+                    data-report-type="active-local"
+                  >
+                    <div
+                      class="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors"
+                    >
+                      <i class="fas fa-user-check text-green-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">Active Local</p>
+                      <p class="text-xs text-gray-500">
+                        Active local passenger accounts
+                      </p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-green-600 ml-2"
+                    ></i>
+                  </div>
+
+                  <!-- Blocked Local -->
+                  <div
+                    class="export-option group"
+                    data-report-type="blocked-local"
+                  >
+                    <div
+                      class="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center mr-3 group-hover:bg-red-200 transition-colors"
+                    >
+                      <i class="fas fa-user-slash text-red-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">Blocked Local</p>
+                      <p class="text-xs text-gray-500">
+                        Blocked local passenger accounts
+                      </p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-red-600 ml-2"
+                    ></i>
+                  </div>
+
+                  <!-- Active Foreign -->
+                  <div
+                    class="export-option group"
+                    data-report-type="active-foreign"
+                  >
+                    <div
+                      class="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors"
+                    >
+                      <i class="fas fa-globe-americas text-purple-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">Active Foreign</p>
+                      <p class="text-xs text-gray-500">
+                        Active foreign passenger accounts
+                      </p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-purple-600 ml-2"
+                    ></i>
+                  </div>
+
+                  <!-- Blocked Foreign -->
+                  <div
+                    class="export-option group"
+                    data-report-type="blocked-foreign"
+                  >
+                    <div
+                      class="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center mr-3 group-hover:bg-red-200 transition-colors"
+                    >
+                      <i class="fas fa-ban text-red-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">Blocked Foreign</p>
+                      <p class="text-xs text-gray-500">
+                        Blocked foreign passenger accounts
+                      </p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-red-600 ml-2"
+                    ></i>
+                  </div>
+
+                  <!-- Active Passengers -->
+                  <div class="export-option group" data-report-type="active">
+                    <div
+                      class="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors"
+                    >
+                      <i class="fas fa-user-circle text-green-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">Active Passengers</p>
+                      <p class="text-xs text-gray-500">All active passengers</p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-green-600 ml-2"
+                    ></i>
+                  </div>
+
+                  <!-- Blocked Passengers -->
+                  <div class="export-option group" data-report-type="blocked">
+                    <div
+                      class="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center mr-3 group-hover:bg-red-200 transition-colors"
+                    >
+                      <i class="fas fa-user-times text-red-600"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800">
+                        Blocked Passengers
+                      </p>
+                      <p class="text-xs text-gray-500">
+                        All blocked passengers
+                      </p>
+                    </div>
+                    <i
+                      class="fas fa-chevron-right text-gray-400 group-hover:text-red-600 ml-2"
+                    ></i>
+                  </div>
+                </div>
+
+                <!-- Dropdown footer -->
+                <div class="border-t border-gray-200 p-3 bg-gray-50">
+                  <p class="text-xs text-gray-500 flex items-center">
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                    Reports are generated in PDF format
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passengers Table -->
+      <div class="px-6 py-4 flex-1">
+        <div class="dashboard-card bg-white rounded-xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table
+              id="passengerTable"
+              class="min-w-full divide-y divide-gray-200"
+            >
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Passenger
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Contact
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    ID Information
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <!-- Sample Data - Will be populated dynamically -->
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10">
+                        <div
+                          class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center"
+                        >
+                          <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">
+                          Mr. John Doe
+                        </div>
+                        <div class="text-sm text-gray-500">johndoe</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">071-2345678</div>
+                    <div class="text-sm text-gray-500">john@example.com</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">NIC</div>
+                    <div class="text-sm text-gray-500">901234567V</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="passenger-type-badge bg-blue-100 text-blue-800"
+                      >REGULAR</span
+                    >
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span
+                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-active"
+                      >Active</span
+                    >
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <button
+                      class="text-blue-600 hover:text-blue-900 view-btn mr-3"
+                      data-id="P001"
+                    >
+                      <i class="fas fa-eye"></i> View
+                    </button>
+                    <button
+                      class="text-red-600 hover:text-red-900 block-btn"
+                      data-id="P001"
+                      data-status="true"
+                    >
+                      <i class="fas fa-ban"></i> Block
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10">
+                        <div
+                          class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center"
+                        >
+                          <i class="fas fa-user text-green-600"></i>
+                        </div>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">
+                          Ms. Jane Smith
+                        </div>
+                        <div class="text-sm text-gray-500">janesmith</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">072-3456789</div>
+                    <div class="text-sm text-gray-500">jane@example.com</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">Passport</div>
+                    <div class="text-sm text-gray-500">N1234567</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span
+                      class="passenger-type-badge bg-green-100 text-green-800"
+                      >STUDENT</span
+                    >
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span
+                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-blocked"
+                      >Blocked</span
+                    >
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <button
+                      class="text-blue-600 hover:text-blue-900 view-btn mr-3"
+                      data-id="P002"
+                    >
+                      <i class="fas fa-eye"></i> View
+                    </button>
+                    <button
+                      class="text-green-600 hover:text-green-900 unblock-btn"
+                      data-id="P002"
+                      data-status="false"
+                    >
+                      <i class="fas fa-check-circle"></i> Unblock
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            class="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200"
+          >
+            <div class="text-sm text-gray-700">
+              Showing <span id="currentPage" class="font-medium">1</span> to
+              <span id="selectedLastRowData" class="font-medium">2</span> of
+              <span id="totalPage" class="font-medium">1,245</span> passengers
+            </div>
+            <div class="flex space-x-2">
+              <button
+                id="btnFirst"
+                class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled
+              >
+                <i class="fas fa-angle-double-left"></i>
+              </button>
+              <button
+                id="btnBack"
+                class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled: cursor-not-allowed"
+                disabled
+              >
+                <i class="fas fa-angle-left"></i>
+              </button>
+
+              <div id="pageNumbers" class="flex items-center gap-1"></div>
+
+              <button
+                id="btnNext"
+                class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+              >
+                <i class="fas fa-angle-right"></i>
+              </button>
+
+              <button
+                id="btnLast"
+                class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+              >
+                <i class="fas fa-angle-double-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beautiful Passenger Details Modal -->
+    <div
+      id="passengerModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl transform transition-all"
+      >
+        <!-- Modal Header -->
+        <div
+          class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white relative"
+        >
+          <div class="absolute top-4 right-4">
+            <button
+              type="button"
+              id="closeModal"
+              class="text-white hover:text-blue-200 text-xl transition-transform hover:rotate-90 duration-300"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center">
+            <div
+              class="w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center mr-4"
+            >
+              <i class="fas fa-user text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold">Passenger Details</h3>
+              <p class="text-blue-200 mt-1">
+                Complete passenger account information
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 max-h-[70vh] overflow-y-auto">
+          <!-- Profile Header -->
+          <div class="flex items-center mb-6 pb-6 border-b border-gray-100">
+            <div class="relative">
+              <div
+                class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shadow-inner"
+              >
+                <i
+                  id="profileIcon"
+                  class="fas fa-user text-blue-600 text-3xl"
+                ></i>
+              </div>
+              <div
+                class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-md"
+              >
+                <div
+                  id="viewStatusIndicator"
+                  class="w-3 h-3 rounded-full bg-green-500"
+                ></div>
+              </div>
+            </div>
+
+            <div class="ml-5">
+              <h2
+                id="viewPassengerName"
+                class="text-xl font-bold text-gray-800"
+              >
+                Mr. John Doe
+              </h2>
+              <div class="flex items-center mt-2">
+                <span
+                  id="viewPassengerType"
+                  class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium mr-2"
+                >
+                  REGULAR
+                </span>
+                <span
+                  id="viewStatus"
+                  class="px-3 py-1 status-active rounded-full text-xs font-medium"
+                >
+                  Active
+                </span>
+              </div>
+              <p class="text-sm text-gray-500 mt-2">
+                <i class="fas fa-id-card mr-1"></i>
+                Passenger ID: <span id="viewPassengerId">P001</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Information Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Personal Information -->
+            <div class="bg-gray-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-user text-blue-600"></i>
+                </div>
+                Personal Information
+              </h4>
+
+              <div class="space-y-3">
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Title
+                  </p>
+                  <p id="viewTitle" class="font-medium">Mr.</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Username
+                  </p>
+                  <p id="viewUsername" class="font-medium">johndoe</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Full Name
+                  </p>
+                  <p id="viewPassengerNameDetail" class="font-medium">
+                    John Doe
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="bg-gray-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-address-card text-green-600"></i>
+                </div>
+                Contact Information
+              </h4>
+
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3"
+                  >
+                    <i class="fas fa-phone text-blue-600 text-sm"></i>
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide">
+                      Phone
+                    </p>
+                    <p id="viewPhone" class="font-medium">071-2345678</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3"
+                  >
+                    <i class="fas fa-envelope text-purple-600 text-sm"></i>
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide">
+                      Email
+                    </p>
+                    <p id="viewEmail" class="font-medium">john@example.com</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Identification Information -->
+            <div class="bg-gray-50 p-5 rounded-xl md:col-span-2">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-id-card text-purple-600"></i>
+                </div>
+                Identification Details
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    ID Type
+                  </p>
+                  <p id="viewIdType" class="font-medium">NIC</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    ID Number
+                  </p>
+                  <p id="viewIdNumber" class="font-medium">901234567V</p>
+                </div>
+
+                <div class="md:col-span-2">
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Status
+                  </p>
+                  <div class="flex items-center mt-1">
+                    <span
+                      id="viewStatusBadge"
+                      class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium"
+                    >
+                      Active Account
+                    </span>
+                    <!-- <span class="ml-3 text-sm text-gray-500"
+                      >Last updated: Today</span
+                    > -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="mt-6 pt-6 border-t border-gray-100">
+            <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+              <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+              Quick Actions
+            </h4>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button
+                class="flex items-center justify-center p-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                <i class="fas fa-ticket-alt mr-2"></i>
+                View Bookings
+              </button>
+
+              <button
+                class="flex items-center justify-center p-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
+              >
+                <i class="fas fa-credit-card mr-2"></i>
+                Payment History
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="bg-gray-50 px-6 py-4 flex justify-end rounded-b-2xl">
+          <button
+            type="button"
+            id="closeViewBtn"
+            class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl hover:from-blue-700 hover:to-blue-900 transition-all shadow-md hover:shadow-lg flex items-center"
+          >
+            <i class="fas fa-times mr-2"></i>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block/Unblock Confirmation Modal -->
+    <div
+      id="blockModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-xl w-full max-w-md overflow-hidden"
+      >
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold flex items-center">
+              <i class="fas fa-exclamation-triangle mr-3"></i>
+              <span id="blockModalTitle">Confirm Action</span>
+            </h3>
+            <button
+              type="button"
+              id="closeBlockModal"
+              class="text-white hover:text-blue-200 text-xl transition-transform hover:rotate-90 duration-300"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <p class="mt-2 text-blue-200" id="blockModalSubtitle">
+            Please confirm this action
+          </p>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6">
+          <p class="text-gray-700" id="blockModalMessage">
+            Are you sure you want to block this passenger?
+          </p>
+          <input type="hidden" id="blockPassengerId" />
+          <input type="hidden" id="blockAction" />
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+          <button
+            type="button"
+            id="cancelBlockBtn"
+            class="px-5 py-2 text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            id="confirmBlockBtn"
+            class="px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="../js/icon-colors.js"></script>
+    <script src="../js/manage-passenger.js"></script>
+  </body>
+</html>
