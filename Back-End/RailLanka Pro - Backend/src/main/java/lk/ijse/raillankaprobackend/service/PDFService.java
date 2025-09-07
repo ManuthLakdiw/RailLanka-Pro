@@ -11,4 +11,24 @@ import java.io.ByteArrayOutputStream;
 public interface PDFService {
 
     ByteArrayOutputStream generateEmployeePdfByStation(String stationName);
+
+    ByteArrayOutputStream generateAllPassengersPdf();
+
+    ByteArrayOutputStream generateLocalPassengersPdf();
+
+    ByteArrayOutputStream generateForeignPassengersPdf();
+
+    ByteArrayOutputStream generateAllActivePassengersPdf();
+
+    ByteArrayOutputStream generateAllBlockedPassengersPdf();
+
+    ByteArrayOutputStream generateLocalActivePassengersPdf();
+
+    ByteArrayOutputStream generateLocalBlockedPassengersPdf();
+
+    ByteArrayOutputStream generateForeignActivePassengersPdf();
+
+    ByteArrayOutputStream generateForeignBlockedPassengersPdf();
+
+
 }

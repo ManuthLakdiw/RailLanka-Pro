@@ -1,8 +1,9 @@
 package lk.ijse.raillankaprobackend.entity;
 
 import jakarta.persistence.*;
+import lk.ijse.raillankaprobackend.entity.Dtypes.IdType;
+import lk.ijse.raillankaprobackend.entity.Dtypes.PassengerType;
 import lombok.*;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author manuthlakdiv

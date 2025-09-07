@@ -5,10 +5,13 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.*;
+import lk.ijse.raillankaprobackend.entity.Dtypes.PassengerType;
 import lk.ijse.raillankaprobackend.entity.Employee;
+import lk.ijse.raillankaprobackend.entity.Passenger;
 import lk.ijse.raillankaprobackend.entity.Station;
 import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import lk.ijse.raillankaprobackend.repository.EmployeeRepository;
+import lk.ijse.raillankaprobackend.repository.PassengerRepository;
 import lk.ijse.raillankaprobackend.repository.StationRepository;
 import lk.ijse.raillankaprobackend.service.PDFService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,8 @@ import java.util.List;
 public class PDFServiceImpl implements PDFService {
 
     private final StationRepository stationRepository;
+    private final PassengerRepository passengerRepository;
+    private final EmployeeRepository employeeRepository;
 
     // Enhanced Rail Lanka theme colors
     private static final Color PRIMARY_BLUE = new Color(30, 64, 175);
@@ -40,7 +45,6 @@ public class PDFServiceImpl implements PDFService {
                 .orElseThrow(() -> new RuntimeException("Station not found"));
 
         List<StaffProjection> staffProjections = stationRepository.findAllStaffByStationName(station.getName());
-
 
         // Use landscape orientation for better table layout
         Document document = new Document(PageSize.A4.rotate());
@@ -74,6 +78,532 @@ public class PDFServiceImpl implements PDFService {
         }
 
         return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateAllPassengersPdf() {
+        List<Passenger> passengers = passengerRepository.findAll();
+
+        // Use landscape orientation for better table layout
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for passengers
+            addPassengerDocumentHeader(document, "PASSENGER DIRECTORY");
+
+            // Add summary statistics section for passengers
+            addPassengerSummarySection(document, passengers);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, passengers);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+        return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateLocalPassengersPdf() {
+        List<Passenger> localPassengers = passengerRepository.findPassengerByPassengerType(PassengerType.LOCAL);
+
+        // Use landscape orientation for better table layout
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for local passengers
+            addPassengerDocumentHeader(document,"LOCAL PASSENGER DIRECTORY");
+
+            // Add summary statistics section for local passengers
+            addPassengerSummarySection(document, localPassengers);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, localPassengers);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+        return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateForeignPassengersPdf() {
+        List<Passenger> localPassengers = passengerRepository.findPassengerByPassengerType(PassengerType.FOREIGN);
+
+        // Use landscape orientation for better table layout
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for local passengers
+            addPassengerDocumentHeader(document,"FOREIGN PASSENGER DIRECTORY");
+
+            // Add summary statistics section for local passengers
+            addPassengerSummarySection(document, localPassengers);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, localPassengers);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+        return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateAllActivePassengersPdf() {
+        List<Passenger> allActivePassengers = passengerRepository.findAllByBlocked(false);
+
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for local passengers
+            addPassengerDocumentHeader(document,"ACTIVE PASSENGER DIRECTORY");
+
+            // Add summary statistics section for local passengers
+            addPassengerSummarySection(document, allActivePassengers);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, allActivePassengers);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+        return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateAllBlockedPassengersPdf() {
+        List<Passenger> allActivePassengers = passengerRepository.findAllByBlocked(true);
+
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for local passengers
+            addPassengerDocumentHeader(document,"BLOCKED PASSENGER DIRECTORY");
+
+            // Add summary statistics section for local passengers
+            addPassengerSummarySection(document, allActivePassengers);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, allActivePassengers);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+        return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateLocalActivePassengersPdf() {
+        List<Passenger> byPassengerTypeAndBlocked = passengerRepository
+                .findByPassengerTypeAndBlocked(PassengerType.LOCAL, false);
+
+
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for local passengers
+            addPassengerDocumentHeader(document,"LOCAL ACTIVE PASSENGER DIRECTORY");
+
+            // Add summary statistics section for local passengers
+            addPassengerSummarySection(document, byPassengerTypeAndBlocked);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, byPassengerTypeAndBlocked);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+
+        return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateLocalBlockedPassengersPdf() {
+        List<Passenger> byPassengerTypeAndBlocked = passengerRepository
+                .findByPassengerTypeAndBlocked(PassengerType.LOCAL, true);
+
+
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for local passengers
+            addPassengerDocumentHeader(document,"LOCAL BLOCKED PASSENGER DIRECTORY");
+
+            // Add summary statistics section for local passengers
+            addPassengerSummarySection(document, byPassengerTypeAndBlocked);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, byPassengerTypeAndBlocked);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+
+        return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateForeignActivePassengersPdf() {
+        List<Passenger> byPassengerTypeAndBlocked = passengerRepository
+                .findByPassengerTypeAndBlocked(PassengerType.FOREIGN, false);
+
+
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for local passengers
+            addPassengerDocumentHeader(document,"FOREIGN ACTIVE PASSENGER DIRECTORY");
+
+            // Add summary statistics section for local passengers
+            addPassengerSummarySection(document, byPassengerTypeAndBlocked);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, byPassengerTypeAndBlocked);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+
+        return out;
+    }
+
+    @Override
+    public ByteArrayOutputStream generateForeignBlockedPassengersPdf() {
+        List<Passenger> byPassengerTypeAndBlocked = passengerRepository
+                .findByPassengerTypeAndBlocked(PassengerType.FOREIGN, true);
+
+
+        Document document = new Document(PageSize.A4.rotate());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+
+            // Add custom header and footer
+            RailLankaPageEvent event = new RailLankaPageEvent();
+            writer.setPageEvent(event);
+
+            document.open();
+
+            // Add decorative header with Rail Lanka branding for local passengers
+            addPassengerDocumentHeader(document,"FOREIGN BLOCKED PASSENGER DIRECTORY");
+
+            // Add summary statistics section for local passengers
+            addPassengerSummarySection(document, byPassengerTypeAndBlocked);
+
+            // Create passenger table with enhanced design
+            addPassengerTable(document, byPassengerTypeAndBlocked);
+
+            // Add footer with additional information
+            addDocumentFooter(document);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating PDF", e);
+        }
+
+
+        return out;
+    }
+
+
+    private void addPassengerDocumentHeader(Document document, String titleText) throws DocumentException {
+        // Create header table
+        PdfPTable headerTable = new PdfPTable(2);
+        headerTable.setWidthPercentage(100);
+        headerTable.setSpacingAfter(20f);
+
+        // Left side - Logo and company info
+        PdfPCell leftCell = new PdfPCell();
+        leftCell.setBorder(Rectangle.NO_BORDER);
+
+        // Try to add logo (if available)
+        try {
+            URL logoUrl = getClass().getResource("/images/rail-lanka-logo.png");
+            if (logoUrl != null) {
+                Image logo = Image.getInstance(logoUrl);
+                logo.scaleToFit(120, 50);
+                leftCell.addElement(logo);
+
+            } else {
+                // Create text-based logo
+                Font logoFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, PRIMARY_BLUE);
+                Paragraph logoText = new Paragraph("RAIL LANKA PRO", logoFont);
+                leftCell.addElement(logoText);
+            }
+        } catch (Exception e) {
+            // Fallback to text logo
+            Font logoFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, PRIMARY_BLUE);
+            Paragraph logoText = new Paragraph("RAIL LANKA PRO", logoFont);
+            leftCell.addElement(logoText);
+        }
+
+        Font companyFont = FontFactory.getFont(FontFactory.HELVETICA, 10, TEXT_LIGHT);
+        Paragraph companyInfo = new Paragraph("Sri Lanka Railway Department\nColombo, Sri Lanka", companyFont);
+        companyInfo.setSpacingBefore(5f);
+        leftCell.addElement(companyInfo);
+
+        // Right side - Report title and details
+        PdfPCell rightCell = new PdfPCell();
+        rightCell.setBorder(Rectangle.NO_BORDER);
+        rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, PRIMARY_BLUE);
+        Paragraph title = new Paragraph(titleText, titleFont);
+        title.setAlignment(Element.ALIGN_RIGHT);
+
+        Font dateFont = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 10, TEXT_LIGHT);
+        String dateString = java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"));
+        Paragraph datePara = new Paragraph("Generated on: " + dateString, dateFont);
+        datePara.setAlignment(Element.ALIGN_RIGHT);
+        datePara.setSpacingBefore(5f);
+
+        rightCell.addElement(title);
+        rightCell.addElement(datePara);
+
+        headerTable.addCell(leftCell);
+        headerTable.addCell(rightCell);
+
+        document.add(headerTable);
+
+        // Add decorative separator
+        addSeparator(document);
+    }
+
+    private void addPassengerSummarySection(Document document, List<Passenger> passengers) throws DocumentException {
+        PdfPTable summaryTable = new PdfPTable(3);
+        summaryTable.setWidthPercentage(100);
+        summaryTable.setSpacingBefore(10f);
+        summaryTable.setSpacingAfter(15f);
+        summaryTable.setWidths(new float[]{1, 1, 1});
+
+        // Summary header
+        Font summaryHeaderFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.WHITE);
+        PdfPCell headerCell = new PdfPCell(new Phrase("PASSENGER SUMMARY", summaryHeaderFont));
+        headerCell.setBackgroundColor(PRIMARY_BLUE);
+        headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        headerCell.setColspan(3);
+        headerCell.setPadding(8);
+        headerCell.setBorderWidth(0);
+        summaryTable.addCell(headerCell);
+
+        long blockedCount = passengers.stream().filter(Passenger::isBlocked).count();
+
+        String[] labels = {"Total Passengers", "Blocked Accounts", "Active Accounts"};
+        String[] values = {
+                String.valueOf(passengers.size()),
+                String.valueOf(blockedCount),
+                String.valueOf(passengers.size() - blockedCount)
+        };
+
+        Font labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, TEXT_DARK);
+        Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 10, TEXT_LIGHT);
+
+        for (int i = 0; i < labels.length; i++) {
+            PdfPCell labelCell = new PdfPCell(new Phrase(labels[i], labelFont));
+            labelCell.setBackgroundColor(HEADER_BG);
+            labelCell.setPadding(6);
+            labelCell.setBorderWidth(0.5f);
+            labelCell.setBorderColor(Color.LIGHT_GRAY);
+            summaryTable.addCell(labelCell);
+
+            PdfPCell valueCell = new PdfPCell(new Phrase(values[i], valueFont));
+            valueCell.setPadding(6);
+            valueCell.setBorderWidth(0.5f);
+            valueCell.setBorderColor(Color.LIGHT_GRAY);
+            summaryTable.addCell(valueCell);
+        }
+
+        document.add(summaryTable);
+    }
+
+    private void addPassengerTable(Document document, List<Passenger> passengers) throws DocumentException {
+        if (passengers.isEmpty()) {
+            Font emptyFont = FontFactory.getFont(FontFactory.HELVETICA, 14, TEXT_LIGHT);
+            Paragraph empty = new Paragraph("No passengers found.", emptyFont);
+            empty.setAlignment(Element.ALIGN_CENTER);
+            empty.setSpacingBefore(20f);
+            document.add(empty);
+            return;
+        }
+
+        // Create table with enhanced design
+        PdfPTable table = new PdfPTable(9);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setWidths(new float[]{1, 1, 1.5f, 1.5f, 1.2f, 1.5f, 2f, 2f, 1});
+
+        // Table header with enhanced styling
+        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, Color.WHITE);
+        String[] headers = {"ID", "Title", "First Name", "Last Name", "Type", "ID Type", "ID Number", "Contact", "Status"};
+
+        for (String header : headers) {
+            PdfPCell headerCell = new PdfPCell(new Phrase(header, headerFont));
+            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            headerCell.setBackgroundColor(SECONDARY_BLUE);
+            headerCell.setPadding(8);
+            headerCell.setBorderWidth(0);
+            headerCell.setBorderColor(Color.WHITE);
+            headerCell.setBorderWidthRight(1);
+            headerCell.setBorderColorRight(Color.WHITE);
+            table.addCell(headerCell);
+        }
+
+        // Data rows with enhanced styling
+        Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 9, TEXT_DARK);
+
+        boolean alternate = false;
+        int rowCount = 0;
+
+        for (Passenger passenger : passengers) {
+            Color rowColor = alternate ? LIGHT_BG : Color.WHITE;
+            alternate = !alternate;
+            rowCount++;
+
+            addStyledCell(table, passenger.getPassengerId(), rowColor, dataFont, Element.ALIGN_CENTER);
+            addStyledCell(table, passenger.getTitle(), rowColor, dataFont, Element.ALIGN_LEFT);
+            addStyledCell(table, passenger.getFirstName(), rowColor, dataFont, Element.ALIGN_LEFT);
+            addStyledCell(table, passenger.getLastName(), rowColor, dataFont, Element.ALIGN_LEFT);
+            addStyledCell(table, passenger.getPassengerType().toString(), rowColor, dataFont, Element.ALIGN_LEFT);
+            addStyledCell(table, passenger.getIdtype().toString(), rowColor, dataFont, Element.ALIGN_LEFT);
+            addStyledCell(table, passenger.getIdNumber(), rowColor, dataFont, Element.ALIGN_LEFT);
+            addStyledCell(table, passenger.getPhoneNumber(), rowColor, dataFont, Element.ALIGN_LEFT);
+            addStyledCell(table, passenger.isBlocked() ? "Blocked" : "Active", rowColor, dataFont, Element.ALIGN_CENTER);
+        }
+
+        document.add(table);
+
+        // Add row count summary
+        Font summaryFont = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 10, TEXT_LIGHT);
+        Paragraph summary = new Paragraph(
+                "Total passengers displayed: " + rowCount, summaryFont);
+        summary.setAlignment(Element.ALIGN_RIGHT);
+        summary.setSpacingBefore(10f);
+        document.add(summary);
     }
 
     private void addDocumentHeader(Document document, Station station) throws DocumentException {
@@ -354,7 +884,7 @@ public class PDFServiceImpl implements PDFService {
             cb.beginText();
             cb.setFontAndSize(FontFactory.getFont(FontFactory.HELVETICA, 8).getBaseFont(), 8);
             cb.setColorFill(PRIMARY_BLUE);
-            cb.showTextAligned(Element.ALIGN_LEFT, "Rail Lanka Employee Management System",
+            cb.showTextAligned(Element.ALIGN_LEFT, "Rail Lanka Management System",
                     document.left(), document.bottom() - 30, 0);
             cb.endText();
 

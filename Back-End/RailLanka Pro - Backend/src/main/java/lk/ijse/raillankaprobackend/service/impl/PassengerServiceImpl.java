@@ -12,6 +12,9 @@ import lk.ijse.raillankaprobackend.repository.UserRepository;
 import lk.ijse.raillankaprobackend.service.PassengerService;
 import lk.ijse.raillankaprobackend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,8 +65,8 @@ public class PassengerServiceImpl implements PassengerService {
         Passenger passenger = Passenger.builder()
                 .passengerId(generateNewPassengerId())
                 .title(passengerDto.getTitle())
-                .firstName(passengerDto.getFirstName())
-                .lastName(passengerDto.getLastName())
+                .firstName(formattedName(passengerDto.getFirstName()))
+                .lastName(formattedName(passengerDto.getLastName()))
                 .passengerType(PassengerType.valueOf(passengerDto.getPassengerType()))
                 .idtype(idTypeForPassenger)
                 .idNumber(passengerDto.getIdNumber())
@@ -76,6 +79,14 @@ public class PassengerServiceImpl implements PassengerService {
         passengerRepository.save(passenger);
 
         return "Your account has been created successfully.";
+    }
+
+
+    private String formattedName (String name){
+        if (name == null || name.isEmpty()){
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 
 
@@ -100,5 +111,105 @@ public class PassengerServiceImpl implements PassengerService {
         }
 
         return "PSG00000-00001";
+    }
+
+    @Override
+    public Page<PassengerDto> getAllPassengers(int pageNo, int pageSize) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Passenger> passengerPage = passengerRepository.findAll(pageable);
+
+        return getPassengerDtos(passengerPage);
+
+    }
+
+    @Override
+    public String changePassengerStatus(String passengerId, boolean status) {
+        Passenger passenger = passengerRepository.findById(passengerId).
+                orElseThrow(() -> new IllegalArgumentException("Passenger not found for ID: " + passengerId));
+
+        passenger.setBlocked(status);
+        passengerRepository.save(passenger);
+
+        return "Passenger has been successfully set to " + (status ? "Block" : "Active") + " status." ;
+
+    }
+
+    @Override
+    public Page<PassengerDto> filterPassengerByKeyword(String keyword, int pageNo, int pageSize) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Passenger> passengerPage = passengerRepository.filterPassengerByKeyword(keyword,pageable);
+
+        return getPassengerDtos(passengerPage);
+    }
+
+    @Override
+    public Page<PassengerDto> filterPassengerByStatus(boolean status, int pageNo, int pageSize) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Passenger> passengerPage = passengerRepository.findPassengerByBlocked(status,pageable);
+
+        return getPassengerDtos(passengerPage);
+
+    }
+
+    @Override
+    public Page<PassengerDto> filterPassengerByPassengerType(String passengerType, int pageNo, int pageSize) {
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Passenger> passengerByPassengerType = passengerRepository
+                .findPassengerByPassengerType(PassengerType.valueOf(passengerType), pageable);
+
+        return getPassengerDtos(passengerByPassengerType);
+    }
+
+    @Override
+    public PassengerDto getPassengerDetailsByPassengerId(String passengerId) {
+        Passenger passenger = passengerRepository.findById(passengerId)
+                .orElseThrow(() -> new IllegalArgumentException("Passenger not found for ID: " + passengerId));
+        String formattedPhoneNumber = passenger.getPhoneNumber().substring(0, 3) + "-" + passenger.getPhoneNumber().substring(3);
+        return PassengerDto.builder()
+                .passengerId(passenger.getPassengerId())
+                .title(passenger.getTitle()+".")
+                .firstName(formattedName(passenger.getFirstName()))
+                .lastName(formattedName(passenger.getLastName()))
+                .passengerType(passenger.getPassengerType().name())
+                .idType(passenger.getIdtype().name())
+                .idNumber(passenger.getIdNumber())
+                .phoneNumber(formattedPhoneNumber)
+                .email(passenger.getEmail())
+                .blocked(passenger.isBlocked())
+                .username(passenger.getUser().getUsername())
+                .build();
+    }
+
+    private Page<PassengerDto> getPassengerDtos(Page<Passenger> passengerPage) {
+        return passengerPage.map(passenger -> {
+
+            String formattedPhoneNumber = passenger.getPhoneNumber().substring(0, 3) + "-" + passenger.getPhoneNumber().substring(3);
+
+            return PassengerDto.builder()
+                    .passengerId(passenger.getPassengerId())
+                    .title(passenger.getTitle()+".")
+                    .firstName(formattedName(passenger.getFirstName()))
+                    .lastName(formattedName(passenger.getLastName()))
+                    .passengerType(passenger.getPassengerType().name())
+                    .idType(passenger.getIdtype().name())
+                    .idNumber(passenger.getIdNumber())
+                    .phoneNumber(formattedPhoneNumber)
+                    .email(passenger.getEmail())
+                    .blocked(passenger.isBlocked())
+                    .username(passenger.getUser().getUsername())
+                    .build();
+        });
     }
 }
