@@ -310,7 +310,7 @@ $(document).ready(function() {
 
     $("#roleFilter").on("change" , function () {
         const currentCategory= $("#roleFilter").val();
-        if(currentCategory === "") {
+        if(currentCategory === "all") {
             fetchEmployees(currentPage)
             return;
         }
@@ -793,7 +793,7 @@ $(document).ready(function() {
         `).on('click', () => {
             if (pageNumber !== currentPage) {
             currentPage = pageNumber;
-            fetchEmployees(currentPage, currentKeyword);
+            fetchEmployees(currentPage, currentKeyword,category);
             }
         });
     }
@@ -801,69 +801,75 @@ $(document).ready(function() {
     $("#btnFirst").on("click", () => {
         if (currentPage > 1) {
             currentPage = 1;
-            fetchEmployees(currentPage, currentKeyword);
+            fetchEmployees(currentPage, currentKeyword, category);
         }
     });
 
     $("#btnBack").on("click", () => {
         if (currentPage > 1) {
             currentPage -= 1;
-            fetchEmployees(currentPage, currentKeyword);
+            fetchEmployees(currentPage, currentKeyword, category);
         }
     });
 
     $("#btnNext").on("click", () => {
     if (currentPage < totalPages) {
         currentPage += 1;
-        fetchEmployees(currentPage, currentKeyword);
+        fetchEmployees(currentPage, currentKeyword. category);
     }
     });
 
     $("#btnLast").on("click", () => {
     if (currentPage < totalPages) {
         currentPage = totalPages;
-        fetchEmployees(currentPage, currentKeyword);
+        fetchEmployees(currentPage, currentKeyword, category);
     }
     });
 
     $("#exportBtn").on("click", function() {
-
+   
         if ($("#notFoundEmployee").is(":visible")) {
             return;
         } 
+        toastr.info("Generating PDF report...");
         const station = $("#stationFilter").val();
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1Njk4MzM4MSwiZXhwIjoxMDc1Njk4MzM4MX0.IZXH8px-C5D1hzk87isH5X-CTzJnp9vJ3SX4BCVpoPI");
+        setTimeout(() => {
+            const myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1Njk4MzM4MSwiZXhwIjoxMDc1Njk4MzM4MX0.IZXH8px-C5D1hzk87isH5X-CTzJnp9vJ3SX4BCVpoPI");
 
-        const requestOptions = {
-            method: "GET",
-            headers: myHeaders,
-            redirect: "follow"
-        };
+            const requestOptions = {
+                method: "GET",
+                headers: myHeaders,
+                redirect: "follow"
+            };
 
-        fetch(`http://localhost:8080/api/v1/raillankapro/pdf/download/by/station?station=${station}`, requestOptions)
-        .then((response) => {
-            if (response.status === 204) { 
-                toastr.warning("No employees found for the selected station.");
-            }
-            return response.blob();
-        })
-        .then((result) => {
-            const url = window.URL.createObjectURL(result);
-            const $a = $('<a />', {
-                href: url,
-                download: `employees_station_${station}_${Date.now()}.pdf`
-            }).appendTo('body');
+            fetch(`http://localhost:8080/api/v1/raillankapro/pdf/download/by/station?station=${station}`, requestOptions)
+            .then((response) => {
+                if (response.status === 204) { 
+                    toastr.warning("No employees found for the selected station.");
+                }
+                return response.blob();
+            })
+            .then((result) => {
+                const url = window.URL.createObjectURL(result);
+                const $a = $('<a />', {
+                    href: url,
+                    download: `employees_station_${station}_${Date.now()}.pdf`
+                }).appendTo('body');
 
-            $a[0].click(); 
-            $a.remove();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch((error) => {
-                console.error(error);
-                toastr.error("Failed to download PDF. Please try again.");
-        
-        });
+                $a[0].click(); 
+                $a.remove();
+                window.URL.revokeObjectURL(url);
+
+                toastr.success("PDF report downloaded successfully");
+           
+            })
+            .catch((error) => {
+                    console.error(error);
+                    toastr.error("Failed to download PDF. Please try again.");
+            
+            });
+        }, 2000);
     });
 
 

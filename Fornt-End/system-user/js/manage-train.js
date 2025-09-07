@@ -781,7 +781,7 @@ $(document).ready(function () {
         }
         category = currentCategory; 
         currentPage = 1;
-        fetchTrains(currentPage, "" , category);
+        fetchTrains(currentPage, currentKeyword , category);
 
     })
 
@@ -1119,7 +1119,7 @@ $(document).ready(function () {
         `).on('click', () => {
             if (pageNumber !== currentPage) {
             currentPage = pageNumber;
-            fetchTrains(currentPage, currentKeyword);
+            fetchTrains(currentPage, currentKeyword, category);
             }
         });
     }
@@ -1127,28 +1127,28 @@ $(document).ready(function () {
     $("#btnFirst").on("click", () => {
         if (currentPage > 1) {
             currentPage = 1;
-            fetchTrains(currentPage, currentKeyword);
+            fetchTrains(currentPage, currentKeyword, category);
         }
     });
 
     $("#btnBack").on("click", () => {
         if (currentPage > 1) {
             currentPage -= 1;
-            fetchTrains(currentPage, currentKeyword);
+            fetchTrains(currentPage, currentKeyword, category);
         }
     });
 
     $("#btnNext").on("click", () => {
     if (currentPage < totalPages) {
         currentPage += 1;
-        fetchTrains(currentPage, currentKeyword);
+        fetchTrains(currentPage, currentKeyword, category);
     }
     });
 
     $("#btnLast").on("click", () => {
     if (currentPage < totalPages) {
         currentPage = totalPages;
-        fetchTrains(currentPage, currentKeyword);
+        fetchTrains(currentPage, currentKeyword, category);
     }
     });
 
