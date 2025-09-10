@@ -1,4 +1,148 @@
 $(document).ready(function () {
+    let token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+    if (token) {
+        let userName = localStorage.getItem('userName') || sessionStorage.getItem('userName'); // lowercase n
+        $('#adminUsername').text(userName);
+        $('#tokenUsername').text(userName);
+    } else {
+        $('#adminUsername, #tokenUsername').text('Guest');
+    }
+
+    $('#logoutButton').on('click', function(e) {
+        e.preventDefault();
+        clearAllTokens();
+        window.location.href = '../pages/anim.html';
+    });
+
+    $("#adminEmail").text(localStorage.getItem('email'))
+
+    const accessToken = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+        if (!accessToken) {
+            window.location.href = "../../logging-expired.html"; 
+        }
+
+
+    function clearAllTokens() {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userName');
+        sessionStorage.removeItem('accessToken');
+        sessionStorage.removeItem('userName');
+        sessionStorage.removeItem('refreshToken');
+    }
+
+    async function refreshAccessToken() {
+        const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
+        
+        if (!refreshToken) {
+            console.log('❌ No refresh token found');
+            window.location.href = "../../logging-expired.html";
+            return null;
+        }
+
+        try {
+            console.log('🔄 Sending request to refresh token API...');
+
+            const response = await fetch('http://localhost:8080/api/v1/raillankapro/auth/refreshtoken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: refreshToken
+                })
+            });
+
+            const result = await response.json();
+            console.log('📥 Refresh token response:', result);
+
+            if (response.ok && result.code === 200) {
+                const newAccessToken = result.data.accessToken;
+                const newRefreshToken = result.data.refreshToken;
+                
+                if (localStorage.getItem('refreshToken')) {
+                    localStorage.setItem('accessToken', newAccessToken);
+                    localStorage.setItem('refreshToken', newRefreshToken);
+                } else if (sessionStorage.getItem('refreshToken')) {
+                    sessionStorage.setItem('accessToken', newAccessToken);
+                    sessionStorage.setItem('refreshToken', newRefreshToken);
+                }
+
+                console.log('✅ Token refreshed successfully:', newAccessToken);
+                return newAccessToken;
+            } else {
+                console.log('⚠️ Refresh token expired or invalid:', result.message);
+                clearAllTokens();
+                window.location.href = "../../logging-expired.html";
+                return null;
+            }
+        } catch (error) {
+            console.error('🔥 Error refreshing token:', error);
+            clearAllTokens();
+            window.location.href = "../../logging-expired.html";
+            return null;
+        }
+    }
+
+    async function fetchWithTokenRefresh(url, options = {}) {
+        let accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+        
+        if (!accessToken) {
+            console.log("❌ No access token found. Redirecting...");
+            window.location.href = "../../logging-expired.html";
+        }
+
+        const headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${accessToken}`
+        };
+
+        const requestOptions = {
+            ...options,
+            headers: headers
+        };
+
+        try {
+            console.log("➡️ Sending API request with token:", accessToken);
+            let response = await fetch(url, requestOptions);
+            let result = await response.json();
+
+            console.log("📥 API response:", result);
+
+            if (result.code === 401 && result.message === "JWT token has expired") {
+                console.log('⚠️ Access token expired, attempting to refresh...');
+                
+                // Try to refresh token
+                const newToken = await refreshAccessToken();
+                
+                if (newToken) {
+                    console.log("🔄 Retrying API call with new token:", newToken);
+                    // Retry the original request with new token
+                    const retryHeaders = {
+                        ...options.headers,
+                        'Authorization': `Bearer ${newToken}`
+                    };
+                    
+                    const retryOptions = {
+                        ...options,
+                        headers: retryHeaders
+                    };
+                    
+                    response = await fetch(url, retryOptions);
+                    result = await response.json();
+
+                    console.log("📥 Retried API response:", result);
+                }
+            }
+
+            return { response, result };
+            } catch (error) {
+                console.error('🔥 Fetch error:', error); // Debug: network or fetch error
+                throw error;
+            }
+    }
+
 
     toastr.options = {
           closeButton: true,
@@ -83,18 +227,14 @@ $(document).ready(function () {
 
     ////////////////////////////// load station for selction /////////////////////////////
     function loadStationForSelection(selectedStation = null) {
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTk3MTA0MywiZXhwIjoxMDc1NTk3MTA0M30.es7C1MO8rHMFWIK70lOaJmo1D0WGLe1_X9fnGGSbeEg");
-
         const requestOptions = {
             method: "GET",
-            headers: myHeaders,
             redirect: "follow"
         };
 
-        fetch("http://localhost:8080/api/v1/raillankapro/station/getall/names/and/codes", requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
+        fetchWithTokenRefresh("http://localhost:8080/api/v1/raillankapro/station/getall/names/and/codes", requestOptions)
+            
+            .then(({result}) => {
                 console.log(result);
 
                 if (result.code === 200) {
@@ -102,12 +242,11 @@ $(document).ready(function () {
                     allStations.sort((a, b) => a.name.localeCompare(b.name));
 
                     $(".stationSelection").empty();
-
                     $(".stationSelection")
                         .append('<option disabled selected value="">Select a Station</option>');
 
                     allStations.forEach(station => {
-                        let optionHtml; 
+                        let optionHtml;
                         if (selectedStation && selectedStation === station.name) {
                             optionHtml = `<option value="${station.name}" selected>${station.name} (${station.stationCode})</option>`;
                         } else {
@@ -122,57 +261,50 @@ $(document).ready(function () {
             .catch((error) => console.error(error));
     }
 
+
     ////////////////////////////// load counters by station  //////////////////////////////
     function loadCountersByStation(stationName, selectedCounter = null) {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTk3NjgxNiwiZXhwIjoxMDc1NTk3NjgxNn0.KCpLq2zIVR9xb_h0epn6QWebdasoZHIRwwweDJmuEDw");
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
 
-    const requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow"
-    };
+        fetchWithTokenRefresh(`http://localhost:8080/api/v1/raillankapro/counter/get/counternumbers/by/stationname/${stationName}`, requestOptions)
+            .then(({ result }) => {
+                console.log(result);
 
-    fetch(`http://localhost:8080/api/v1/raillankapro/counter/get/counternumbers/by/stationname/${stationName}`, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-            console.log(result);
+                const disabledCounters = result.data || [];
+                const counters = ["COUNTER_1", "COUNTER_2", "COUNTER_3", "NONE"];
 
-            const disabledCounters = result.data;
-            const counters = ["COUNTER_1", "COUNTER_2", "COUNTER_3", "NONE"];
+                const $counterSelect = $(".counterNumberSelection");
+                $counterSelect.empty();
+                $counterSelect.append(`<option disabled value="">Select a Counter</option>`);
 
-            const $counterSelect = $(".counterNumberSelection");
-            $counterSelect.empty();
-            $counterSelect.append(`<option disabled value="">Select a Counter</option>`);
+                counters.forEach(c => {
+                    const label = c.replace("_", " ");
+                    let option;
 
-            counters.forEach(c => {
-                const label = c.replace("_", " ");
-                let option;
-
-                if (c === "NONE") {
-                    option = `<option value="${c}">${capitalizeFirst(label)}</option>`;
-                } else {
-                    const isDisabled = disabledCounters.includes(c);
-
-                    if (isDisabled && c !== selectedCounter) {
-                        option = `<option value="${c}" disabled>${capitalizeFirst(label)} - already assigned</option>`;
-                    } else {
+                    if (c === "NONE") {
                         option = `<option value="${c}">${capitalizeFirst(label)}</option>`;
+                    } else {
+                        const isDisabled = disabledCounters.includes(c);
+
+                        if (isDisabled && c !== selectedCounter) {
+                            option = `<option value="${c}" disabled>${capitalizeFirst(label)} - already assigned</option>`;
+                        } else {
+                            option = `<option value="${c}">${capitalizeFirst(label)}</option>`;
+                        }
                     }
-                }
 
-                $counterSelect.append(option);
-            });
+                    $counterSelect.append(option);
+                });
 
-            // set selected counter for update modal
-            if (selectedCounter) {
-                $counterSelect.val(selectedCounter);
-            } else {
-                $counterSelect.val("");
-            }
-        })
-        .catch((error) => console.error(error));
+                // set selected counter for update modal
+                $counterSelect.val(selectedCounter || "");
+            })
+            .catch((error) => console.error(error));
     }
+
 
     ////////////////////////////// catch selection event //////////////////////////////
     $(".stationSelection").on("change", function () {
@@ -187,18 +319,13 @@ $(document).ready(function () {
 
         const id = $(this).data("id");
 
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTk3NjgxNiwiZXhwIjoxMDc1NTk3NjgxNn0.KCpLq2zIVR9xb_h0epn6QWebdasoZHIRwwweDJmuEDw");
-
         const requestOptions = {
             method: "GET",
-            headers: myHeaders,
             redirect: "follow"
         };
 
-        fetch(`http://localhost:8080/api/v1/raillankapro/counter/getcounter?id=${id}`, requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
+        fetchWithTokenRefresh(`http://localhost:8080/api/v1/raillankapro/counter/getcounter?id=${id}`, requestOptions)
+            .then(({ result }) => {
                 if (result.code === 200) {
                     $("#updateStaffId").val(result.data.id);
                     $("#updateStaffFirstname").val(result.data.firstname);
@@ -210,6 +337,8 @@ $(document).ready(function () {
                     $("#updateStaffAddress").val(result.data.address);
                     $("#updateStaffUsername").val(result.data.userName);
                     $("#updateStaffYearsOfExperience").val(result.data.yearsOfExperience);
+
+                    // load station and counter dropdowns with selected values
                     loadStationForSelection(result.data.railwayStation);
                     loadCountersByStation(result.data.railwayStation, result.data.counterNumber);
 
@@ -221,9 +350,8 @@ $(document).ready(function () {
                 }
             })
             .catch((error) => console.error(error));
-
-            
     });
+
     
 
 
@@ -296,7 +424,7 @@ $(document).ready(function () {
     });
 
     ////////////////////////////// update counter //////////////////////////////
-    $("#staffUpdateForm").on("submit" , function (e) {
+    $("#staffUpdateForm").on("submit", async function (e) {
         e.preventDefault();
 
         const id = $("#updateStaffId").val().trim();
@@ -313,107 +441,91 @@ $(document).ready(function () {
         const statusValue = $("input[name='updateStatus']:checked").val();  
         const boolChecked = (statusValue === "true");
 
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTk3NzgyOSwiZXhwIjoxMDc1NTk3NzgyOX0.wgPCJSCQQn05EAWt75yt5vliN8CFO2QZUIMnnh0jjyk");
-
         const raw = JSON.stringify({
-        "id": id,
-        "firstname": staffFirstname,
-        "lastname": staffLastname,
-        "idNumber": staffNIC,
-        "phoneNumber": staffContactNumber,
-        "railwayStation": staffStationSelection,
-        "counterNumber": staffCounterSelection,
-        "dob": staffDOB,
-        "email": staffEmail,
-        "address": staffAddress,
-        "yearsOfExperience": staffYearsOfExperience,
-        "active": boolChecked
+            "id": id,
+            "firstname": staffFirstname,
+            "lastname": staffLastname,
+            "idNumber": staffNIC,
+            "phoneNumber": staffContactNumber,
+            "railwayStation": staffStationSelection,
+            "counterNumber": staffCounterSelection,
+            "dob": staffDOB,
+            "email": staffEmail,
+            "address": staffAddress,
+            "yearsOfExperience": staffYearsOfExperience,
+            "active": boolChecked
         });
 
         const requestOptions = {
-        method: "PUT",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: raw,
+            redirect: "follow"
         };
 
-        fetch("http://localhost:8080/api/v1/raillankapro/counter/update", requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-            console.log(result)
+        try {
+            const { result } = await fetchWithTokenRefresh("http://localhost:8080/api/v1/raillankapro/counter/update", requestOptions);
+            console.log(result);
+
             if (result.code === 200) {
                 $("#staffUpdateModal").removeClass("active");
                 toastr.success(result.data);
-                fetchCounters(currentPage)
-                loadStationForSelection()
+
+                // refresh table and dropdowns
+                fetchCounters(currentPage);
+                loadStationForSelection();
+            } else {
+                toastr.error(result.message || "Something went wrong!");
             }
-        })
-        .catch((error) => console.error(error));      
-    })
+        } catch (error) {
+            console.error(error);
+            toastr.error("Network or server error while updating staff.");
+        }
+    });
+
 
     ///////////////////////////// delete counter //////////////////////////////
-    $(document).on("click", "#deleteCounterBtn", function () {
-        
+    $(document).on("click", "#deleteCounterBtn", async function () {
         const id = $(this).data("id");
-        Swal.fire({
+
+        const resultSwal = await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
-            showCancelButton: true,   
+            showCancelButton: true,
             customClass: {
-                confirmButton: 'bg-blue-600 hover:bg-blue-700 text-white  py-2 px-4 rounded',
-                cancelButton: 'bg-gray-300 hover:bg-gray-400 text-black  py-2 px-4 rounded ml-2'
+                confirmButton: 'bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded',
+                cancelButton: 'bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded ml-2'
             },
-            buttonsStyling: false ,
+            buttonsStyling: false,
             confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-
-                const myHeaders = new Headers();
-                myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTQ2MzMyNywiZXhwIjoxMDc1NTQ2MzMyN30.u5VC6wqDHzYRHHjFMEOYIb5iu_mrYdo17JeYRddG4s0");
-
-                const requestOptions = {
-                    method: "PUT",
-                    headers: myHeaders,
-                    redirect: "follow"
-                };
-
-                fetch(`http://localhost:8080/api/v1/raillankapro/counter/delete?id=${id}`, requestOptions)
-                .then((response) => response.json())
-                .then((result) => {
-                        fetchCounters(currentPage)
-                        loadStationForSelection();
-                         $("#filterStaff").val("")
-                        Swal.fire({
-                        title: "Deleted!",
-                        text: result.data,
-                        icon: "success",
-                        showConfirmButton: false,   
-                        timer: 1300  
-                        });
-                }).catch((error) => {
-                        console.error(error);
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Something went wrong while deleting.",
-                            icon: "error"
-                        });
-                });
-            }
-        }).catch((error) => {
-            console.error(error);
-            Swal.fire({
-                title: "Error!",
-                text: "Something went wrong while deleting.",
-                icon: "error"
-            });
         });
+
+        if (!resultSwal.isConfirmed) return;
+
+        try {
+            const { result } = await fetchWithTokenRefresh(
+                `http://localhost:8080/api/v1/raillankapro/counter/delete?id=${id}`,
+                { method: "PUT" }
+            );
+
+            if (result.code === 200) {
+                fetchCounters(currentPage);
+                loadStationForSelection();
+                $("#filterStaff").val("");
+                toastr.success(result.data);
+            } else {
+                toastr.error("Something went wrong!");
+            }
+        } catch (error) {
+            console.error(error);
+            toastr.error("Network or server error while deleting staff.");
+        }
     });
 
+
     ////////////////////////////// load counter //////////////////////////////
-    function fetchCounters(page, keyword = "") {
+    async function fetchCounters(page, keyword = "") {
         let url = "";
         if (keyword && keyword.length >= 2) {
             url = `http://localhost:8080/api/v1/raillankapro/counter/filter/${page}/7?keyword=${keyword}`;
@@ -421,19 +533,17 @@ $(document).ready(function () {
             url = `http://localhost:8080/api/v1/raillankapro/counter/getall/${page}/7`;
         }
 
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTY3NTI4MSwiZXhwIjoxMDc1NTY3NTI4MX0.TOojMUE9rxEDSm_Oykf4WCsyZIlGdwXVgPXMUf-QdQg");
+        try {
+            const { result } = await fetchWithTokenRefresh(url, { method: "GET" });
 
-        const requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow"
-        };
+            console.log(result);
 
-        fetch(url, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-            console.log(result)
+            if (result.code !== 200) {
+                $("#staffTable tbody").html(
+                    '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error loading data</td></tr>'
+                );
+                return;
+            }
 
             const counters = result.data;
             totalPages = result.totalPages;
@@ -446,133 +556,131 @@ $(document).ready(function () {
 
             if (counters.length === 0) {
                 $("#staffTable tbody").append(
-                  `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                     No Counters found
-                   </td></tr>`
+                    `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                    No Counters found
+                    </td></tr>`
                 );
                 return;
             }
-            
+
             counters.forEach(counter => {
                 const randomColor = getRandomColor();
                 let statusText = counter.active ? "active" : "inactive";
                 let statusClass = counter.active ? "status-active" : "status-inactive";
                 const parts = counter.railwayStation.split(",");
-                const formattedCounter = counter.counterNumber.replace("_", " "); 
+                const formattedCounter = counter.counterNumber.replace("_", " ");
 
-                const stationName = parts[0];   
-                const stationCode = parts[1];   
-            
+                const stationName = parts[0];
+                const stationCode = parts[1];
+
                 $("#staffTable tbody").append(
                     `<tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                <div
-                                    class="flex-shrink-0 h-10 w-10 rounded-full bg-${randomColor}-100 flex items-center justify-center"
-                                >
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-${randomColor}-100 flex items-center justify-center">
                                     <i class="fas fa-user text-${randomColor}-600"></i>
                                 </div>
                                 <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900">
-                                    ${counter.firstname} ${counter.lastname}
+                                        ${counter.firstname} ${counter.lastname}
                                     </div>
                                     <span class ="text-sm text-gray-500">ID:</span>
                                     <div class="text-sm text-gray-500 inline">${counter.id}</div>
                                 </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">${counter.phoneNumber}</div>
-                                <div class="text-sm text-gray-500">${counter.email}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">
+                            <a href="tel:${counter.phoneNumber}" class="text-gray-900">
+                                ${counter.phoneNumber}
+                            </a>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            <a href="mailto:${counter.email}" class="text-blue-600">
+                                ${counter.email}
+                            </a>
+                        </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">
                                 ${stationName} - ${formattedCounter.charAt(0).toUpperCase() + formattedCounter.slice(1).toLowerCase()}
-                                </div>
-                                <div class="text-sm text-gray-500">${stationCode}-${counter.counterNumber.replace("COUNTER_", "C")}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                ${counter.yearsOfExperience} year(s)
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}"
-                                >
+                            </div>
+                            <div class="text-sm text-gray-500">${stationCode}-${counter.counterNumber.replace("COUNTER_", "C")}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${counter.yearsOfExperience} year(s)
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
                                 ${statusText}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <div class="flex space-x-2">
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex space-x-2">
                                 <button id="updateCounterBtn" class="text-blue-600 hover:text-blue-900" data-id="${counter.id}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button id = "deleteCounterBtn" class="text-red-600 hover:text-red-900" data-id="${counter.id}">
+                                <button id="deleteCounterBtn" class="text-red-600 hover:text-red-900" data-id="${counter.id}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                                 <button class="text-gray-600 hover:text-gray-900">
                                     <i class="fas ${counter.active ? "fa-toggle-on" : "fa-toggle-off"}"></i>
                                 </button>
-                                </div>
-                            </td>
+                            </div>
+                        </td>
                     </tr>`
                 );
-            })
+            });
 
             updatePaginationControls(page, totalPages);
-        })
-        .catch((error) => {
-            console.log(error);
-            $("#stationTable tbody").html(
-              '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error loading data</td></tr>'
-            );
-        });      
 
+        } catch (error) {
+            console.error(error);
+            $("#staffTable tbody").html(
+                '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error loading data</td></tr>'
+            );
+        }
     }
 
+
     //////////////////////////////  counter status change //////////////////////////////
-        $(document).on("click", ".fa-toggle-on, .fa-toggle-off", function () {
-            const btn = $(this);
-            const row = btn.closest("tr");
+    $(document).on("click", ".fa-toggle-on, .fa-toggle-off", async function () {
+        const btn = $(this);
+        const row = btn.closest("tr");
 
-            let newStatus;
-            if (btn.hasClass("fa-toggle-on")) {
-                btn.removeClass("fa-toggle-on").addClass("fa-toggle-off");
-                newStatus = false;
-            } else {
-                btn.removeClass("fa-toggle-off").addClass("fa-toggle-on");
-                newStatus = true;
-            }
+        let newStatus;
+        if (btn.hasClass("fa-toggle-on")) {
+            btn.removeClass("fa-toggle-on").addClass("fa-toggle-off");
+            newStatus = false;
+        } else {
+            btn.removeClass("fa-toggle-off").addClass("fa-toggle-on");
+            newStatus = true;
+        }
 
-            const counterId = row.find("td:nth-child(1) div.text-sm.text-gray-500").text().trim(); 
+        const counterId = row.find("td:nth-child(1) div.text-sm.text-gray-500").text().trim(); 
+        const url = `http://localhost:8080/api/v1/raillankapro/counter/changestatus/${counterId}/${newStatus}`;
 
-            const myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTk0NTM4MywiZXhwIjoxMDc1NTk0NTM4M30.ymySMHJcEdMcymm49RPRttY_yszNx44_WFZ1SJWgAkI");
+        try {
+            const { result } = await fetchWithTokenRefresh(url, { method: "PUT" });
+            console.log(result);
 
-            const requestOptions = {
-                method: "PUT",
-                headers: myHeaders,
-                redirect: "follow"
-            };
+            if (result.code === 200) {
+                loadStationForSelection();      // Refresh station dropdowns
+                fetchCounters(currentPage);     // Reload table
+                $("#filterStaff").val("");
 
-            fetch(`http://localhost:8080/api/v1/raillankapro/counter/changestatus/${counterId}/${newStatus}`, requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
-                console.log(result)
-                if (result.code === 200) {
-                    loadStationForSelection();
-                    fetchCounters(currentPage);
-                    $("#filterStaff").val("")
-                    if (result.data) {
-                        toastr.success(result.message);
-                    }else {
-                        toastr.warning(result.message);  
-                    }
-
+                if (result.data) {
+                    toastr.success(result.message);
+                } else {
+                    toastr.warning(result.message);
                 }
-            })
-            .catch((error) => console.error(error));
+            }
+        } catch (error) {
+            console.error(error);
+            toastr.error("Something went wrong while changing status.");
+        }
+    });
 
-        });
 
     //////////////////////////////  filter counter //////////////////////////////
     $("#filterStaff").on("input", function () {
@@ -688,8 +796,9 @@ $(document).ready(function () {
         $("#staffPassword").val("");
         $("#staffYearsOfExperience").val("");
         $(".stationSelection").val("");
-        $(".counterNumberSelection").val("");
-
+        const counterSelect = $("#staffRegistrationForm .counterNumberSelection");
+        counterSelect.empty();
+        $("#passwordStrength").removeClass().addClass("password-strength strength-0");
         $("#staffUsernameMsg").text("").removeClass("text-red-500")
 
     }
