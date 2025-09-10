@@ -1,3 +1,150 @@
+let token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+if (token) {
+    let userName = localStorage.getItem('userName') || sessionStorage.getItem('userName'); // lowercase n
+    $('#adminUsername').text(userName);
+    $('#tokenUsername').text(userName);
+} else {
+    $('#adminUsername, #tokenUsername').text('Guest');
+}
+
+$('#logoutButton').on('click', function(e) {
+    e.preventDefault();
+    clearAllTokens();
+    window.location.href = '../pages/anim.html';
+});
+
+$("#adminEmail").text(localStorage.getItem('email'))
+
+const accessToken = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+    if (!accessToken) {
+        window.location.href = "../../logging-expired.html"; 
+    }
+
+
+function clearAllTokens() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userName');
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('userName');
+    sessionStorage.removeItem('refreshToken');
+}
+
+async function refreshAccessToken() {
+  const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
+  
+  if (!refreshToken) {
+      console.log('❌ No refresh token found');
+      window.location.href = "../../logging-expired.html";
+      return null;
+  }
+
+  try {
+      console.log('🔄 Sending request to refresh token API...');
+
+      const response = await fetch('http://localhost:8080/api/v1/raillankapro/auth/refreshtoken', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              token: refreshToken
+          })
+      });
+
+      const result = await response.json();
+      console.log('📥 Refresh token response:', result);
+
+      if (response.ok && result.code === 200) {
+          const newAccessToken = result.data.accessToken;
+          const newRefreshToken = result.data.refreshToken;
+          
+          if (localStorage.getItem('refreshToken')) {
+              localStorage.setItem('accessToken', newAccessToken);
+              localStorage.setItem('refreshToken', newRefreshToken);
+          } else if (sessionStorage.getItem('refreshToken')) {
+              sessionStorage.setItem('accessToken', newAccessToken);
+              sessionStorage.setItem('refreshToken', newRefreshToken);
+          }
+
+          console.log('✅ Token refreshed successfully:', newAccessToken);
+          return newAccessToken;
+      } else {
+          console.log('⚠️ Refresh token expired or invalid:', result.message);
+          clearAllTokens();
+          window.location.href = "../../logging-expired.html";
+          return null;
+      }
+  } catch (error) {
+      console.error('🔥 Error refreshing token:', error);
+      clearAllTokens();
+      window.location.href = "../../logging-expired.html";
+      return null;
+  }
+}
+
+async function fetchWithTokenRefresh(url, options = {}) {
+  let accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+  
+  if (!accessToken) {
+      console.log("❌ No access token found. Redirecting...");
+      window.location.href = "../../logging-expired.html";
+  }
+
+  const headers = {
+      ...options.headers,
+      'Authorization': `Bearer ${accessToken}`
+  };
+
+  const requestOptions = {
+      ...options,
+      headers: headers
+  };
+
+  try {
+      console.log("➡️ Sending API request with token:", accessToken);
+      let response = await fetch(url, requestOptions);
+      let result = await response.json();
+
+      console.log("📥 API response:", result);
+
+      if (result.code === 401 && result.message === "JWT token has expired") {
+          console.log('⚠️ Access token expired, attempting to refresh...');
+          
+          // Try to refresh token
+          const newToken = await refreshAccessToken();
+          
+          if (newToken) {
+              console.log("🔄 Retrying API call with new token:", newToken);
+              // Retry the original request with new token
+              const retryHeaders = {
+                  ...options.headers,
+                  'Authorization': `Bearer ${newToken}`
+              };
+              
+              const retryOptions = {
+                  ...options,
+                  headers: retryHeaders
+              };
+              
+              response = await fetch(url, retryOptions);
+              result = await response.json();
+
+              console.log("📥 Retried API response:", result);
+          }
+      }
+
+      return { response, result };
+  } catch (error) {
+      console.error('🔥 Fetch error:', error); // Debug: network or fetch error
+      throw error;
+  }
+}
+
+
+
+
 toastr.options = {
       closeButton: true,
       progressBar: true,
@@ -13,15 +160,6 @@ const maxVisiblePages = 5;
 let lastColorIndex = -1; 
 let currentKeyword = "";
 
-const myHeaders = new Headers();
-myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTI4NzY3MCwiZXhwIjoxMDc1NTI4NzY3MH0.vxaERuJqs5vXzaP6iChN3Glid-ziQFuHx49YCsxRTys");
-myHeaders.append("Content-Type", "application/json");
-
-const requestOptions = {
-  method: "GET",
-  headers: myHeaders,
-  redirect: "follow"
-};
 
 function getRandomColor() {
   let index;
@@ -69,18 +207,14 @@ $("#stationRegisterForm input").on("keydown", function (e) {
     }
 });
 
-$("#stationRegisterForm").on("submit", function (e) {
+$("#stationRegisterForm").on("submit", async function (e) {
     e.preventDefault();
-
 
     if (!$("#stationDistrict").val().trim() || !$("#stationProvince").val().trim()) {
         const location = $("#stationLocation").val().trim();
         const splitLocationData = location.split(",").map(s => s.trim());
 
-        if (splitLocationData.length === 2) {
-            $("#stationDistrict").val(splitLocationData[0]);
-            $("#stationProvince").val(splitLocationData[1]);
-        } else if (splitLocationData.length === 3) {
+        if (splitLocationData.length >= 2) {
             $("#stationDistrict").val(splitLocationData[0]);
             $("#stationProvince").val(splitLocationData[1]);
         } else {
@@ -88,14 +222,10 @@ $("#stationRegisterForm").on("submit", function (e) {
         }
     }
 
-
     const stationName = $("#stationName").val().trim();
     const stationCode = $("#stationCode").val().trim();
     const stationDistrict = $("#stationDistrict").val().trim();
-    console.log("station district : " + stationDistrict)
     const stationProvince = $("#stationProvince").val().trim();
-    console.log("station province : " + stationProvince)
-
     const platformSelection = $("#platformNumbersSelection").val();
     const platformLength = $("#platformLength").val().trim();
 
@@ -105,12 +235,7 @@ $("#stationRegisterForm").on("submit", function (e) {
     });
     facilities = facilities.join(", ");
 
-
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTI4NzY3MCwiZXhwIjoxMDc1NTI4NzY3MH0.vxaERuJqs5vXzaP6iChN3Glid-ziQFuHx49YCsxRTys");
-
-    const raw = JSON.stringify({
+    const rawData = JSON.stringify({
         "name": stationName,
         "stationCode": stationCode,
         "district": stationDistrict,
@@ -121,33 +246,41 @@ $("#stationRegisterForm").on("submit", function (e) {
     });
 
     const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow"
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: rawData,
+        redirect: "follow"
     };
 
-    fetch("http://localhost:8080/api/v1/raillankapro/station/register", requestOptions)
-    .then((response) => response.json())
-    .then((result) => {
+    try {
+        const { response, result } = await fetchWithTokenRefresh(
+            "http://localhost:8080/api/v1/raillankapro/station/register",
+            requestOptions
+        );
+
+        if (!response || !result) return;
+
         console.log(result);
+
         if (result.code === 409) {
-            $("#stationNameMsg").text(result.message).addClass("text-red-500")
+            $("#stationNameMsg").text(result.message).addClass("text-red-500");
             return;
         }
 
         if (result.code === 201) {
             toastr.success(result.data);
-            fetchStations(currentPage);
-            closeRegisterModal();
-            
-
-
+            fetchStations(currentPage); 
+            closeRegisterModal();       
         }
-    })
-    .catch((error) => console.error(error));
 
+    } catch (error) {
+        console.error("🔥 Station registration error:", error);
+        $("#stationTable tbody").html(
+            '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error registering station</td></tr>'
+        );
+    }
 });
+
 
 
 
@@ -171,52 +304,49 @@ updateModal.on("click", function(e) {
           }
 });
 
-$(document).on("click", "#updateStationBtn", function() {
-  const id = $(this).data("id");
-  $("#stationUpdateModal").addClass("active");
+$(document).on("click", "#updateStationBtn", async function() {
+    const id = $(this).data("id");
+    $("#stationUpdateModal").addClass("active");
 
-  const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTI4NzY3MCwiZXhwIjoxMDc1NTI4NzY3MH0.vxaERuJqs5vXzaP6iChN3Glid-ziQFuHx49YCsxRTys");
+    const url = `http://localhost:8080/api/v1/raillankapro/station/getStationById?id=${id}`;
 
-  const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-    redirect: "follow"
-  };
+    try {
+        const { response, result } = await fetchWithTokenRefresh(url, {
+            method: "GET",
+            redirect: "follow"
+        });
 
-  fetch(`http://localhost:8080/api/v1/raillankapro/station/getStationById?id=${id}`, requestOptions)
-  .then((response) => response.json())
-  .then((result) => {
-    console.log(result)
-    $("#updateStationId").val(result.data.stationId)
-    $("#updateStationName").val(result.data.name)
-    $("#updateStationCode").val(result.data.stationCode)
-    $("#updatePlatformNumbersSelection").val(result.data.noOfPlatforms)
-    $("#updatePlatformLength").val(result.data.platformLength)
-    $("#updateStationDistrict").val(result.data.district)
-    $("#updateStationProvince").val(result.data.province)
+        if (!response || !result) return;
 
-    const facilities = result.data.otherFacilities 
-      ? result.data.otherFacilities.split(",").map(f => f.trim()) 
-       : [];
+        $("#updateStationId").val(result.data.stationId);
+        $("#updateStationName").val(result.data.name);
+        $("#updateStationCode").val(result.data.stationCode);
+        $("#updatePlatformNumbersSelection").val(result.data.noOfPlatforms);
+        $("#updatePlatformLength").val(result.data.platformLength);
+        $("#updateStationDistrict").val(result.data.district);
+        $("#updateStationProvince").val(result.data.province);
 
-    facilities.forEach(f => {
-      $(`input[name='updateFacilities'][value='${f}']`).prop("checked", true);
-    });
+        const facilities = result.data.otherFacilities
+            ? result.data.otherFacilities.split(",").map(f => f.trim())
+            : [];
 
-    if (result.data.inService) {
-      $("#inServiceRadio").prop("checked",true)
-      return;
+        facilities.forEach(f => {
+            $(`input[name='updateFacilities'][value='${f}']`).prop("checked", true);
+        });
+
+        if (result.data.inService) {
+            $("#inServiceRadio").prop("checked", true);
+        } else {
+            $("#outOfServiceRadio").prop("checked", true);
+        }
+
+    } catch (error) {
+        console.error(error);
     }
-
-    $("#outOfServiceRadio").prop("checked",true)
-  
-  })
-  .catch((error) => console.error(error));
 });
 
 
-$("#stationUpdateForm").on("submit", function (e) {
+$("#stationUpdateForm").on("submit", async function (e) {
     e.preventDefault();
 
     const stationId = $("#updateStationId").val().trim();
@@ -225,7 +355,8 @@ $("#stationUpdateForm").on("submit", function (e) {
     const platformSelection = $("#updatePlatformNumbersSelection").val();
     const platformLength = $("#updatePlatformLength").val().trim();
     const stationDistrict = $("#updateStationDistrict").val().trim();
-    const stationProvince =  $("#updateStationProvince").val().trim();
+    const stationProvince = $("#updateStationProvince").val().trim();
+
     let facilities = [];
     $("input[name='updateFacilities']:checked").each(function() {
         facilities.push($(this).val());
@@ -235,36 +366,33 @@ $("#stationUpdateForm").on("submit", function (e) {
     const statusValue = $("input[name='updateStatus']:checked").val();  
     const boolChecked = (statusValue === "true");
 
-
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTQ2MDkyNCwiZXhwIjoxMDc1NTQ2MDkyNH0.JIBitY7xITNBQlRLvBpmUia4ASUEoFu7xmWGAlHcVSw");
-
     const raw = JSON.stringify({
-      "stationId": stationId,
-      "name": stationName,
-      "stationCode": stationCode,
-      "district": stationDistrict,
-      "province": stationProvince,
-      "noOfPlatforms": platformSelection,
-      "platformLength": platformLength,
-      "inService": boolChecked,
-      "otherFacilities": facilities
+        "stationId": stationId,
+        "name": stationName,
+        "stationCode": stationCode,
+        "district": stationDistrict,
+        "province": stationProvince,
+        "noOfPlatforms": platformSelection,
+        "platformLength": platformLength,
+        "inService": boolChecked,
+        "otherFacilities": facilities
     });
 
-    const requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-    };
+    try {
+        const { response, result } = await fetchWithTokenRefresh(
+            "http://localhost:8080/api/v1/raillankapro/station/update",
+            {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: raw,
+                redirect: "follow"
+            }
+        );
 
-    fetch("http://localhost:8080/api/v1/raillankapro/station/update", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result)
+        if (!response || !result) return;
+
         if (result.code === 409) {
-            $("#updateStationNameMsg").text(result.message).addClass("text-red-500")
+            $("#updateStationNameMsg").text(result.message).addClass("text-red-500");
             return;
         }
 
@@ -273,14 +401,13 @@ $("#stationUpdateForm").on("submit", function (e) {
             toastr.success(result.data);
             fetchStations(currentPage);
             resetUpdateFields();
-            
         }
-      })
-      .catch((error) => console.error(error));
 
-   
-
+    } catch (error) {
+        console.error(error);
+    }
 });
+
 
 
 
@@ -288,54 +415,42 @@ $("#stationUpdateForm").on("submit", function (e) {
 
 /////////////////////////////////////// delete station ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-$(document).on("click", "#deleteStationBtn", function () {
-  const id = $(this).data("id");
+$(document).on("click", "#deleteStationBtn", async function () {
+    const id = $(this).data("id");
 
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,   
-    customClass: {
-      confirmButton: 'bg-blue-600 hover:bg-blue-700 text-white  py-2 px-4 rounded',
-      cancelButton: 'bg-gray-300 hover:bg-gray-400 text-black  py-2 px-4 rounded ml-2'
-    },
-    buttonsStyling: false ,
-    confirmButtonText: "Yes, delete it!"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTQ2MzMyNywiZXhwIjoxMDc1NTQ2MzMyN30.u5VC6wqDHzYRHHjFMEOYIb5iu_mrYdo17JeYRddG4s0");
+    const resultConfirm = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,   
+        customClass: {
+            confirmButton: 'bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded',
+            cancelButton: 'bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded ml-2'
+        },
+        buttonsStyling: false,
+        confirmButtonText: "Yes, delete it!"
+    });
 
-      const requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      redirect: "follow"
-      };
+    if (!resultConfirm.isConfirmed) return;
 
-      fetch(`http://localhost:8080/api/v1/raillankapro/station/delete?id=${id}`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-            fetchStations(currentPage);
-            console.log(result);
-            Swal.fire({
-              title: "Deleted!",
-              text: result.data,
-              icon: "success",
-              showConfirmButton: false,   
-              timer: 1300  
-            });
-      }).catch((error) => {
-              console.error(error);
-              Swal.fire({
-                title: "Error!",
-                text: "Something went wrong while deleting.",
-                icon: "error"
-              });
-      });
+    try {
+        const { response, result } = await fetchWithTokenRefresh(
+            `http://localhost:8080/api/v1/raillankapro/station/delete?id=${id}`,
+            { method: "PUT", redirect: "follow" }
+        );
+
+        if (!response || !result) return;
+
+        fetchStations(currentPage);
+        console.log(result);
+
+        toastr.success(result.data);
+    } catch (error) {
+        console.error(error);
+        toastr.error("Something went wrong while deleting.");
     }
-  });
 });
+
 
 
 
@@ -517,154 +632,143 @@ $("#btnLast").on("click", () => {
 
 ////////////////////////////////////// change status //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$(document).on("click", ".fa-toggle-on, .fa-toggle-off", function () {
-  const $btn = $(this);
-  const $row = $btn.closest("tr");
-  const $statusSpan = $row.find("td:nth-child(5) span");
+$(document).on("click", ".fa-toggle-on, .fa-toggle-off", async function () {
+    const $btn = $(this);
+    const $row = $btn.closest("tr");
+    const $statusSpan = $row.find("td:nth-child(5) span");
 
-  let newStatus;
-  if ($btn.hasClass("fa-toggle-on")) {
-      $btn.removeClass("fa-toggle-on").addClass("fa-toggle-off");
-      newStatus = false;
-  } else {
-      $btn.removeClass("fa-toggle-off").addClass("fa-toggle-on");
-      newStatus = true;
-  }
+    let newStatus;
+    if ($btn.hasClass("fa-toggle-on")) {
+        $btn.removeClass("fa-toggle-on").addClass("fa-toggle-off");
+        newStatus = false;
+    } else {
+        $btn.removeClass("fa-toggle-off").addClass("fa-toggle-on");
+        newStatus = true;
+    }
 
-  const stationId = $row.find("td:nth-child(1) div.text-sm.text-gray-500").text().trim(); 
-  const myHeaders = new Headers();  
-  myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51MjAwNiIsImlhdCI6MTc1NTI4NzY3MCwiZXhwIjoxMDc1NTI4NzY3MH0.vxaERuJqs5vXzaP6iChN3Glid-ziQFuHx49YCsxRTys"); // replace with real token
+    const stationId = $row.find("td:nth-child(1) div.text-sm.text-gray-500").text().trim(); 
 
-  const requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      redirect: "follow"
-  };
+    try {
+        const { response, result } = await fetchWithTokenRefresh(
+            `http://localhost:8080/api/v1/raillankapro/station/changeInServiceStatus/${stationId}/${newStatus}`,
+            { method: "PUT", redirect: "follow" }
+        );
 
-  fetch(`http://localhost:8080/api/v1/raillankapro/station/changeInServiceStatus/${stationId}/${newStatus}`, requestOptions)
-    .then(response => response.json())
-    .then(result => {
-        console.log(result); 
-        if (result.code === 200) {
-          fetchStations(currentPage);
-          $("#filterStation").val("")
-          if (result.data) {
-              toastr.success(result.message);
-          }else {
-            toastr.warning(result.message);  
-          }
-          
-        }
-        
-    })
-    .catch(error => {
-        console.error(error);
-        if (newStatus) {
-            $btn.removeClass("fa-toggle-on").addClass("fa-toggle-off");
-            $statusSpan.text("out-of-service")
-                        .removeClass("status-active")
-                        .addClass("status-inactive");
+        if (!response || !result) return;
+
+        fetchStations(currentPage,currentKeyword);
+
+        if (result.data) {
+            toastr.success(result.message);
         } else {
-            $btn.removeClass("fa-toggle-off").addClass("fa-toggle-on");
-            $statusSpan.text("in-service")
-                        .removeClass("status-inactive")
-                        .addClass("status-active");
+            toastr.warning(result.message);
         }
-        alert("Failed to update station status.");
-    });
+
+    } catch (error) {
+        console.error(error);
+        fetchStations(currentPage,currentKeyword);
+    }
 });
 
 
 
+
 ///////////////////////////////////////// fetch stations ///////////////////////////////////////////////////////////////////////////
-function fetchStations(page, keyword = "") {
+async function fetchStations(page, keyword = "") {
     let url = "";
     if (keyword && keyword.length >= 2) {
         url = `http://localhost:8080/api/v1/raillankapro/station/filter/${page}/7?keyword=${keyword}`;
     } else {
         url = `http://localhost:8080/api/v1/raillankapro/station/getAll/${page}/7`;
     }
+    
+    try{
+      const { response, result } = await fetchWithTokenRefresh(url, {
+                method: "GET",
+                redirect: "follow"
+            });
 
-    fetch(url, requestOptions)
-        .then(response => response.json())
-        .then(data => {
+      if (!response || !result) {
+          return;
+      }
 
-         
-            const stations = data.data;
-            totalPages = data.totalPages;
+      console.log(result);
 
-            $('#currentPage').text(data.startNumber);
-            $('#totalPage').text(data.totalItems);
-            $("#selectedLastRowData").text(data.endNumber);
+      const stations = result.data;
+      totalPages = result.totalPages;
 
-            $("#stationTable tbody").empty();
-            if (stations.length === 0) {
-                $("#stationTable tbody").append(
-                  `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                     No stations found
-                   </td></tr>`
-                );
-            } else {
-                stations.forEach(station => {
-                    const randomColor = getRandomColor();
-                    let statusText = station.inService ? "in-service" : "out-of-service";
-                    let statusClass = station.inService ? "status-active" : "status-inactive";
+      $('#currentPage').text(result.startNumber);
+      $('#totalPage').text(result.totalItems);
+      $("#selectedLastRowData").text(result.endNumber);
 
-                    $("#stationTable tbody").append(`
-                      <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10 bg-${randomColor}-100 rounded-full flex items-center justify-center">
-                              <i class="fas fa-train text-${randomColor}-600"></i>
-                            </div>
-                            <div class="ml-4">
-                              <div class="text-sm font-medium text-gray-900">${station.name}</div>
-                              <span class ="text-sm text-gray-500">ID:</span>
-                              <div class="text-sm text-gray-500 inline">${station.stationId}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <div class="text-sm font-mono">${station.stationCode}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <div class="text-sm text-gray-900">${station.district}</div>
-                          <div class="text-sm text-gray-500">${station.province}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          ${station.noOfPlatforms} platform(s)
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                            ${statusText}
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div class="flex space-x-2">
-                            <button id="updateStationBtn" class="text-blue-600 hover:text-blue-900" data-id="${station.stationId}">
-                              <i class="fas fa-edit"></i>
-                            </button>
-                            <button id="deleteStationBtn" class="text-red-600 hover:text-red-900" data-id="${station.stationId}">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="text-gray-600 hover:text-gray-900">
-                              <i class="fas ${station.inService ? "fa-toggle-on" : "fa-toggle-off"}"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    `);
-                });
-            }
+      $("#stationTable tbody").empty();
+      if (stations.length === 0) {
+          $("#stationTable tbody").append(
+            `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                No stations found
+              </td></tr>`
+          );
+      } else {
+          stations.forEach(station => {
+              const randomColor = getRandomColor();
+              let statusText = station.inService ? "in-service" : "out-of-service";
+              let statusClass = station.inService ? "status-active" : "status-inactive";
 
-            updatePaginationControls(page, totalPages);
-        })
-        .catch(err => {
+              $("#stationTable tbody").append(`
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10 bg-${randomColor}-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-train text-${randomColor}-600"></i>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">${station.name}</div>
+                        <span class ="text-sm text-gray-500">ID:</span>
+                        <div class="text-sm text-gray-500 inline">${station.stationId}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-mono">${station.stationCode}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${station.district}</div>
+                    <div class="text-sm text-gray-500">${station.province}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${station.noOfPlatforms} platform(s)
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                      ${statusText}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <div class="flex space-x-2">
+                      <button id="updateStationBtn" class="text-blue-600 hover:text-blue-900" data-id="${station.stationId}">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button id="deleteStationBtn" class="text-red-600 hover:text-red-900" data-id="${station.stationId}">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      <button class="text-gray-600 hover:text-gray-900">
+                        <i class="fas ${station.inService ? "fa-toggle-on" : "fa-toggle-off"}"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `);
+          });
+      }
+
+      updatePaginationControls(page, totalPages);
+
+    } catch (error) {
             console.log(err);
             $("#stationTable tbody").html(
               '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error loading data</td></tr>'
             );
-        });
+    }
 }
 
 
