@@ -48,4 +48,7 @@ public class Train {
     @OneToOne(mappedBy = "train" , cascade = CascadeType.ALL)
     private SpecialTrain specialTrain;
 
+    @OneToMany(mappedBy = "train")
+    private List<Schedule> schedules;
+
 }

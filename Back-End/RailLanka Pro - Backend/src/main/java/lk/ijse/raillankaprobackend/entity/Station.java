@@ -2,6 +2,7 @@ package lk.ijse.raillankaprobackend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.util.RouteMatcher;
 
 import java.util.List;
 
@@ -43,4 +44,16 @@ public class Station {
 
     @ManyToMany(mappedBy = "stations" )
     private List<Train> trains;
+
+    @OneToMany(mappedBy = "mainDepartureStation")
+    private List<Schedule> departureSchedules;
+
+    @OneToMany(mappedBy = "mainArrivalStation")
+    private List<Schedule> arrivalSchedules;
+
+
+
+
+
+
 }
