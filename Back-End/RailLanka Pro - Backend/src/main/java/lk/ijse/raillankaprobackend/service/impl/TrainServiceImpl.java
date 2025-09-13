@@ -1,6 +1,7 @@
 package lk.ijse.raillankaprobackend.service.impl;
 
 import lk.ijse.raillankaprobackend.dto.TrainDto;
+import lk.ijse.raillankaprobackend.dto.TrainStationDto;
 import lk.ijse.raillankaprobackend.entity.Dtypes.CargoType;
 import lk.ijse.raillankaprobackend.entity.Dtypes.SpecialTrainType;
 import lk.ijse.raillankaprobackend.entity.Dtypes.TrainCategory;
@@ -10,21 +11,22 @@ import lk.ijse.raillankaprobackend.entity.SpecialTrain;
 import lk.ijse.raillankaprobackend.entity.Station;
 import lk.ijse.raillankaprobackend.entity.Train;
 import lk.ijse.raillankaprobackend.entity.projection.TrainProjection;
+import lk.ijse.raillankaprobackend.entity.projection.TrainStationProjection;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.TrainNameAlreadyExistsException;
 import lk.ijse.raillankaprobackend.repository.*;
 import lk.ijse.raillankaprobackend.service.TrainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +48,8 @@ public class TrainServiceImpl implements TrainService {
     private final GoodsTrainRepository goodsTrainRepository;
 
     private final SpecialTrainRepository specialTrainRepository;
+
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -344,5 +348,73 @@ public class TrainServiceImpl implements TrainService {
 
         return "Train details have been updated successfully.";
     }
+
+    @Override
+    public List<TrainDto> getAllTrains() {
+        List<TrainDto> trainDtoList = new ArrayList<>();
+        trainRepository.findAll().forEach(train -> {
+            List<String> stationNames = trainRepository.findStationNamesByTrainId(train.getTrainId());
+            TrainDto trainDto = TrainDto.builder()
+                    .trainId(train.getTrainId())
+                    .trainName(train.getName())
+                    .trainType(String.valueOf(train.getTrainType()))
+                    .category(String.valueOf(train.getCategory()))
+                    .classes(train.getClasses())
+                    .active(train.isActive())
+                    .stations(stationNames)
+                    .build();
+            trainDtoList.add(trainDto);
+
+        });
+        return trainDtoList;
+
+    }
+
+    @Override
+    public List<TrainStationDto> getAllStationsByTrainName(String trainName) {
+        Train train = trainRepository.findByName(trainName)
+                .orElseThrow(() -> new RuntimeException("Train not found with name: " + trainName));
+
+        List<TrainStationProjection> stationsAndStatusByTrainId =
+                trainRepository.findStationsWithCodeAndTrainNameByTrainId(train.getTrainId());
+
+        return stationsAndStatusByTrainId.stream()
+                .map(trainStationProjection -> TrainStationDto.builder()
+                        .trainName(trainStationProjection.getTrainName())
+                        .stationName(trainStationProjection.getStationName())
+                        .stationCode(trainStationProjection.getStationCode())
+                        .status(trainStationProjection.getStatus())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long getAllTrainsCount() {
+        return trainRepository.count();
+    }
+
+    @Override
+    public long getActiveTrainsCount() {
+        return trainRepository.countTrainByActive(true);
+    }
+
+    @Override
+    public long getInactiveTrainsCount() {
+        return trainRepository.countTrainByActive(false);
+    }
+
+    @Override
+    public Map<String, Long> getTrainTypeCounts() {
+        Map<String, Long> result = new HashMap<>();
+        List<Object[]> data = trainRepository.countTrainsByType();
+
+        for (Object[] row : data) {
+            String type = (String) row[0];
+            Long count = (Long) row[1];
+            result.put(type, count);
+        }
+        return result;
+    }
+
 
 }

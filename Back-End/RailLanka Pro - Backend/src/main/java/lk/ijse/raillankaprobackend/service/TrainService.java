@@ -2,10 +2,12 @@ package lk.ijse.raillankaprobackend.service;
 
 import lk.ijse.raillankaprobackend.dto.CounterDto;
 import lk.ijse.raillankaprobackend.dto.TrainDto;
+import lk.ijse.raillankaprobackend.dto.TrainStationDto;
 import lk.ijse.raillankaprobackend.entity.Train;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author manuthlakdiv
@@ -36,5 +38,17 @@ public interface TrainService {
     TrainDto getTrainsAndStationDetailsByTrainId(String trainId);
 
     String updateTrainDetails(TrainDto trainDto);
+
+    List<TrainDto> getAllTrains();
+
+    List<TrainStationDto> getAllStationsByTrainName(String trainName);
+
+    long getAllTrainsCount();
+
+    long getActiveTrainsCount();
+
+    long getInactiveTrainsCount();
+
+    Map<String,Long> getTrainTypeCounts();
 
 }

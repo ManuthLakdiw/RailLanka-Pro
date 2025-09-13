@@ -1,6 +1,7 @@
 package lk.ijse.raillankaprobackend.controller;
 
 import lk.ijse.raillankaprobackend.dto.TrainDto;
+import lk.ijse.raillankaprobackend.dto.TrainStationDto;
 import lk.ijse.raillankaprobackend.service.TrainService;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
 import lk.ijse.raillankaprobackend.util.PaginatedResponse;
@@ -10,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author manuthlakdiv
@@ -155,6 +158,47 @@ public class TrainController {
                 trainService.updateTrainDetails(trainDto)
 
         ), HttpStatus.OK);
+    }
+
+    @GetMapping("get/all/trains")
+    public ResponseEntity<ApiResponse<List<TrainDto>>> getAllTrains(){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "fetched all trains",
+                trainService.getAllTrains()
+        ));
+    }
+
+    @GetMapping(value = "get/all/stations/by/name", params = "trainname")
+    public ResponseEntity<ApiResponse<List<TrainStationDto>>> getAllStationsByTrainName(@RequestParam("trainname") String trainName){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "fetched all stations by train name",
+                trainService.getAllStationsByTrainName(trainName)
+        ));
+    }
+
+    @GetMapping("count")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getTrainCount(){
+        Map<String,Long> count = new HashMap<>();
+        count.put("total", trainService.getAllTrainsCount());
+        count.put("active", trainService.getActiveTrainsCount());
+        count.put("inactive", trainService.getInactiveTrainsCount());
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "train count",
+                count
+        ));
+    }
+
+    @GetMapping("/count/by/type")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getTrainTypes() {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "train type counts",
+                trainService.getTrainTypeCounts()
+        ));
     }
 
 

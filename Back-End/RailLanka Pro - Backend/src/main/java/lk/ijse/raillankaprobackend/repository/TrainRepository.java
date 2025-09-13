@@ -2,6 +2,7 @@ package lk.ijse.raillankaprobackend.repository;
 
 import lk.ijse.raillankaprobackend.entity.Train;
 import lk.ijse.raillankaprobackend.entity.projection.TrainProjection;
+import lk.ijse.raillankaprobackend.entity.projection.TrainStationProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -73,6 +74,18 @@ public interface TrainRepository extends JpaRepository <Train,String> {
     """, nativeQuery = true)
     List<String> findStationNamesByTrainId(@Param("trainId") String trainId);
 
+    @Query(value = """
+    SELECT s.name AS stationName,
+           s.station_code AS stationCode,
+           s.in_service AS status,
+           t.name AS trainName
+    FROM train_station ts
+    JOIN station s ON ts.station_id = s.station_id
+    JOIN train t ON ts.train_id = t.train_id
+    WHERE ts.train_id = :trainId
+    """, nativeQuery = true)
+    List<TrainStationProjection> findStationsWithCodeAndTrainNameByTrainId(@Param("trainId") String trainId);
+
 
     @Query(value = """
    SELECT t.train_id AS trainId,
@@ -100,8 +113,10 @@ public interface TrainRepository extends JpaRepository <Train,String> {
     TrainProjection findTrainProjectionById(String trainId);
 
 
+    long countTrainByActive(boolean active);
 
-
+    @Query(value = "SELECT train_type, COUNT(*) FROM train GROUP BY train_type", nativeQuery = true)
+    List<Object[]> countTrainsByType();
 
 
 }
