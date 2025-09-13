@@ -194,8 +194,10 @@ public class PassengerServiceImpl implements PassengerService {
 
     private Page<PassengerDto> getPassengerDtos(Page<Passenger> passengerPage) {
         return passengerPage.map(passenger -> {
-
             String formattedPhoneNumber = passenger.getPhoneNumber().substring(0, 3) + "-" + passenger.getPhoneNumber().substring(3);
+            if (passenger.getPhoneNumber().equalsIgnoreCase("N/A")){
+                formattedPhoneNumber =  "N/A";
+            }
 
             return PassengerDto.builder()
                     .passengerId(passenger.getPassengerId())
