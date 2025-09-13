@@ -46,3 +46,119 @@ transition: transform 0.3s ease;
 .modal.active .modal-content {
 transform: translateY(0);
 }
+
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    margin: 1px 0;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateX(0);
+    overflow: hidden;
+}
+
+/* Active state with animations */
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid #fff;
+    transform: translateX(2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+    animation: activeGlow 2s infinite alternate;
+}
+
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 3s infinite;
+}
+
+.nav-link.active i {
+    animation: iconBounce 1s ease-out;
+    color: #ffd700;
+}
+
+.nav-link.active span {
+    animation: textSlide 0.6s ease-out;
+    font-weight: 600;
+}
+
+\.nav-link:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.nav-link:hover:not(.active) i {
+    animation: iconPulse 0.6s ease-out;
+}
+
+@keyframes activeGlow {
+    0% { 
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+    }
+    100% { 
+        box-shadow: 0 12px 35px rgba(255, 255, 255, 0.25);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes iconBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes textSlide {
+    0% { 
+        opacity: 0;
+        transform: translateY(2px);
+    }
+    100% { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.nav-link i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.logo-container {
+    position: relative;
+}
+
+.logo-container img {
+    transition: all 0.9s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.logo-container:hover img {
+    transform: scale(1.05) rotate(2deg);
+}
