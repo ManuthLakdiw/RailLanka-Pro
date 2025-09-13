@@ -4,6 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,7 +25,7 @@ public class GlobalExceptionHandler {
             UserNameAlreadyExistsException.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiResponse<String> userNameAlreadyExistsExceptionHandler(Exception ex){
+    public ApiResponse<String> alreadyExistsExceptionHandler(Exception ex){
         return new ApiResponse<>(
                 409,
                 ex.getMessage(),
@@ -79,6 +80,17 @@ public class GlobalExceptionHandler {
                 500,
                 ex.getMessage(),
                 null
+        );
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ApiResponse<String> httpRequestMethodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException ex){
+        return new ApiResponse<>(
+                405,
+                ex.getMessage(),
+                null
+
         );
     }
 
