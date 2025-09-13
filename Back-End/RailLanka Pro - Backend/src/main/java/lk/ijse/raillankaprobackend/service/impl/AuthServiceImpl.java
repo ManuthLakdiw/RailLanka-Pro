@@ -35,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsername(authDto.getUsername())
                 .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
 
+
         if (!passwordEncoder.matches(authDto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid username or password");
         }
@@ -45,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .username(authDto.getUsername())
                 .build();
     }
 

@@ -17,4 +17,5 @@ import lombok.*;
 public class AuthResponseDto {
     private String accessToken;
     private String refreshToken;
+    private String username;
 }
