@@ -66,7 +66,7 @@
     <div class="sidebar w-64 min-h-screen text-white flex flex-col">
       <div class="p-5 border-b border-blue-400">
         <div class="flex items-center space-x-3">
-          <i class="fas fa-train text-2xl"></i>
+          <img class="" src="../assets/logo.svg" alt="logo" />
           <h1 class="text-xl font-bold">RailLanka Pro</h1>
         </div>
         <p class="text-blue-200 text-sm mt-2">Admin Dashboard</p>
@@ -103,6 +103,15 @@
           </li>
           <li>
             <a
+              href="./manage-schedule.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-calendar-alt mr-3"></i>
+              <span>Manage Schedule</span>
+            </a>
+          </li>
+          <li>
+            <a
               href="./manage-station-master.html"
               class="nav-link flex items-center p-3 rounded-lg"
             >
@@ -120,7 +129,28 @@
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+            <a
+              href="./manage-employee.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-users mr-3"></i>
+              <span>Employees</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-passenger.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-users-between-lines mr-3"></i>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./report.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
               <i class="fas fa-file-invoice mr-3"></i>
               <span>Reports</span>
             </a>
@@ -860,74 +890,139 @@
               <div class="md:col-span-2 mt-4">
                 <h4 class="font-bold text-gray-700 mb-3 flex items-center">
                   <i class="fas fa-building text-blue-500 mr-2"></i>
-                  Other Station Facilities
+                  Station Facilities
                 </h4>
               </div>
 
               <div class="md:col-span-2">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <label class="flex items-center">
+                <div
+                  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+                >
+                  <!-- Waiting Room -->
+                  <label class="facility-card">
                     <input
                       type="checkbox"
                       name="updateFacilities"
                       value="Waiting Room"
-                      class="rounded text-blue-600"
+                      class="absolute opacity-0"
                     />
-                    <span class="ml-2 text-sm">Waiting Room</span>
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2"
+                    >
+                      <i class="fas fa-couch text-blue-600"></i>
+                    </div>
+                    <span class="text-sm font-medium">Waiting Room</span>
                   </label>
-                  <label class="flex items-center">
+
+                  <!-- Restrooms -->
+                  <label class="facility-card">
                     <input
                       type="checkbox"
                       name="updateFacilities"
                       value="Restrooms"
-                      class="rounded text-blue-600"
+                      class="absolute opacity-0"
                     />
-                    <span class="ml-2 text-sm">Restrooms</span>
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2"
+                    >
+                      <i class="fas fa-restroom text-blue-600"></i>
+                    </div>
+                    <span class="text-sm font-medium">Restrooms</span>
                   </label>
-                  <label class="flex items-center">
+
+                  <!-- Parking -->
+                  <label class="facility-card">
                     <input
                       type="checkbox"
                       name="updateFacilities"
                       value="Parking"
-                      class="rounded text-blue-600"
+                      class="absolute opacity-0"
                     />
-                    <span class="ml-2 text-sm">Parking</span>
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2"
+                    >
+                      <i class="fas fa-parking text-blue-600"></i>
+                    </div>
+                    <span class="text-sm font-medium">Parking</span>
                   </label>
-                  <label class="flex items-center">
+
+                  <!-- Food Court -->
+                  <label class="facility-card">
                     <input
                       type="checkbox"
                       name="updateFacilities"
                       value="Food Court"
-                      class="rounded text-blue-600"
+                      class="absolute opacity-0"
                     />
-                    <span class="ml-2 text-sm">Food Court</span>
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2"
+                    >
+                      <i class="fas fa-utensils text-blue-600"></i>
+                    </div>
+                    <span class="text-sm font-medium">Food Court</span>
                   </label>
-                  <label class="flex items-center">
+
+                  <!-- WiFi -->
+                  <label class="facility-card">
                     <input
                       type="checkbox"
                       name="updateFacilities"
                       value="WiFi"
-                      class="rounded text-blue-600"
+                      class="absolute opacity-0"
                     />
-                    <span class="ml-2 text-sm">WiFi</span>
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2"
+                    >
+                      <i class="fas fa-wifi text-blue-600"></i>
+                    </div>
+                    <span class="text-sm font-medium">WiFi</span>
                   </label>
-                  <label class="flex items-center">
+
+                  <!-- ATM -->
+                  <label class="facility-card">
                     <input
                       type="checkbox"
                       name="updateFacilities"
                       value="ATM"
-                      class="rounded text-blue-600"
+                      class="absolute opacity-0"
                     />
-                    <span class="ml-2 text-sm">ATM</span>
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2"
+                    >
+                      <i class="fas fa-money-bill-wave text-blue-600"></i>
+                    </div>
+                    <span class="text-sm font-medium">ATM</span>
                   </label>
-                  <label class="flex items-center">
+                  <!-- lavatory -->
+                  <label class="facility-card">
+                    <input
+                      type="checkbox"
+                      name="updateFacilities"
+                      value="Lavatory"
+                      class="absolute opacity-0"
+                    />
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2"
+                    >
+                      <i class="fas fa-toilet text-blue-600"></i>
+                    </div>
+                    <span class="text-sm font-medium">Lavatory</span>
+                  </label>
+
+                  <!-- Accessibility -->
+                  <label class="facility-card">
                     <input
                       type="checkbox"
                       name="updateFacilities"
                       value="Accessibility"
-                      class="rounded text-blue-600"
+                      class="absolute opacity-0"
                     />
-                    <span class="ml-2 text-sm">Accessibility</span>
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2"
+                    >
+                      <i class="fas fa-wheelchair text-blue-600"></i>
+                    </div>
+                    <span class="text-sm font-medium">Accessibility</span>
                   </label>
                 </div>
               </div>
