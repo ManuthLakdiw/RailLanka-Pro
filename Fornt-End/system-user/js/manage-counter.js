@@ -665,9 +665,9 @@ $(document).ready(function () {
             console.log(result);
 
             if (result.code === 200) {
-                loadStationForSelection();      // Refresh station dropdowns
-                fetchCounters(currentPage);     // Reload table
-                $("#filterStaff").val("");
+                loadStationForSelection();      
+                fetchCounters(currentPage,currentKeyword);     
+                // $("#filterStaff").val("");
 
                 if (result.data) {
                     toastr.success(result.message);
