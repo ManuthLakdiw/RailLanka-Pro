@@ -93,4 +93,13 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ScheduleConflictException.class)
+    public ApiResponse<String> scheduleConflictExceptionHandler(ScheduleConflictException ex){
+        return new ApiResponse<>(
+                409,
+                ex.getMessage(),
+                null
+        );
+    }
+
 }

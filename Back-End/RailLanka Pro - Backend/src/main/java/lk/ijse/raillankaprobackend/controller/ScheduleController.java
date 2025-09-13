@@ -1,7 +1,6 @@
 package lk.ijse.raillankaprobackend.controller;
 
 import lk.ijse.raillankaprobackend.dto.ScheduleDto;
-import lk.ijse.raillankaprobackend.dto.StationDto;
 import lk.ijse.raillankaprobackend.service.ScheduleService;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
 import lk.ijse.raillankaprobackend.util.PaginatedResponse;
@@ -146,6 +145,15 @@ public class ScheduleController {
                 200,
                 "schedule deleted",
                 scheduleService.deleteSchedule(scheduleId)
+        ));
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<ApiResponse<String>> updateSchedule(@RequestBody ScheduleDto scheduleDto){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "shedule updated",
+                scheduleService.updateScheduleDetails(scheduleDto)
         ));
     }
 

@@ -241,6 +241,67 @@ public class ScheduleServiceImpl implements ScheduleService {
         return getScheduleDtos(schedulePage);
     }
 
+    @Override
+    public String updateScheduleDetails(ScheduleDto scheduleDto) {
+        System.out.println(scheduleDto.getScheduleFrequency());
+        Schedule existingSchedule = scheduleRepository.findById(scheduleDto.getScheduleId())
+                .orElseThrow(() -> new RuntimeException("Schedule not found"));
+
+        Train train = trainRepository.findByName(scheduleDto.getTrainName())
+                .orElseThrow(() -> new RuntimeException("Train not found"));
+
+        // 3. Find Departure & Arrival stations
+        Station departureStation = stationRepository.findByName(scheduleDto.getDepartureStation())
+                .orElseThrow(() -> new RuntimeException("Departure Station not found"));
+
+        Station arrivalStation = stationRepository.findByName(scheduleDto.getArrivalStation())
+                .orElseThrow(() -> new RuntimeException("Arrival Station not found"));
+
+        // 4. Conflict check (skip current schedule itself)
+        List<Schedule> conflicts = scheduleRepository.findConflictingSchedules(
+                        train,
+                        scheduleDto.getMainDepartureTime(),
+                        scheduleDto.getMainArrivalTime()
+                ).stream()
+                .filter(s -> !s.getScheduleId().equals(scheduleDto.getScheduleId()))
+                .toList();
+
+        if (!conflicts.isEmpty()) {
+            throw new ScheduleConflictException("Conflict detected: Another schedule overlaps for this train.");
+        }
+
+        existingSchedule.setTrain(train);
+        existingSchedule.setMainDepartureStation(departureStation);
+        existingSchedule.setMainArrivalStation(arrivalStation);
+        existingSchedule.setMainDepartureTime(scheduleDto.getMainDepartureTime());
+        existingSchedule.setMainArrivalTime(scheduleDto.getMainArrivalTime());
+        existingSchedule.setDescription(scheduleDto.getDescription());
+        existingSchedule.setScheduleFrequency(ScheduleFrequency.valueOf(scheduleDto.getScheduleFrequency()));
+        existingSchedule.setStatus(scheduleDto.isStatus());
+
+        existingSchedule.getStops().clear(); // remove old stops
+        List<ScheduleIntermediateStop> stops = scheduleDto.getStops().stream().map(stopDto -> {
+            Station station = stationRepository.findByName(stopDto.getStationId())
+                    .orElseThrow(() -> new RuntimeException("Stop Station not found"));
+
+            return ScheduleIntermediateStop.builder()
+                    .schedule(existingSchedule)
+                    .station(station)
+                    .stopOrder(stopDto.getStopOrder())
+                    .arrivalTime(stopDto.getArrivalTime())
+                    .departureTime(stopDto.getDepartureTime())
+                    .build();
+        }).toList();
+
+        existingSchedule.getStops().addAll(stops);
+
+        scheduleRepository.save(existingSchedule);
+
+        return "Schedule has been successfully updated.";
+
+
+    }
+
     private Page<ScheduleDto> getScheduleDtos(Page<Schedule> schedulePage) {
         return schedulePage.map(schedule -> {
             Duration duration = Duration.between(

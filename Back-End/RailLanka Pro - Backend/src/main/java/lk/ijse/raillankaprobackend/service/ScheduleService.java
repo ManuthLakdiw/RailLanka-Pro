@@ -34,6 +34,8 @@ public interface ScheduleService {
 
     Page<ScheduleDto> filterScheduleByFrequency(String frequency, int pageNo, int pageSize);
 
+    String updateScheduleDetails(ScheduleDto scheduleDto);
+
 
 
 
