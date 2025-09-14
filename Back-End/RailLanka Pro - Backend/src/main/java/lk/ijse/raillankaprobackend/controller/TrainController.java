@@ -201,5 +201,14 @@ public class TrainController {
         ));
     }
 
+    @GetMapping("/count/by/schedule")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getTrainCountBySchedule() {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "train schedule counts",
+                trainService.getTrainScheduleCounts()
+        ));
+    }
+
 
 }
