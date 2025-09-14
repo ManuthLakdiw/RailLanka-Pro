@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RailLanka Pro | Reports Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../styles/normalize.css" />
+    <link rel="stylesheet" href="../styles/report.css" />
+  </head>
+  <body class="min-h-screen flex bg-gray-100">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 min-h-screen text-white flex flex-col">
+      <div class="p-5 border-b border-blue-400">
+        <div class="flex items-center space-x-3">
+          <img class="" src="../assets/logo.svg" alt="logo" />
+          <h1 class="text-xl font-bold">RailLanka Pro</h1>
+        </div>
+        <p class="text-blue-200 text-sm mt-2">Admin Dashboard</p>
+      </div>
+
+      <div class="p-4 flex-1">
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="./admin-dashboard.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-tachometer-alt mr-3"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-train.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-subway mr-3"></i>
+              <span>Manage Trains</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-station.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-road mr-3"></i>
+              <span>Manage Stations</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-schedule.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-calendar-alt mr-3"></i>
+              <span>Manage Schedule</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-station-master.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-user-tie mr-3"></i>
+              <span>Station Masters</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-counter.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-user-friends mr-3"></i>
+              <span>Counter Staff</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-employee.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-users mr-3"></i>
+              <span>Employees</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-passenger.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-users-between-lines mr-3"></i>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-link active flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-file-invoice mr-3"></i>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-cog mr-3"></i>
+              <span>System Settings</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-8 p-4 bg-blue-700 rounded-lg">
+          <h3 class="font-medium">Report Stats</h3>
+          <div class="mt-3 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Generated Today</span>
+              <span class="font-bold">24</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Scheduled Reports</span>
+              <span class="font-bold">5</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Most Viewed</span>
+              <span class="font-bold">Train Report</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-blue-400">
+        <div class="flex items-center space-x-3">
+          <div
+            class="bg-blue-200 text-blue-800 w-10 h-10 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <p class="font-medium">Admin User</p>
+            <p id="adminEmail" class="text-blue-200 text-sm">
+              admin@raillanka.lk
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-sm">
+        <div class="max-w-full mx-auto px-6 py-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">
+                Reports Generation
+              </h2>
+              <p class="text-gray-600 text-sm">
+                Generate and analyze system reports
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                  <i class="fas fa-bell text-gray-600"></i>
+                  <span
+                    class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+                  ></span>
+                </button>
+              </div>
+              <div class="relative group">
+                <button class="flex items-center space-x-2 text-gray-700">
+                  <div
+                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
+                  >
+                    <i class="fas fa-user text-blue-700"></i>
+                  </div>
+                  <span id="adminUsername">Admin User</span>
+                  <i
+                    class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"
+                  ></i>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div
+                  class="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50"
+                >
+                  <div
+                    class="px-4 py-2 border-b border-gray-100 text-xs text-gray-500"
+                  >
+                    Signed in as <span id="tokenUsername">Admin User</span>
+                  </div>
+                  <a
+                    href="#"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    <i class="fas fa-user-circle mr-2"></i>Profile
+                  </a>
+                  <a
+                    href="#"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700"
+                    id="logoutButton"
+                  >
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Report Tabs -->
+      <div class="px-6 py-4 bg-white shadow-sm">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <button class="report-tab active" data-tab="train-report">
+            <i class="fas fa-train"></i>
+            <span class="text-sm">Train Reports</span>
+          </button>
+          <button class="report-tab" data-tab="station-report">
+            <i class="fas fa-road"></i>
+            <span class="text-sm">Station Reports</span>
+          </button>
+          <button class="report-tab" data-tab="schedule-report">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="text-sm">Schedule Reports</span>
+          </button>
+          <button class="report-tab" data-tab="stationmaster-report">
+            <i class="fas fa-user-tie"></i>
+            <span class="text-sm">Master Reports</span>
+          </button>
+          <button class="report-tab" data-tab="counter-report">
+            <i class="fas fa-ticket-alt"></i>
+            <span class="text-sm">Counter Reports</span>
+          </button>
+          <button class="report-tab" data-tab="employee-report">
+            <i class="fas fa-users"></i>
+            <span class="text-sm">Employee Reports</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Report Content Area -->
+      <div class="px-6 py-4 flex-1">
+        <!-- Train Reports -->
+        <div id="train-report" class="report-content">
+          <div class="mb-6 flex flex-wrap gap-3 justify-between">
+            <div>
+              <button
+                class="filter-btn active px-4 py-2 bg-blue-100 text-blue-700 rounded-lg"
+                data-filter="all"
+              >
+                All Trains
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="active"
+              >
+                Active
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="inactive"
+              >
+                Inactive
+              </button>
+            </div>
+
+            <div class="flex space-x-2">
+              <button
+                class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-print mr-1"></i> Print
+              </button>
+              <button
+                id="trainExportBtn"
+                class="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-file-export mr-1"></i> Export
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
+          >
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                  <i class="fas fa-train text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Total Trains</p>
+                  <h3 id="totalTrains" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="text-green-600"
+                    >Active: <span id="activeTrains"></span
+                  ></span>
+                  <span class="text-red-600"
+                    >Inactive: <span id="inactiveTrains"></span>
+                  </span>
+                </div>
+                <div
+                  id="trainProgressBar"
+                  class="bg-green-500 h-2 rounded-full"
+                ></div>
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                  <i class="fas fa-list text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Train Categories</p>
+                  <h3 id="trainCategoryCount" class="text-2xl font-bold">4</h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                Passenger, Post, Goods, Special
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-purple-100 text-purple-600 mr-4">
+                  <i class="fas fa-cog text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Train Types</p>
+                  <h3 id="trainTypeCount" class="text-2xl font-bold">4</h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                Express, Normal, Intercity, Special
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">Trains by Category</h3>
+              <div class="chart-container">
+                <canvas id="trainTypeChart"></canvas>
+              </div>
+            </div>
+
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">Active vs Inactive Trains</h3>
+              <div class="chart-container">
+                <canvas id="trainStatusChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Station Reports -->
+        <div id="station-report" class="report-content hidden">
+          <div class="mb-6 flex flex-wrap gap-3 justify-between">
+            <div>
+              <button
+                class="filter-btn active px-4 py-2 bg-blue-100 text-blue-700 rounded-lg"
+                data-filter="all"
+              >
+                All Stations
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="active"
+              >
+                Active
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="inactive"
+              >
+                Inactive
+              </button>
+            </div>
+
+            <div class="flex space-x-2">
+              <button
+                class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-print mr-1"></i> Print
+              </button>
+              <button
+                id="stationExportBtn"
+                class="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-file-export mr-1"></i> Export
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
+          >
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                  <i class="fas fa-road text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Total Stations</p>
+                  <h3 id="totalStations" class="text-2xl font-bold">87</h3>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="text-green-600"
+                    >Active: <span id="activeStations"></span
+                  ></span>
+                  <span class="text-red-600"
+                    >Inactive: <span id="inactiveStations"></span
+                  ></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    id="stationProgressBar"
+                    class="bg-green-500 h-2 rounded-full"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                  <i class="fas fa-map-marker-alt text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Provinces</p>
+                  <h3 id="stationProvinceCount" class="text-2xl font-bold">
+                    9
+                  </h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                Western, Central, Southern, etc.
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-purple-100 text-purple-600 mr-4">
+                  <i class="fas fa-train text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Avg. Daily Trains</p>
+                  <h3 id="stationAvg" class="text-2xl font-bold">42</h3>
+                </div>
+              </div>
+              <div class="mt-4 flex items-center text-xs text-green-600">
+                <i class="fas fa-arrow-up mr-1"></i> 8% increase from last month
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">Stations by Province</h3>
+              <div class="chart-container">
+                <canvas id="stationProvinceChart"></canvas>
+              </div>
+            </div>
+
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">
+                Active vs Inactive Stations
+              </h3>
+              <div class="chart-container">
+                <canvas id="stationStatusChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schedule Reports -->
+        <div id="schedule-report" class="report-content hidden">
+          <div class="mb-6 flex flex-wrap gap- justify-between">
+            <div>
+              <button
+                class="filter-btn active px-4 py-2 bg-blue-100 text-blue-700 rounded-lg"
+                data-filter="all"
+              >
+                All Schedules
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="active"
+              >
+                Active
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="inactive"
+              >
+                Inactive
+              </button>
+            </div>
+
+            <div class="flex space-x-2">
+              <button
+                class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-print mr-1"></i> Print
+              </button>
+              <button
+                id="scheduleExportBtn"
+                class="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-file-export mr-1"></i> Export
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
+          >
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                  <i class="fas fa-calendar-alt text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Total Schedules</p>
+                  <h3 id="totalSchedules" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="text-green-600"
+                    >Active: <span id="activeSchedules"></span
+                  ></span>
+                  <span class="text-red-600"
+                    >Inactive: <span id="inactiveSchedules"></span
+                  ></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    id="scheduleProgressBar"
+                    class="bg-green-500 h-2 rounded-full"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                  <i class="fas fa-clock text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Avg. Daily Trips</p>
+                  <h3 id="scheduleAvgDaily" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4 flex items-center text-xs text-green-600">
+                <i class="fas fa-arrow-up mr-1"></i> 8% increase from last month
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-purple-100 text-purple-600 mr-4">
+                  <i class="fas fa-train text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Trains with Schedules</p>
+                  <h3 id="scheduledtrainCount" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                Out of <span id="totalTrainCountWithoutSchedule"></span> total
+                trains
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">Schedules by Frequency</h3>
+              <div class="chart-container">
+                <canvas id="scheduleFrequencyChart"></canvas>
+              </div>
+            </div>
+
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">
+                Active vs Inactive Schedules
+              </h3>
+              <div class="chart-container">
+                <canvas id="scheduleStatusChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Station Master Reports -->
+        <div id="stationmaster-report" class="report-content hidden">
+          <div class="mb-6 flex flex-wrap gap-3 justify-between">
+            <div>
+              <button
+                class="filter-btn active px-4 py-2 bg-blue-100 text-blue-700 rounded-lg"
+                data-filter="all"
+              >
+                All Station Masters
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="active"
+              >
+                Active
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="inactive"
+              >
+                Inactive
+              </button>
+            </div>
+
+            <div class="flex space-x-2">
+              <button
+                class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-print mr-1"></i> Print
+              </button>
+              <button
+                id="sMasterExportBtn"
+                class="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-file-export mr-1"></i> Export
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
+          >
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                  <i class="fas fa-user-tie text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Total Station Masters</p>
+                  <h3 id="totalSMasters" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="text-green-600"
+                    >Active: <span id="activeSMasters"></span
+                  ></span>
+                  <span class="text-red-600"
+                    >Inactive: <span id="inacticeSMasters"></span
+                  ></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    id="SmasterProgressBar"
+                    class="bg-green-500 h-2 rounded-full"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                  <i class="fas fa-map-marker-alt text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Active Stations Covered</p>
+                  <h3 id="sMasterCoveredStations" class="text-2xl font-bold">
+                    68
+                  </h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                Out of <span id="sMasterTotalStations"></span> total stations
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-yellow-100 text-yellow-600 mr-4">
+                  <i class="fas fa-award text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Avg. Experience</p>
+                  <h3 class="text-2xl font-bold">
+                    <span id="sMasterAvgExperience"></span> years
+                  </h3>
+                </div>
+              </div>
+              <div class="mt-4 flex items-center text-xs text-green-600">
+                <i class="fas fa-arrow-up mr-1"></i> 8% increase from last year
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">
+                Station Masters by Province
+              </h3>
+              <div class="chart-container">
+                <canvas id="stationMasterProvinceChart"></canvas>
+              </div>
+            </div>
+
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">
+                Active vs Inactive Station Masters
+              </h3>
+              <div class="chart-container">
+                <canvas id="stationMasterStatusChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Counter Reports -->
+        <div id="counter-report" class="report-content hidden">
+          <div class="mb-6 flex flex-wrap gap-3 justify-between">
+            <div>
+              <button
+                class="filter-btn active px-4 py-2 bg-blue-100 text-blue-700 rounded-lg"
+                data-filter="all"
+              >
+                All Counters
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="active"
+              >
+                Active
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="inactive"
+              >
+                Inactive
+              </button>
+            </div>
+
+            <div class="flex space-x-2">
+              <button
+                class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-print mr-1"></i> Print
+              </button>
+              <button
+                id="counterExportBtn"
+                class="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-file-export mr-1"></i> Export
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
+          >
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-purple-100 text-purple-600 mr-4">
+                  <i class="fas fa-user-friends text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Counter Staff</p>
+                  <h3 id="totalCounterStaff" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="text-green-600"
+                    >Active: <span id="activeCounterStaff"></span
+                  ></span>
+                  <span class="text-red-600"
+                    >Inactive: <span id="inactiveCounterStaff"></span
+                  ></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    id="CounterProgressBar"
+                    class="bg-green-500 h-2 rounded-full"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                  <i class="fas fa-ticket-alt text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Total Counters</p>
+                  <h3 id="totalCounterMachines" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                Out of <span id="totalCounterStations"></span> total stations
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                  <i class="fas fa-road text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Stations with Counters</p>
+                  <h3 id="stationWithCounters" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                only <span id="stationPerCounter"></span> counters for a station
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">Counters by Province</h3>
+              <div class="chart-container">
+                <canvas id="counterProvinceChart"></canvas>
+              </div>
+            </div>
+
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">
+                Active vs Inactive Counters
+              </h3>
+              <div class="chart-container">
+                <canvas id="counterStatusChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employee Reports -->
+        <div id="employee-report" class="report-content hidden">
+          <div class="mb-6 flex flex-wrap gap-3 justify-between">
+            <div>
+              <button
+                class="filter-btn active px-4 py-2 bg-blue-100 text-blue-700 rounded-lg"
+                data-filter="all"
+              >
+                All Employees
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="active"
+              >
+                Active
+              </button>
+              <button
+                class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                data-filter="inactive"
+              >
+                Inactive
+              </button>
+            </div>
+
+            <div class="flex space-x-2">
+              <button
+                class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-print mr-1"></i> Print
+              </button>
+              <button
+                id="employeeExportBtn"
+                class="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-sm"
+              >
+                <i class="fas fa-file-export mr-1"></i> Export
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
+          >
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                  <i class="fas fa-users text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Total Employees</p>
+                  <h3 id="totalEmployees" class="text-2xl font-bold">1,245</h3>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="text-green-600"
+                    >Active: <span id="activeEmployees"></span
+                  ></span>
+                  <span class="text-red-600"
+                    >Inactive: <span id="inactiveEmployees"></span
+                  ></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    id="employeeProgressBar"
+                    class="bg-green-500 h-2 rounded-full"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-purple-100 text-purple-600 mr-4">
+                  <i class="fas fa-user-tie text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Station Masters</p>
+                  <h3 id="empSMasterTotal" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                <span id="empSmasterPrecentage"></span>% of total employees
+              </div>
+            </div>
+
+            <div class="stat-card dashboard-card bg-white p-6 rounded-xl">
+              <div class="flex items-center">
+                <div class="p-3 rounded-lg bg-yellow-100 text-yellow-600 mr-4">
+                  <i class="fas fa-user-friends text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Counter Staff</p>
+                  <h3 id="empCounterTotal" class="text-2xl font-bold"></h3>
+                </div>
+              </div>
+              <div class="mt-4 text-xs text-gray-500">
+                <span id="empCounterPrecentage"></span>% of total employees
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">Employees by Role</h3>
+              <div class="chart-container">
+                <canvas id="employeeRoleChart"></canvas>
+              </div>
+            </div>
+
+            <div class="dashboard-card bg-white p-6 rounded-xl">
+              <h3 class="font-bold text-lg mb-4">
+                Active vs Inactive Employees
+              </h3>
+              <div class="chart-container">
+                <canvas id="employeeStatusChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/report.js"></script>
+  </body>
+</html>

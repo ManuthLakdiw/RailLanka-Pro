@@ -1,0 +1,59 @@
+.report-tab {
+transition: all 0.3s ease;
+border-bottom: 3px solid transparent;
+}
+.report-tab.active {
+border-bottom-color: #3b82f6;
+color: #3b82f6;
+font-weight: 100;
+}
+.stat-card {
+transition: all 0.3s ease;
+}
+.stat-card:hover {
+transform: translateY(-5px);
+box-shadow:
+0 10px 15px -3px rgba(0, 0, 0, 0.1),
+0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.chart-container {
+position: relative;
+height: 300px;
+}
+.filter-btn {
+transition: all 0.3s ease;
+}
+.filter-btn.active {
+background-color: #3b82f6;
+color: white;
+}
+
+.report-tab {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 10px 14px;
+border-radius: 10px;
+background: white;
+transition: all 0.3s ease;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+border: 1px solid #e2e8f0;
+min-width: 120px;
+}
+
+.report-tab:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 10px rgba(0, 0, 0, 0.08);
+}
+
+.report-tab.active {
+background-color: #2563eb;
+color: white;
+box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+}
+
+.report-tab i {
+font-size: 0.8rem;
+margin-bottom: 8px;
+}
