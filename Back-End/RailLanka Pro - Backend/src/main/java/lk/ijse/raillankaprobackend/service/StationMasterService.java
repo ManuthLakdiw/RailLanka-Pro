@@ -6,6 +6,7 @@ import lk.ijse.raillankaprobackend.dto.StationDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -32,4 +33,14 @@ public interface StationMasterService {
     String updateStationMasterDetails(StaffDto staffDto);
 
     Optional<StaffDto> findStationMasterById(String stationMasterId);
+
+    long getAllStationMastersCount();
+
+    long getActiveStationMastersCount();
+
+    long getInactiveStationMastersCount();
+
+    Double getAverageExperienceOfActiveStationMasters();
+
+    Map<String, Long> getStationMasterCountByProvince();
 }

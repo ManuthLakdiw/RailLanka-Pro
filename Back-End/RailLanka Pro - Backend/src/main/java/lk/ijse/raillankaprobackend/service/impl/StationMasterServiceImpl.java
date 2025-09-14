@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -294,6 +296,40 @@ public class StationMasterServiceImpl implements StationMasterService {
         return Optional.of(dto);
 
 
+    }
+
+    @Override
+    public long getAllStationMastersCount() {
+        return stationMasterRepository.count();
+    }
+
+    @Override
+    public long getActiveStationMastersCount() {
+        return stationMasterRepository.countStationMasterByActive(true);
+    }
+
+    @Override
+    public long getInactiveStationMastersCount() {
+        return stationMasterRepository.countStationMasterByActive(false);
+    }
+
+    @Override
+    public Double getAverageExperienceOfActiveStationMasters() {
+        return stationMasterRepository.findAverageExperienceOfActiveMasters();
+    }
+
+    @Override
+    public Map<String, Long> getStationMasterCountByProvince() {
+        List<Object[]> results = stationMasterRepository.findStationMasterCountByProvince();
+        Map<String, Long> provinceCounts = new HashMap<>();
+
+        for (Object[] row : results) {
+            String province = (String) row[0];
+            Long count = ((Number) row[1]).longValue();
+            provinceCounts.put(province, count);
+        }
+
+        return provinceCounts;
     }
 
 }

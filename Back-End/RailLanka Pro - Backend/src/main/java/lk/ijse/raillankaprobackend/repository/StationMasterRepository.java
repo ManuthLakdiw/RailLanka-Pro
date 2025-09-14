@@ -39,5 +39,20 @@ public interface StationMasterRepository extends JpaRepository<StationMaster, St
     Page<StationMaster> filterStationsByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
 
+    long countStationMasterByActive(boolean active);
+
+    @Query("SELECT AVG(sm.yearsOfExperience) FROM StationMaster sm WHERE sm.active = true")
+    Double findAverageExperienceOfActiveMasters();
+
+
+    @Query(value = "SELECT s.province AS province, COUNT(sm.station_master_id) AS totalStationMasters " +
+            "FROM station_master sm " +
+            "JOIN station s ON sm.station_id = s.station_id " +
+            "WHERE sm.active = 1 " +
+            "GROUP BY s.province",
+            nativeQuery = true)
+    List<Object[]> findStationMasterCountByProvince();
+
+    List<StationMaster> findStationMasterByActive(boolean active);
 }
 

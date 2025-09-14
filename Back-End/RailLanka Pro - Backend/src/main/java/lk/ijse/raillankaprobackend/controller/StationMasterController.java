@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -113,6 +114,40 @@ public class StationMasterController {
                 stationMasterService.updateStationMasterDetails(staffDto)
         ), HttpStatus.OK);
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getStationMasterCounts(){
+        Map<String,Long> counts = new java.util.HashMap<>();
+        counts.put("total", stationMasterService.getAllStationMastersCount());
+        counts.put("active", stationMasterService.getActiveStationMastersCount());
+        counts.put("inactive", stationMasterService.getInactiveStationMastersCount());
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "station master counts",
+                counts
+        ));
+    }
+
+    @GetMapping("avg/experience")
+    public ResponseEntity<ApiResponse<Double>> getAverageExperience() {
+        return ResponseEntity.ok(new ApiResponse<>(
+                        200,
+                        "Average experience of active station masters",
+                        stationMasterService.getAverageExperienceOfActiveStationMasters()
+                ));
+    }
+
+    @GetMapping("/count/by/province")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getStationMasterCountByProvince(){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "station master count by province",
+                stationMasterService.getStationMasterCountByProvince()
+                ));
+    }
+
+
 
 
 
