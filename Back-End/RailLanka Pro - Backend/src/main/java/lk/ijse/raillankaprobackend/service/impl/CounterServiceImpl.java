@@ -22,8 +22,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author manuthlakdiv
@@ -279,5 +282,29 @@ public class CounterServiceImpl implements CounterService {
         }
         throw new IllegalArgumentException("Counter not found for ID: " + counterDto.getId());
 
+    }
+
+    @Override
+    public Map<String, Long> getCounterStaffCount() {
+        return Map.of(
+                "total", counterRepository.count(),
+                "active", counterRepository.countCounterByActive(true),
+                "inactive", counterRepository.countCounterByActive(false)
+        );
+
+    }
+
+    @Override
+    public List<Map<String, Object>> getCounterCountByProvince() {
+        List<Object[]> results = counterRepository.findCounterCountByProvince();
+
+        return results.stream()
+                .map(row -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("province", (String) row[0]);
+                    map.put("counterStaffCount", ((Number) row[1]).longValue());
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 }

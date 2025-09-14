@@ -5,6 +5,7 @@ import lk.ijse.raillankaprobackend.dto.StaffDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -32,4 +33,8 @@ public interface CounterService {
     Optional<CounterDto> findCounterById(String counterId);
 
     String updateCounterDetails(CounterDto counterDto);
+
+    Map<String,Long> getCounterStaffCount();
+
+    List<Map<String, Object>> getCounterCountByProvince();
 }

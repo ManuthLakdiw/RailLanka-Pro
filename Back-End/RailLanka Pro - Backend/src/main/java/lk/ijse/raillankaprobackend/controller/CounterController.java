@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -117,6 +118,24 @@ public class CounterController {
                 "Counter updated",
                 counterService.updateCounterDetails(counterDto)
         ), HttpStatus.OK);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getCounterStaffCount(){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "counter staff count",
+                counterService.getCounterStaffCount()
+                ));
+    }
+
+    @GetMapping("/count/by/province")
+    public ResponseEntity<ApiResponse<List<Map<String, Object>>>> findCounterCountByProvince() {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "counter staff count by province",
+                counterService.getCounterCountByProvince()
+        ));
     }
 
 }

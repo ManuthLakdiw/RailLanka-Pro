@@ -37,4 +37,16 @@ public interface CounterRepository extends JpaRepository <Counter,String> {
             "LOWER(c.firstname) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(c.lastname) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Counter> filterCountersByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+    Long countCounterByActive(boolean active);
+
+
+    @Query(value = "SELECT s.province AS province, COUNT(c.counter_id) AS counterCount " +
+            "FROM counter c " +
+            "JOIN station s ON c.station_station_id = s.station_id " +
+            "WHERE c.active = 1 " +
+            "GROUP BY s.province", nativeQuery = true)
+    List<Object[]> findCounterCountByProvince();
+
+    List<Counter> findCounterByActive(boolean active);
 }
