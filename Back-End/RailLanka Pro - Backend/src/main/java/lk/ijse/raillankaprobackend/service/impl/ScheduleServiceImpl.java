@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author manuthlakdiv
@@ -301,6 +299,44 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
     }
+
+    @Override
+    public long getActiveScheduleCount() {
+        return scheduleRepository.countScheduleByStatus(true);
+    }
+
+    @Override
+    public long getInactiveScheduleCount() {
+        return scheduleRepository.countScheduleByStatus(false);
+    }
+
+    @Override
+    public long getAllScheduleCount() {
+        return scheduleRepository.count();
+    }
+
+    @Override
+    public double getAverageDailyTrips() {
+        return scheduleRepository.findAverageDailyTrips();
+    }
+
+    @Override
+    public Map<String, Long> getScheduleCountsByFrequencies() {
+        List<Object[]> scheduleCountsByFrequency = scheduleRepository.getScheduleCountsByFrequency();
+        Map<String, Long> countsMap = new HashMap<>();
+
+        for (Object[] scheduleCount : scheduleCountsByFrequency) {
+            ScheduleFrequency frequencyEnum = (ScheduleFrequency) scheduleCount[0];
+            String frequency = frequencyEnum.name();
+
+            Long count = (Long) scheduleCount[1];
+
+            countsMap.put(frequency, count);
+        }
+
+        return countsMap;
+    }
+
 
     private Page<ScheduleDto> getScheduleDtos(Page<Schedule> schedulePage) {
         return schedulePage.map(schedule -> {

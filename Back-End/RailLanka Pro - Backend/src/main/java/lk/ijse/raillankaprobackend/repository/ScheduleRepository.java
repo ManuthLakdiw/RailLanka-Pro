@@ -45,4 +45,22 @@ public interface ScheduleRepository extends JpaRepository<Schedule,String> {
     Page<Schedule> findSchedulesByTrain(Train train, Pageable pageable);
 
     Page<Schedule> findSchedulesByScheduleFrequency(ScheduleFrequency scheduleFrequency, Pageable pageable);
+
+    long countScheduleByStatus(boolean status);
+
+    @Query(value = "SELECT AVG(daily_count) FROM ( " +
+            "SELECT COUNT(*) AS daily_count " +
+            "FROM schedule " +
+            "WHERE schedule_frequency = 'DAILY' " +
+            "GROUP BY train_id " +
+            ") AS counts", nativeQuery = true)
+    Double findAverageDailyTrips();
+
+    @Query("SELECT s.scheduleFrequency, COUNT(s) " +
+            "FROM Schedule s " +
+            "GROUP BY s.scheduleFrequency")
+    List<Object[]> getScheduleCountsByFrequency();
+
+
+    List<Schedule> findSchedulesByStatus(boolean status);
 }

@@ -6,6 +6,8 @@ import lk.ijse.raillankaprobackend.dto.ScheduleDto;
 import lk.ijse.raillankaprobackend.entity.Schedule;
 import org.springframework.data.domain.Page;
 
+import java.util.Map;
+
 /**
  * @author manuthlakdiv
  * @email manuthlakdiv2006.com
@@ -36,7 +38,15 @@ public interface ScheduleService {
 
     String updateScheduleDetails(ScheduleDto scheduleDto);
 
+    long getActiveScheduleCount();
 
+    long getInactiveScheduleCount();
+
+    long getAllScheduleCount();
+
+    double getAverageDailyTrips();
+
+    Map<String,Long> getScheduleCountsByFrequencies();
 
 
 

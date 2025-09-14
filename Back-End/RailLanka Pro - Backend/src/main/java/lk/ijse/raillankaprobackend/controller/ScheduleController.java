@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author manuthlakdiv
@@ -154,6 +156,39 @@ public class ScheduleController {
                 200,
                 "shedule updated",
                 scheduleService.updateScheduleDetails(scheduleDto)
+        ));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getScheduleCounts(){
+        Map<String,Long> counts = new HashMap<>();
+        counts.put("total", scheduleService.getAllScheduleCount());
+        counts.put("active", scheduleService.getActiveScheduleCount());
+        counts.put("inactive", scheduleService.getInactiveScheduleCount());
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "schedule counts",
+                counts
+        ));
+    }
+
+    @GetMapping("/avg/daily")
+    public ResponseEntity<ApiResponse<Double>> getAvgDailyTrips(){
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "daily trip avg",
+                scheduleService.getAverageDailyTrips()
+        ));
+    }
+
+    @GetMapping("/count/by/frequencies")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getScheduleCountByFrequencies(){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "count by frequencies",
+                scheduleService.getScheduleCountsByFrequencies()
         ));
     }
 
