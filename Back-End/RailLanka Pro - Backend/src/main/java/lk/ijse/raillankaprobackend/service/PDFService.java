@@ -31,4 +31,49 @@ public interface PDFService {
     ByteArrayOutputStream generateForeignBlockedPassengersPdf();
 
 
+    ByteArrayOutputStream generateAllTrainsPdf();
+
+    ByteArrayOutputStream generateActiveTrainsPdf();
+
+    ByteArrayOutputStream generateInactiveTrainsPdf();
+
+
+
+    ByteArrayOutputStream generateAllStationPdf();
+
+    ByteArrayOutputStream generateActiveStationPdf();
+
+    ByteArrayOutputStream generateInactiveStationPdf();
+
+
+    ByteArrayOutputStream generateAllSchedulesPdf();
+
+    ByteArrayOutputStream generateActiveSchedulesPdf();
+
+    ByteArrayOutputStream generateInactiveSchedulesPdf();
+
+
+    ByteArrayOutputStream generateAllStationMastersPdf();
+
+    ByteArrayOutputStream generateActiveStationMastersPdf();
+
+    ByteArrayOutputStream generateInactiveStationMastersPdf();
+
+
+    ByteArrayOutputStream generateAllCountersPdf();
+
+    ByteArrayOutputStream generateActiveCountersPdf();
+
+    ByteArrayOutputStream generateInactiveCountersPdf();
+
+
+    ByteArrayOutputStream generateAllEmployeesPdf();
+
+    ByteArrayOutputStream generateActiveEmployeesPdf();
+
+    ByteArrayOutputStream generateInactiveEmployeesPdf();
+
+
+
+
 }

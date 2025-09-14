@@ -189,4 +189,266 @@ public class PDFController {
 
     }
 
+
+    @GetMapping(value = "/download/all/trains")
+    public ResponseEntity<byte[]> getAllTrains(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("all_trains.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateAllTrainsPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/active/trains")
+    public ResponseEntity<byte[]> getActiveTrains(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("active_trains.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateActiveTrainsPdf().toByteArray());
+
+
+
+    }
+
+    @GetMapping(value = "/download/inactive/trains")
+    public ResponseEntity<byte[]> getInactiveTrains(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("inactive_trains.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateInactiveTrainsPdf().toByteArray());
+
+    }
+
+
+    @GetMapping(value = "/download/all/stations")
+    public ResponseEntity<byte[]> getAllStations(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("all_stations.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateAllStationPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/active/stations")
+    public ResponseEntity<byte[]> getActiveStations(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("active_stations.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateActiveStationPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/inactive/stations")
+    public ResponseEntity<byte[]> getInactiveStations(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("inactive_stations.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateInactiveStationPdf().toByteArray());
+
+    }
+
+
+    @GetMapping(value = "/download/all/schedules")
+    public ResponseEntity<byte[]> getAllSchedules(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("schedules.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateAllSchedulesPdf().toByteArray());
+
+    }
+
+
+    @GetMapping(value = "/download/active/schedules")
+    public ResponseEntity<byte[]> getActiveSchedules(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("active_schedules.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateActiveSchedulesPdf().toByteArray());
+
+    }
+
+
+    @GetMapping(value = "/download/inactive/schedules")
+    public ResponseEntity<byte[]> getInactiveSchedules(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("inactive_schedules.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateInactiveSchedulesPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/all/stationmasters")
+    public ResponseEntity<byte[]> getAllStationMasters(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("all_stationmasters.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateAllStationMastersPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/active/stationmasters")
+    public ResponseEntity<byte[]> getActiveStationMasters(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("active_stationmasters.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateActiveStationMastersPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/inactive/stationmasters")
+    public ResponseEntity<byte[]> getInactiveStationMasters(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("inactive_stationmasters.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateInactiveStationMastersPdf().toByteArray());
+    }
+
+
+    @GetMapping(value = "/download/all/counters")
+    public ResponseEntity<byte[]> getAllCounters(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("all_counters.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateAllCountersPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/active/counters")
+    public ResponseEntity<byte[]> getActiveCounters(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("active_counters.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateActiveCountersPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/inactive/counters")
+    public ResponseEntity<byte[]> getInactiveCounters(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("inactive_counters.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateInactiveCountersPdf().toByteArray());
+    }
+
+    @GetMapping(value = "/download/all/employees")
+    public ResponseEntity<byte[]> getAllEmployees(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("all_employees.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateAllEmployeesPdf().toByteArray());
+
+    }
+
+    @GetMapping(value = "/download/active/employees")
+    public ResponseEntity<byte[]> getActiveEmployees(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("active_employees.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateActiveEmployeesPdf().toByteArray());
+
+    }
+
+
+    @GetMapping(value = "/download/inactive/employees")
+    public ResponseEntity<byte[]> getInactiveEmployees(){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("inactive_employees.pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok().headers(headers).body(pdfService.generateInactiveEmployeesPdf().toByteArray());
+
+    }
+
+
 }
