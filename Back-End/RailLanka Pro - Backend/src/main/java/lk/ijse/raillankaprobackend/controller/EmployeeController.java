@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author manuthlakdiv
@@ -139,6 +140,25 @@ public class EmployeeController {
                 200,
                 "employee updated",
                 employeeService.updateEmployeeDetails(employeeDto)
+        ));
+    }
+
+    @GetMapping("all/count")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getEmployeeCounts(){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "count all employees",
+                employeeService.getEmployeeCounts()
+        ));
+    }
+
+
+    @GetMapping("all/count/by/position")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getEmployeeCountsByPosition(){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "count all employees by position",
+                employeeService.getEmployeeCountByRole()
         ));
     }
 

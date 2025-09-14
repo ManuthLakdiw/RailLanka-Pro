@@ -5,6 +5,7 @@ import lk.ijse.raillankaprobackend.dto.EmployeeDto;
 import lk.ijse.raillankaprobackend.entity.Dtypes.EmployeePosition;
 import lk.ijse.raillankaprobackend.entity.Employee;
 import lk.ijse.raillankaprobackend.entity.Station;
+import lk.ijse.raillankaprobackend.entity.projection.EmployeeCountsProjection;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.repository.EmployeeRepository;
 import lk.ijse.raillankaprobackend.repository.StationRepository;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author manuthlakdiv
@@ -191,6 +194,28 @@ public class EmployeeServiceImpl implements EmployeeService {
         throw new RuntimeException("Employee ID not found") ;
     }
 
+    @Override
+    public Map<String, Long> getEmployeeCounts() {
+        EmployeeCountsProjection employeeCounts = employeeRepository.getEmployeeCounts();
+        return Map.of(
+                "total",employeeCounts.getTotalCount(),
+                "active",employeeCounts.getActiveCount(),
+                "inactive",employeeCounts.getInactiveCount()
+        );
+    }
+
+    @Override
+    public Map<String, Long> getEmployeeCountByRole() {
+        List<Object[]> results = employeeRepository.countEmployeesByRole();
+        Map<String, Long> roleCounts = new HashMap<>();
+        for (Object[] row : results) {
+            String role = (String) row[0];
+            Long count = ((Number) row[1]).longValue();
+            roleCounts.put(role, count);
+        }
+        return roleCounts;
+    }
+
 
     private Page<EmployeeDto> getEmployeeDtos(Page<Employee> employeePage) {
         return employeePage.map(employee -> {
@@ -212,5 +237,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .build();
         });
     }
+
+
 
 }

@@ -5,6 +5,9 @@ import lk.ijse.raillankaprobackend.dto.EmployeeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+import java.util.Map;
+
 /**
  * @author manuthlakdiv
  * @email manuthlakdiv2006.com
@@ -34,5 +37,9 @@ public interface EmployeeService {
     EmployeeDto getEmployeeDetailsByEmployeeId(String employeeId);
 
     String updateEmployeeDetails(EmployeeDto employeeDto);
+
+    Map<String, Long> getEmployeeCounts();
+
+    Map<String, Long> getEmployeeCountByRole();
 
 }

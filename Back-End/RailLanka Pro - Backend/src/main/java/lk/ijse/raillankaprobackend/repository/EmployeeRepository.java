@@ -4,6 +4,7 @@ import lk.ijse.raillankaprobackend.entity.Counter;
 import lk.ijse.raillankaprobackend.entity.Dtypes.EmployeePosition;
 import lk.ijse.raillankaprobackend.entity.Employee;
 import lk.ijse.raillankaprobackend.entity.Station;
+import lk.ijse.raillankaprobackend.entity.projection.EmployeeCountsProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +41,35 @@ public interface EmployeeRepository extends JpaRepository <Employee,String> {
     Page<Employee> findAllByPosition(EmployeePosition position, Pageable pageable);
 
     List<Employee> findByStation(Station station);
+
+    @Query(value = """
+        SELECT
+            (SELECT COUNT(*) FROM counter WHERE active = 1) +
+            (SELECT COUNT(*) FROM station_master WHERE active = 1) +
+            (SELECT COUNT(*) FROM employee WHERE active = 1) AS active_count,
+            
+            (SELECT COUNT(*) FROM counter WHERE active = 0) +
+            (SELECT COUNT(*) FROM station_master WHERE active = 0) +
+            (SELECT COUNT(*) FROM employee WHERE active = 0) AS inactive_count,
+            
+            (SELECT COUNT(*) FROM counter) +
+            (SELECT COUNT(*) FROM station_master) +
+            (SELECT COUNT(*) FROM employee) AS total_count
+        """, nativeQuery = true)
+    EmployeeCountsProjection getEmployeeCounts();
+
+    @Query(value = """
+        SELECT position AS role, COUNT(*) AS count
+        FROM (
+            SELECT position FROM employee
+            UNION ALL
+            SELECT 'Counter' AS position FROM counter
+            UNION ALL
+            SELECT 'Station Master' AS position FROM station_master
+        ) AS all_employees
+        GROUP BY position
+    """, nativeQuery = true)
+    List<Object[]> countEmployeesByRole();
+
+    List<Employee> findEmployeeByActive(boolean active);
 }
