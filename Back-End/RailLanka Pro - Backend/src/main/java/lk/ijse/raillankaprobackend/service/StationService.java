@@ -3,9 +3,9 @@ package lk.ijse.raillankaprobackend.service;
 import lk.ijse.raillankaprobackend.dto.StationDto;
 import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -41,6 +41,18 @@ public interface StationService {
     List<StaffProjection> getStaffByStationAndPosition(String name , String position);
 
     List<StaffProjection> getStaffByStationAndKeyword(String name , String keyword);
+
+    long getNumberOfStations();
+
+    long getNumberOfInServiceStations();
+
+    long getNumberOfOutServiceStations();
+
+    List<Map<String,Object>> countStationsByProvince();
+
+    Map<String, Long> findTotalAndAssignedStationCounts();
+
+
 
 
 }

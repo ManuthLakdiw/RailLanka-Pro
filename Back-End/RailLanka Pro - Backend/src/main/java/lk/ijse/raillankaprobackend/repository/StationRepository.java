@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -163,6 +164,22 @@ public interface StationRepository extends JpaRepository <Station,String> {
     );
 
 
+    long countStationByInService(boolean inService);
 
 
+    @Query("SELECT s.province AS province, COUNT(s) AS stationCount " +
+            "FROM Station s " +
+            "GROUP BY s.province " +
+            "ORDER BY s.province")
+    List<Map<String, Object>> countStationsByProvince();
+
+
+    @Query(value = "SELECT " +
+            "(SELECT COUNT(*) FROM station) AS totalStations, " +
+            "(SELECT COUNT(DISTINCT station_id) FROM station_master WHERE active = 1) AS stationsWithMasters",
+            nativeQuery = true)
+    List<Object[]> findTotalAndAssignedStationCounts();
+
+
+    List<Station> findStationByInService(boolean inService);
 }

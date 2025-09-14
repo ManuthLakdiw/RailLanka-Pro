@@ -14,7 +14,9 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -232,6 +234,40 @@ public class StationServiceImpl implements StationService {
 
         return stationRepository.findStaffByStationAndKeyword(name,keyword);
 
+    }
+
+    @Override
+    public long getNumberOfStations() {
+        return stationRepository.count();
+    }
+
+    @Override
+    public long getNumberOfInServiceStations() {
+        return stationRepository.countStationByInService(true);
+    }
+
+    @Override
+    public long getNumberOfOutServiceStations() {
+        return stationRepository.countStationByInService(false);
+    }
+
+    @Override
+    public List<Map<String, Object>> countStationsByProvince() {
+        return stationRepository.countStationsByProvince();
+    }
+
+    @Override
+    public Map<String, Long> findTotalAndAssignedStationCounts() {
+        List<Object[]> resultList = stationRepository.findTotalAndAssignedStationCounts();
+        Object[] row = resultList.getFirst();
+
+        Long total = ((Number) row[0]).longValue();
+        Long assigned = ((Number) row[1]).longValue();
+
+        return Map.of(
+                "total", total,
+                "assigned", assigned
+        );
     }
 
 

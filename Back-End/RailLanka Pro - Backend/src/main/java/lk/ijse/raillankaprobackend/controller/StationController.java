@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -158,6 +160,39 @@ public class StationController {
                 200,
                 "fetched staff by station and keyword",
                 stationService.getStaffByStationAndKeyword(station ,keyword)
+        ));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getCountOfStations(){
+        Map<String,Long> count = new HashMap<>();
+        count.put("total",stationService.getNumberOfStations());
+        count.put("inService",stationService.getNumberOfInServiceStations());
+        count.put("outService",stationService.getNumberOfOutServiceStations());
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "station count",
+                count
+        ));
+    }
+
+
+    @GetMapping("/count/by/province")
+    public ResponseEntity<ApiResponse<List<Map<String, Object>>>> getCountOfStationsByProvince(){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "station count",
+                stationService.countStationsByProvince()
+        ));
+    }
+
+    @GetMapping("/total/and/stationmaster/count")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getTotalAndAssignedStationCounts() {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "find total and assigned station master count",
+                stationService.findTotalAndAssignedStationCounts()
         ));
     }
 
