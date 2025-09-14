@@ -118,5 +118,11 @@ public interface TrainRepository extends JpaRepository <Train,String> {
     @Query(value = "SELECT train_type, COUNT(*) FROM train GROUP BY train_type", nativeQuery = true)
     List<Object[]> countTrainsByType();
 
+    @Query(value = "SELECT " +
+            "(SELECT COUNT(DISTINCT train_id) FROM schedule) AS trainsWithSchedule, " +
+            "(SELECT COUNT(*) FROM train) AS totalTrains", nativeQuery = true)
+    List<Object[]> getTrainScheduleCounts();
 
+
+    List<Train> findAllByActive(boolean active);
 }

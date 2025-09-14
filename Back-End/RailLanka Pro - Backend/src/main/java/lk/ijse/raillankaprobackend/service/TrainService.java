@@ -51,4 +51,6 @@ public interface TrainService {
 
     Map<String,Long> getTrainTypeCounts();
 
+    Map<String,Long> getTrainScheduleCounts();
+
 }

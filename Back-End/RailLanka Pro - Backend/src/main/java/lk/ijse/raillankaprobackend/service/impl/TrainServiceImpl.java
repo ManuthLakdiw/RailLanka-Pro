@@ -416,5 +416,21 @@ public class TrainServiceImpl implements TrainService {
         return result;
     }
 
+    @Override
+    public Map<String, Long> getTrainScheduleCounts() {
+        Map<String, Long> result = new HashMap<>();
+        List<Object[]> countsList = trainRepository.getTrainScheduleCounts();
+        if (!countsList.isEmpty()) {
+            Object[] counts = countsList.get(0);
+            Long trainsWithSchedule = ((Number) counts[0]).longValue();
+            Long totalTrains = ((Number) counts[1]).longValue();
+
+            result.put("trainsWithSchedule", trainsWithSchedule);
+            result.put("totalTrains", totalTrains);
+        }
+        return result;
+    }
+
+
 
 }
