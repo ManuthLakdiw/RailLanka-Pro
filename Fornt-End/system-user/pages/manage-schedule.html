@@ -1,0 +1,1388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RailLanka Pro | Schedule Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="../styles/normalize.css" />
+    <style>
+      .station-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background-color: #dbeafe;
+        color: #1d4ed8;
+      }
+      /* 
+      .schedule-card {
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+      }
+
+      .schedule-card:hover {
+        border-left-color: #3b82f6;
+        transform: translateY(-2px);
+      } */
+
+      .time-display {
+        font-feature-settings: "tnum";
+        font-variant-numeric: tabular-nums;
+      }
+
+      .route-line {
+        position: relative;
+      }
+
+      .route-line::before {
+        content: "";
+        position: absolute;
+        left: 23px;
+        top: 24px;
+        bottom: 24px;
+        width: 2px;
+        background: #e5e7eb;
+        z-index: 0;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 min-h-screen text-white flex flex-col">
+      <div class="p-5 border-b border-blue-400">
+        <div class="flex items-center space-x-3">
+          <img class="" src="../assets/logo.svg" alt="logo" />
+          <h1 class="text-xl font-bold">RailLanka Pro</h1>
+        </div>
+        <p class="text-blue-200 text-sm mt-2">Admin Dashboard</p>
+      </div>
+
+      <div class="p-4 flex-1">
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="./admin-dashboard.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-tachometer-alt mr-3"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-train.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-subway mr-3"></i>
+              <span>Manage Trains</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-station.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-road mr-3"></i>
+              <span>Manage Stations</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-link active flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-calendar-alt mr-3"></i>
+              <span class="font-bold">Manage Schedule</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-station-master.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-user-tie mr-3"></i>
+              <span>Station Masters</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-counter.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-user-friends mr-3"></i>
+              <span>Counter Staff</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-employee.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-users mr-3"></i>
+              <span>Employees</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./manage-passenger.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-users-between-lines mr-3"></i>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="./report.html"
+              class="nav-link flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-file-invoice mr-3"></i>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-cog mr-3"></i>
+              <span>System Settings</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-8 p-4 bg-blue-700 rounded-lg">
+          <h3 class="font-medium">Schedule Stats</h3>
+          <div class="mt-3 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Active Schedules</span>
+              <span class="font-bold">128</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Today's Journeys</span>
+              <span class="font-bold">42</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Delayed Trains</span>
+              <span class="font-bold">3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-blue-400">
+        <div class="flex items-center space-x-3">
+          <div
+            class="bg-blue-200 text-blue-800 w-10 h-10 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <p class="font-medium">Admin User</p>
+            <p id="adminEmail" class="text-blue-200 text-sm">
+              admin@raillanka.lk
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-sm">
+        <div class="max-w-full mx-auto px-6 py-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">
+                Schedule Management
+              </h2>
+              <p class="text-gray-600 text-sm">
+                Manage train schedules and timetables
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                  <i class="fas fa-bell text-gray-600"></i>
+                  <span
+                    class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+                  ></span>
+                </button>
+              </div>
+
+              <div class="relative group">
+                <button class="flex items-center space-x-2 text-gray-700">
+                  <div
+                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
+                  >
+                    <i class="fas fa-user text-blue-700"></i>
+                  </div>
+                  <span id="adminUsername">Admin User</span>
+                  <i
+                    class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"
+                  ></i>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div
+                  class="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50"
+                >
+                  <div
+                    class="px-4 py-2 border-b border-gray-100 text-xs text-gray-500"
+                  >
+                    Signed in as <span id="tokenUsername">Admin User</span>
+                  </div>
+                  <a
+                    href="#"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    <i class="fas fa-user-circle mr-2"></i>Profile
+                  </a>
+                  <a
+                    href="#"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700"
+                    id="logoutButton"
+                  >
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Action Bar -->
+      <div class="px-6 py-4 bg-white shadow-sm">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <div class="flex items-center space-x-3">
+            <div class="relative">
+              <input
+                id="filterSchedule"
+                type="text"
+                placeholder="Search schedules..."
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <i
+                class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
+            </div>
+
+            <!-- Status Filter Dropdown -->
+            <div class="relative">
+              <select
+                id="statusFilter"
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">All Status</option>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+              <i
+                class="fas fa-filter absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
+            </div>
+
+            <!-- Train Filter -->
+            <div class="relative">
+              <select
+                id="trainFilter"
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-[200px]"
+              >
+                <option value="">All Trains</option>
+                <option value="P001">Udarata Menike</option>
+                <option value="P002">Ruhunu Kumari</option>
+                <option value="P003">Yal Devi</option>
+                <option value="P004">Samudra Devi</option>
+              </select>
+              <i
+                class="fas fa-train absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
+            </div>
+            <div class="relative">
+              <select
+                id="frequencyFilter"
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select a Frequency</option>
+                <option value="DAILY">Daily</option>
+                <option value="WEEK_DAYS">Week Days</option>
+                <option value="WEEK_ENDS">Week Ends</option>
+                <option value="CUSTOM">Custom</option>
+              </select>
+              <i
+                class="fas fa-calendar-days absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
+            </div>
+          </div>
+
+          <div class="flex space-x-3">
+            <!-- <button
+              id="exportScheduleBtn"
+              class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-800 text-white rounded-lg hover:from-green-700 hover:to-green-900 transition flex items-center"
+            >
+              <i class="fas fa-file-export mr-2"></i>
+              Export
+            </button> -->
+            <button
+              id="addScheduleBtn"
+              class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition flex items-center"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              Add Schedule
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedules Table -->
+      <div class="px-6 py-4 flex-1">
+        <div class="dashboard-card bg-white rounded-xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table
+              id="scheduleTable"
+              class="min-w-full divide-y divide-gray-200"
+            >
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Train & Route
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Departure
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Arrival
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Duration
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Frequency
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200"></tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            class="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200"
+          >
+            <div class="text-sm text-gray-700">
+              Showing <span id="currentPage" class="font-medium">1</span> to
+              <span id="selectedLastRowData" class="font-medium">3</span> of
+              <span id="totalPage" class="font-medium">128</span> schedules
+            </div>
+            <div class="flex space-x-2">
+              <button
+                id="btnFirst"
+                class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled
+              >
+                <i class="fas fa-angle-double-left"></i>
+              </button>
+              <button
+                id="btnBack"
+                class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled: cursor-not-allowed"
+                disabled
+              >
+                <i class="fas fa-angle-left"></i>
+              </button>
+
+              <div id="pageNumbers" class="flex items-center gap-1"></div>
+
+              <button
+                id="btnNext"
+                class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+              >
+                <i class="fas fa-angle-right"></i>
+              </button>
+
+              <button
+                id="btnLast"
+                class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+              >
+                <i class="fas fa-angle-double-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Details Modal -->
+    <div
+      id="scheduleModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl transform transition-all"
+      >
+        <!-- Modal Header -->
+        <div
+          class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white relative"
+        >
+          <div class="absolute top-4 right-4">
+            <button
+              type="button"
+              id="closeScheduleDetailsModal"
+              class="text-white hover:text-blue-200 text-xl transition-transform hover:rotate-90 duration-300"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center">
+            <div
+              class="w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center mr-4"
+            >
+              <i class="fas fa-calendar-alt text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold">Schedule Details</h3>
+              <p class="text-blue-200 mt-1">Complete schedule information</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 max-h-[70vh] overflow-y-auto">
+          <!-- Basic Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-gray-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-train text-blue-600"></i>
+                </div>
+                Train Information
+              </h4>
+
+              <div class="space-y-3">
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Train ID
+                  </p>
+                  <p id="viewTrainId" class="font-medium">TR-001</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Train Name
+                  </p>
+                  <p id="viewTrainName" class="font-medium">Udarata Menike</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Train Type
+                  </p>
+                  <p id="viewTrainType" class="font-medium">Express</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-route text-green-600"></i>
+                </div>
+                Route Information
+              </h4>
+
+              <div class="space-y-3">
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Departure Station
+                  </p>
+                  <p id="viewDepartureStation" class="font-medium">
+                    Colombo Fort
+                  </p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Arrival Station
+                  </p>
+                  <p id="viewArrivalStation" class="font-medium">Badulla</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Distance
+                  </p>
+                  <p id="viewDistance" class="font-medium">290 km</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule Timeline -->
+          <div class="bg-gray-50 p-5 rounded-xl mb-6">
+            <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+              <div
+                class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center mr-2"
+              >
+                <i class="fas fa-clock text-purple-600"></i>
+              </div>
+              Schedule Timeline
+            </h4>
+
+            <div class="route-line">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-4 z-10"
+                >
+                  <i class="fas fa-play text-blue-600"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Departure</p>
+                  <p
+                    id="viewDepartureTime"
+                    class="text-sm text-gray-600 time-display"
+                  >
+                    05:55
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mr-4 z-10"
+                >
+                  <span class="text-gray-600 font-medium">1</span>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Kandy</p>
+                  <p class="text-sm text-gray-600 time-display">
+                    08:45 - 08:50
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mr-4 z-10"
+                >
+                  <span class="text-gray-600 font-medium">2</span>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Nanu Oya</p>
+                  <p class="text-sm text-gray-600 time-display">
+                    10:15 - 10:20
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <div
+                  class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-4 z-10"
+                >
+                  <i class="fas fa-flag-checkered text-green-600"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Arrival</p>
+                  <p
+                    id="viewArrivalTime"
+                    class="text-sm text-gray-600 time-display"
+                  >
+                    12:30
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 max-w-2xl gap-6">
+            <div class="bg-gray-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-info-circle text-yellow-600"></i>
+                </div>
+                Schedule Details
+              </h4>
+
+              <div class="space-y-3">
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Journey Duration
+                  </p>
+                  <p id="viewDuration" class="font-medium">
+                    6 hours 35 minutes
+                  </p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Frequency
+                  </p>
+                  <p id="viewFrequency" class="font-medium">Daily</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Status
+                  </p>
+                  <p class="font-medium">
+                    <span
+                      id="viewStatus"
+                      class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs"
+                      >Active</span
+                    >
+                  </p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Description
+                  </p>
+                  <p id="viewDescription" class="font-medium">Daily</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-ticket-alt text-red-600"></i>
+                </div>
+                Ticket Information
+              </h4>
+
+              <div class="space-y-3">
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    First Class Fare
+                  </p>
+                  <p class="font-medium">LKR 1,200</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Second Class Fare
+                  </p>
+                  <p class="font-medium">LKR 750</p>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Third Class Fare
+                  </p>
+                  <p class="font-medium">LKR 480</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="bg-gray-50 px-6 py-4 flex justify-end rounded-b-2xl">
+          <button
+            type="button"
+            id="closeViewBtn"
+            class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl hover:from-blue-700 hover:to-blue-900 transition-all shadow-md hover:shadow-lg flex items-center"
+          >
+            <i class="fas fa-times mr-2"></i>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Train Registration Modal -->
+    <div
+      id="createScheduleModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-xl w-full max-w-2xl overflow-hidden"
+      >
+        <form id="scheduleSubmitForm">
+          <!-- Modal Header -->
+          <div
+            class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white"
+            style="border-radius: 12px 12px 0 0"
+          >
+            <div class="flex justify-between items-center">
+              <h3 class="text-xl font-bold flex items-center">
+                <i class="fas fa-calendar-plus mr-3"></i>
+                Add New Schedule
+              </h3>
+              <button
+                type="button"
+                id="closeModal"
+                class="text-white hover:text-blue-200 text-xl transition-transform hover:rotate-90 duration-300 w-8 h-8 rounded-full flex items-center justify-center"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <p class="mt-2 text-blue-200">Create a new train schedule</p>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6 max-h-[70vh] overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Basic Details -->
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex items-center">
+                  <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                  Basic Information
+                </h4>
+              </div>
+              <div class="col-span-1 md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Train Name</label
+                >
+                <select
+                  id="trainSelection"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Udarata Menike"
+                  required
+                >
+                  <option value="">Select a Train</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Departure Station</label
+                >
+                <select
+                  id="departureStationSelection"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value="" disabled selected>Select a station</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Arrival Station</label
+                >
+                <select
+                  id="arrivalStationSelection"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value="" disabled selected>Select a Station</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex items-center">
+                  <i class="fas fa-clock text-blue-500 mr-2"></i>
+                  Time Scheduling
+                </h4>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Departure Time</label
+                >
+                <input
+                  type="time"
+                  id="departureTime"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Arrival Time</label
+                >
+                <input
+                  type="time"
+                  id="arrivalTime"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+                <p
+                  id="mainArrivalTimeError"
+                  class="text-xs text-red-500 mt-2 ml-1 hidden"
+                >
+                  Arrival time must be later than Departure time
+                </p>
+              </div>
+
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex items-center">
+                  <i class="fas fa-calendar-days text-blue-500 mr-2"></i>
+                  Frequency Information
+                </h4>
+              </div>
+
+              <!-- Frequency -->
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Schedule Frequency</label
+                >
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <label
+                    class="flex items-center p-3 border border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <input
+                      type="radio"
+                      name="frequency"
+                      value="DAILY"
+                      class="mr-2"
+                      checked
+                    />
+                    <span>Daily</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <input
+                      type="radio"
+                      name="frequency"
+                      value="WEEK_DAYS"
+                      class="mr-2"
+                    />
+                    <span>Weekdays</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <input
+                      type="radio"
+                      name="frequency"
+                      value="WEEK_ENDS"
+                      class="mr-2"
+                    />
+                    <span>Weekends</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <input
+                      type="radio"
+                      name="frequency"
+                      value="CUSTOM"
+                      class="mr-2"
+                    />
+                    <span>Custom</span>
+                  </label>
+                </div>
+              </div>
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex items-center">
+                  <i class="fas fa-note-sticky text-blue-500 mr-2"></i>
+                  Additional Information
+                </h4>
+              </div>
+              <div class="col-span-1 md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Description of Schedule</label
+                >
+                <textarea
+                  rows="3"
+                  class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="Additional information about this schedule..."
+                ></textarea>
+              </div>
+
+              <!-- Stopping Stations -->
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex mb-3 items-center">
+                  <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                  Intermediate Stops
+                </h4>
+                <div class="mb-3 flex justify-between items-center">
+                  <span class="text-sm text-gray-600"
+                    >Select stations in order of route</span
+                  >
+                  <button
+                    type="button"
+                    id="addStopBtn"
+                    class="text-xs bg-blue-100 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors duration-200 flex items-center"
+                  >
+                    <i class="fas fa-plus mr-1"></i> Add Station
+                  </button>
+                </div>
+
+                <div
+                  id="stopsContainer"
+                  class="bg-gray-50 rounded-xl p-4 space-y-4 max-h-96 overflow-y-auto border border-gray-200"
+                >
+                  <div
+                    class="stop-item flex flex-col p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
+                  >
+                    <div class="flex items-center justify-between w-full">
+                      <div class="flex items-center flex-1 space-x-3">
+                        <span
+                          class="stop-number w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white font-medium text-sm"
+                        >
+                          1
+                        </span>
+                        <div class="relative flex-1">
+                          <select
+                            class="stop-station w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white"
+                          >
+                            <option value="" disabled selected>
+                              Select Station
+                            </option>
+                          </select>
+                          <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                          >
+                            <i class="fas fa-chevron-down"></i>
+                          </div>
+                        </div>
+                        <div class="time-selection flex space-x-2">
+                          <div>
+                            <label class="text-xs text-gray-500 block mb-1"
+                              >Arrival</label
+                            >
+                            <input
+                              type="time"
+                              class="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label class="text-xs text-gray-500 block mb-1"
+                              >Departure</label
+                            >
+                            <input
+                              type="time"
+                              class="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        class="remove-stop ml-4 w-10 h-10 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+
+                    <p
+                      class="error-msg text-xs text-red-500 mt-2 ml-1 hidden"
+                    ></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div
+            class="bg-gray-50 px-6 py-4 flex justify-end space-x-3 border-t border-gray-200"
+          >
+            <button
+              id="cancelBtn"
+              type="button"
+              class="px-5 py-2 text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              Create Schedule
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="updateScheduleModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-xl w-full max-w-2xl overflow-hidden"
+      >
+        <form id="schedulUpdateForm">
+          <!-- Modal Header -->
+          <div
+            class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white"
+            style="border-radius: 12px 12px 0 0"
+          >
+            <div class="flex justify-between items-center">
+              <h3 class="text-xl font-bold flex items-center">
+                <i class="fas fa-edit mr-3"></i>
+                Update Schedule
+              </h3>
+              <button
+                type="button"
+                id="closeUpdateModal"
+                class="text-white hover:text-blue-200 text-xl transition-transform hover:rotate-90 duration-300 w-8 h-8 rounded-full flex items-center justify-center"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <p class="mt-2 text-blue-200">
+              Modify existing train schedule details
+            </p>
+          </div>
+          <input type="hidden" id="updateScheduleId" />
+
+          <!-- Modal Body -->
+          <div class="p-6 max-h-[70vh] overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Basic Details -->
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex items-center">
+                  <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                  Basic Information
+                </h4>
+              </div>
+              <div class="col-span-1 md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Train Name</label
+                >
+                <select
+                  id="updateTrainSelection"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Udarata Menike"
+                  required
+                  disabled
+                >
+                  <option value="">Select a Train</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Departure Station</label
+                >
+                <select
+                  id="updateDepartureStationSelection"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value="" disabled selected>Select a station</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Arrival Station</label
+                >
+                <select
+                  id="updateArrivalStationSelection"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value="" disabled selected>Select a Station</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex items-center">
+                  <i class="fas fa-clock text-blue-500 mr-2"></i>
+                  Time Scheduling
+                </h4>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Departure Time</label
+                >
+                <input
+                  type="time"
+                  id="updateDepartureTime"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Arrival Time</label
+                >
+                <input
+                  type="time"
+                  id="updateArrivalTime"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+                <p
+                  id="updateMainArrivalTimeError"
+                  class="text-xs text-red-500 mt-2 ml-1 hidden"
+                >
+                  Arrival time must be later than Departure time
+                </p>
+              </div>
+
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex items-center">
+                  <i class="fas fa-calendar-days text-blue-500 mr-2"></i>
+                  Frequency Information
+                </h4>
+              </div>
+
+              <!-- Frequency -->
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Schedule Frequency</label
+                >
+                <div
+                  id="updateFrequency"
+                  class="grid grid-cols-2 md:grid-cols-4 gap-3"
+                >
+                  <label
+                    class="flex items-center p-3 border border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <input
+                      type="radio"
+                      name="frequency"
+                      value="DAILY"
+                      class="mr-2"
+                      checked
+                    />
+                    <span>Daily</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <input
+                      type="radio"
+                      name="frequency"
+                      value="WEEK_DAYS"
+                      class="mr-2"
+                    />
+                    <span>Weekdays</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <input
+                      type="radio"
+                      name="frequency"
+                      value="WEEK_ENDS"
+                      class="mr-2"
+                    />
+                    <span>Weekends</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <input
+                      type="radio"
+                      name="frequency"
+                      value="CUSTOM"
+                      class="mr-2"
+                    />
+                    <span>Custom</span>
+                  </label>
+                </div>
+              </div>
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex items-center">
+                  <i class="fas fa-note-sticky text-blue-500 mr-2"></i>
+                  Additional Information
+                </h4>
+              </div>
+              <div class="col-span-1 md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Description of Schedule</label
+                >
+                <textarea
+                  id="updateDesctiption"
+                  rows="3"
+                  class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="Additional information about this schedule..."
+                ></textarea>
+              </div>
+
+              <!-- Stopping Stations -->
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700flex mb-3 items-center">
+                  <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                  Intermediate Stops
+                </h4>
+                <div class="mb-1 flex justify-between items-center">
+                  <span class="text-sm text-gray-600"
+                    >Select stations in order of route</span
+                  >
+                  <button
+                    type="button"
+                    id="updateAddStopBtn"
+                    class="text-xs bg-blue-100 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors duration-200 flex items-center"
+                  >
+                    <i class="fas fa-plus mr-1"></i> Add Station
+                  </button>
+                </div>
+
+                <div
+                  id="updateStopsContainer"
+                  class="bg-gray-50 rounded-xl p-4 space-y-4 max-h-96 overflow-y-auto border border-gray-200"
+                >
+                  <div
+                    class="stop-item flex flex-col p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
+                  >
+                    <div class="flex items-center justify-between w-full">
+                      <div class="flex items-center flex-1 space-x-3">
+                        <span
+                          class="stop-number w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white font-medium text-sm"
+                        >
+                          1
+                        </span>
+                        <div class="relative flex-1">
+                          <select
+                            class="stop-station w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white"
+                          >
+                            <option value="" disabled selected>
+                              Select Station
+                            </option>
+                          </select>
+                          <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                          >
+                            <i class="fas fa-chevron-down"></i>
+                          </div>
+                        </div>
+                        <div class="time-selection flex space-x-2">
+                          <div>
+                            <label class="text-xs text-gray-500 block mb-1"
+                              >Arrival</label
+                            >
+                            <input
+                              type="time"
+                              class="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label class="text-xs text-gray-500 block mb-1"
+                              >Departure</label
+                            >
+                            <input
+                              type="time"
+                              class="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        class="remove-stop ml-4 w-10 h-10 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+
+                    <p
+                      class="error-msg text-xs text-red-500 mt-2 ml-1 hidden"
+                    ></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status -->
+              <div class="md:col-span-2 mt-6">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-power-off text-blue-500 mr-2"></i>
+                  Schedule Status
+                </h4>
+                <div class="flex space-x-4">
+                  <label class="flex items-center">
+                    <input
+                      id="activeRadio"
+                      type="radio"
+                      name="updateStatus"
+                      value="true"
+                      class="text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">active</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      id="inactiveRadio"
+                      type="radio"
+                      name="updateStatus"
+                      value="false"
+                      class="text-blue-600"
+                    />
+                    <span class="ml-2 text-sm">inactive</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div
+            class="bg-gray-50 px-6 py-4 flex justify-end space-x-3 border-t border-gray-200"
+          >
+            <button
+              id="cancelUpdateBtn"
+              type="button"
+              class="px-5 py-2 text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2 bg-gradient-to-r from-green-600 to-green-800 text-white rounded-lg hover:from-green-700 hover:to-green-900 transition"
+            >
+              <i class="fas fa-save mr-2"></i>
+              Update Schedule
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/icon-colors.js"></script>
+    <script src="../js/manage-schedule.js"></script>
+  </body>
+</html>
