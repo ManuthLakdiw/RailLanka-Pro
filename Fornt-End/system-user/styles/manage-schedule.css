@@ -1,0 +1,40 @@
+.station-badge {
+display: inline-flex;
+align-items: center;
+padding: 0.25rem 0.75rem;
+border-radius: 9999px;
+font-size: 0.75rem;
+font-weight: 500;
+background-color: #dbeafe;
+color: #1d4ed8;
+}
+/* 
+.schedule-card {
+transition: all 0.3s ease;
+border-left: 4px solid transparent;
+}
+
+.schedule-card:hover {
+border-left-color: #3b82f6;
+transform: translateY(-2px);
+} */
+
+.time-display {
+font-feature-settings: "tnum";
+font-variant-numeric: tabular-nums;
+}
+
+.route-line {
+position: relative;
+}
+
+.route-line::before {
+content: "";
+position: absolute;
+left: 23px;
+top: 24px;
+bottom: 24px;
+width: 2px;
+background: #e5e7eb;
+z-index: 0;
+}

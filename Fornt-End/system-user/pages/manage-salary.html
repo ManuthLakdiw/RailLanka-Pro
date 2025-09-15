@@ -1,0 +1,1599 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RailLanka Pro | Salary Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    />
+    <style>
+      .status-paid {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+      .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+      .salary-type-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      #viewStatusIndicator {
+        animation: pulse 2s infinite;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f0f9ff;
+        overflow-x: hidden;
+      }
+      .sidebar {
+        background: linear-gradient(to bottom, #1d4ed8, #2563eb);
+        transition: all 0.3s ease;
+      }
+      .dashboard-card {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+      .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      }
+      .nav-link.active {
+        background: rgba(255, 255, 255, 0.15);
+        border-left: 4px solid white;
+      }
+      .nav-link:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .modal {
+        transition: all 0.3s ease;
+        opacity: 0;
+        visibility: hidden;
+      }
+      .modal.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .modal-content {
+        transform: translateY(-20px);
+        transition: transform 0.3s ease;
+      }
+      .modal.active .modal-content {
+        transform: translateY(0);
+      }
+      .tab-button {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      .tab-button.active {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .tab-button:hover:not(.active) {
+        background-color: #eff6ff;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 min-h-screen text-white flex flex-col">
+      <div class="p-5 border-b border-blue-400">
+        <div class="flex items-center space-x-3">
+          <img class="" src="../assets/logo.svg" alt="logo" />
+          <h1 class="text-xl font-bold">RailLanka Pro</h1>
+        </div>
+        <p class="text-blue-200 text-sm mt-2">Admin Dashboard</p>
+      </div>
+
+      <div class="p-4 flex-1">
+        <ul class="space-y-1">
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-tachometer-alt mr-3"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-subway mr-3"></i>
+              <span>Manage Trains</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-road mr-3"></i>
+              <span>Manage Stations</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-user-tie mr-3"></i>
+              <span>Station Masters</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-user-friends mr-3"></i>
+              <span>Counter Staff</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-users mr-3"></i>
+              <span>Employees</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-user mr-3"></i>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-link active flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-money-bill-wave mr-3"></i>
+              <span class="font-bold">Salary</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-file-invoice mr-3"></i>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-cog mr-3"></i>
+              <span>System Settings</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-8 p-4 bg-blue-700 rounded-lg">
+          <h3 class="font-medium">Salary Overview</h3>
+          <div class="mt-3 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Monthly Salary Budget</span>
+              <span class="font-bold">LKR 2,450,000</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Paid This Month</span>
+              <span class="font-bold">LKR 1,980,500</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Pending Payments</span>
+              <span class="font-bold">LKR 469,500</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-blue-400">
+        <div class="flex items-center space-x-3">
+          <div
+            class="bg-blue-200 text-blue-800 w-10 h-10 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <p class="font-medium">Admin User</p>
+            <p class="text-blue-200 text-sm">admin@raillanka.lk</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-sm">
+        <div class="max-w-full mx-auto px-6 py-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">Salary Management</h2>
+              <p class="text-gray-600 text-sm">
+                Manage employee salaries and salary settings
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                  <i class="fas fa-bell text-gray-600"></i>
+                  <span
+                    class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+                  ></span>
+                </button>
+              </div>
+
+              <div class="relative">
+                <button class="flex items-center space-x-2 text-gray-700">
+                  <div
+                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
+                  >
+                    <i class="fas fa-user text-blue-700"></i>
+                  </div>
+                  <span>Admin User</span>
+                  <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Tabs Navigation -->
+      <div class="px-6 py-4 bg-white shadow-sm">
+        <div class="flex space-x-2 border-b border-gray-200">
+          <button class="tab-button active" data-tab="salary-records">
+            <i class="fas fa-list mr-2"></i>Salary Records
+          </button>
+          <button class="tab-button" data-tab="salary-settings">
+            <i class="fas fa-cog mr-2"></i>Salary Settings
+          </button>
+          <button class="tab-button" data-tab="payroll-processing">
+            <i class="fas fa-calculator mr-2"></i>Payroll Processing
+          </button>
+        </div>
+      </div>
+
+      <!-- Salary Records Tab Content -->
+      <div id="salary-records" class="tab-content px-6 py-4 flex-1">
+        <!-- Action Bar -->
+        <div class="px-6 py-4 bg-white shadow-sm rounded-t-lg">
+          <div class="flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+              <div class="relative">
+                <input
+                  id="filterSalary"
+                  type="text"
+                  placeholder="Search employees..."
+                  class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <i
+                  class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                ></i>
+              </div>
+
+              <!-- Status Filter Dropdown -->
+              <div class="relative">
+                <select
+                  id="statusFilter"
+                  class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">All Status</option>
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                </select>
+                <i
+                  class="fas fa-filter absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                ></i>
+              </div>
+
+              <!-- Department Filter -->
+              <div class="relative">
+                <select
+                  id="departmentFilter"
+                  class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">All Departments</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Administration">Administration</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Customer Service">Customer Service</option>
+                </select>
+                <i
+                  class="fas fa-building absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                ></i>
+              </div>
+            </div>
+
+            <div class="flex space-x-3">
+              <button
+                id="addSalaryBtn"
+                class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-800 text-white rounded-lg hover:from-green-700 hover:to-green-900 transition flex items-center"
+              >
+                <i class="fas fa-plus mr-2"></i>
+                Add Record
+              </button>
+              <button
+                id="exportPdfBtn"
+                class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition flex items-center"
+              >
+                <i class="fas fa-file-pdf mr-2"></i>
+                Export PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Salary Table -->
+        <div class="px-6 pb-4 bg-white rounded-b-lg shadow-sm">
+          <div class="dashboard-card bg-white rounded-xl overflow-hidden">
+            <div class="overflow-x-auto">
+              <table
+                id="salaryTable"
+                class="min-w-full divide-y divide-gray-200"
+              >
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Employee
+                    </th>
+
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Basic Salary
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Allowances
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Deductions
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Net Salary
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Status
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <!-- Sample Data - Will be populated dynamically -->
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                          <div
+                            class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center"
+                          >
+                            <i class="fas fa-user text-blue-600"></i>
+                          </div>
+                        </div>
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            Mr. John Doe
+                          </div>
+                          <div class="text-sm text-gray-500">EMP001</div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">LKR 45,000</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">LKR 8,500</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">LKR 3,750</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        LKR 49,750
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-paid"
+                        >Paid</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <button
+                        class="text-blue-600 hover:text-blue-900 view-btn mr-3"
+                        data-id="S001"
+                      >
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button
+                        class="text-yellow-600 hover:text-yellow-900 edit-btn mr-3"
+                        data-id="S001"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button
+                        class="text-red-600 hover:text-red-900 delete-btn"
+                        data-id="S001"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                          <div
+                            class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center"
+                          >
+                            <i class="fas fa-user text-green-600"></i>
+                          </div>
+                        </div>
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            Ms. Jane Smith
+                          </div>
+                          <div class="text-sm text-gray-500">EMP002</div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">LKR 38,000</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">LKR 5,200</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">LKR 2,850</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        LKR 40,350
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-pending"
+                        >Pending</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <button
+                        class="text-blue-600 hover:text-blue-900 view-btn mr-3"
+                        data-id="S002"
+                      >
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button
+                        class="text-yellow-600 hover:text-yellow-900 edit-btn mr-3"
+                        data-id="S002"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button
+                        class="text-red-600 hover:text-red-900 delete-btn"
+                        data-id="S002"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div
+              class="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200"
+            >
+              <div class="text-sm text-gray-700">
+                Showing <span id="currentPage" class="font-medium">1</span> to
+                <span id="selectedLastRowData" class="font-medium">2</span> of
+                <span id="totalPage" class="font-medium">125</span> records
+              </div>
+              <div class="flex space-x-2">
+                <button
+                  id="btnFirst"
+                  class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  <i class="fas fa-angle-double-left"></i>
+                </button>
+                <button
+                  id="btnBack"
+                  class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled: cursor-not-allowed"
+                  disabled
+                >
+                  <i class="fas fa-angle-left"></i>
+                </button>
+
+                <div id="pageNumbers" class="flex items-center gap-1"></div>
+
+                <button
+                  id="btnNext"
+                  class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-angle-right"></i>
+                </button>
+
+                <button
+                  id="btnLast"
+                  class="p-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-angle-double-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Salary Settings Tab Content -->
+      <div id="salary-settings" class="tab-content px-6 py-4 flex-1 hidden">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h3 class="text-lg font-medium text-gray-800 mb-6">
+            Salary Components Settings
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Allowances Settings -->
+            <div class="bg-gray-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-plus-circle text-green-600"></i>
+                </div>
+                Allowances
+              </h4>
+
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">
+                      Travel Allowance
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      Monthly travel expense reimbursement
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-medium text-gray-800">LKR 5,000</p>
+                    <div class="flex space-x-2 mt-1">
+                      <button class="text-blue-600 hover:text-blue-800 text-sm">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="text-red-600 hover:text-red-800 text-sm">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">
+                      Overtime Allowance
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      Extra payment for overtime work
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-medium text-gray-800">
+                      LKR 250/hour
+                    </p>
+                    <div class="flex space-x-2 mt-1">
+                      <button class="text-blue-600 hover:text-blue-800 text-sm">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="text-red-600 hover:text-red-800 text-sm">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  class="w-full mt-4 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 flex items-center justify-center"
+                >
+                  <i class="fas fa-plus mr-2"></i> Add Allowance
+                </button>
+              </div>
+            </div>
+
+            <!-- Deductions Settings -->
+            <div class="bg-gray-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-minus-circle text-red-600"></i>
+                </div>
+                Deductions
+              </h4>
+
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">
+                      ETF Contribution
+                    </p>
+                    <p class="text-xs text-gray-500">Employee Trust Fund</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-medium text-gray-800">3% of Basic</p>
+                    <div class="flex space-x-2 mt-1">
+                      <button class="text-blue-600 hover:text-blue-800 text-sm">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="text-red-600 hover:text-red-800 text-sm">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">
+                      EPF Contribution
+                    </p>
+                    <p class="text-xs text-gray-500">Employee Provident Fund</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-medium text-gray-800">8% of Basic</p>
+                    <div class="flex space-x-2 mt-1">
+                      <button class="text-blue-600 hover:text-blue-800 text-sm">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="text-red-600 hover:text-red-800 text-sm">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  class="w-full mt-4 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 flex items-center justify-center"
+                >
+                  <i class="fas fa-plus mr-2"></i> Add Deduction
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tax Settings -->
+          <div class="bg-gray-50 p-5 rounded-xl mb-6">
+            <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+              <div
+                class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center mr-2"
+              >
+                <i class="fas fa-percent text-purple-600"></i>
+              </div>
+              Tax Settings
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Tax Percentage</label
+                >
+                <div class="flex items-center">
+                  <input
+                    type="number"
+                    value="8"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <span class="ml-2 text-gray-500">%</span>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Tax-Free Allowance</label
+                >
+                <div class="flex items-center">
+                  <span class="mr-2 text-gray-500">LKR</span>
+                  <input
+                    type="number"
+                    value="100000"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div class="flex items-end">
+                <button
+                  class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Update Tax Settings
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Salary Grades -->
+          <div class="bg-gray-50 p-5 rounded-xl">
+            <div class="flex justify-between items-center mb-4">
+              <h4 class="font-semibold text-gray-700 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-chart-line text-yellow-600"></i>
+                </div>
+                Salary Grades
+              </h4>
+              <button
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+              >
+                <i class="fas fa-plus mr-2"></i> Add Grade
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th
+                      class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Grade
+                    </th>
+                    <th
+                      class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Position
+                    </th>
+                    <th
+                      class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Basic Salary
+                    </th>
+                    <th
+                      class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      G1
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      Station Master
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-900"
+                    >
+                      LKR 65,000 - 85,000
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <button class="text-blue-600 hover:text-blue-900 mr-3">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="text-red-600 hover:text-red-900">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      G2
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      Ticket Inspector
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-900"
+                    >
+                      LKR 45,000 - 60,000
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <button class="text-blue-600 hover:text-blue-900 mr-3">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="text-red-600 hover:text-red-900">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      G3
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      Counter Staff
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-900"
+                    >
+                      LKR 35,000 - 45,000
+                    </td>
+                    <td
+                      class="px-4 py-3 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <button class="text-blue-600 hover:text-blue-900 mr-3">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="text-red-600 hover:text-red-900">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payroll Processing Tab Content -->
+      <div id="payroll-processing" class="tab-content px-6 py-4 flex-1 hidden">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h3 class="text-lg font-medium text-gray-800 mb-6">
+            Process Payroll
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Payroll Period Selection -->
+            <div class="bg-blue-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-calendar-alt text-blue-600"></i>
+                </div>
+                Select Payroll Period
+              </h4>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Month</label
+                  >
+                  <select
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option>January</option>
+                    <option>February</option>
+                    <option>March</option>
+                    <option>April</option>
+                    <option>May</option>
+                    <option>June</option>
+                    <option>July</option>
+                    <option>August</option>
+                    <option>September</option>
+                    <option>October</option>
+                    <option>November</option>
+                    <option>December</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Year</label
+                  >
+                  <select
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option>2023</option>
+                    <option selected>2024</option>
+                    <option>2025</option>
+                  </select>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                  <span class="text-sm text-gray-600">Payroll Period:</span>
+                  <span class="text-sm font-medium"
+                    >01 May 2024 - 31 May 2024</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Process Controls -->
+            <div class="bg-green-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-cogs text-green-600"></i>
+                </div>
+                Process Controls
+              </h4>
+
+              <div class="space-y-4">
+                <div
+                  class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200"
+                >
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">
+                      Calculate Salaries
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      Compute all employee salaries
+                    </p>
+                  </div>
+                  <button
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                  >
+                    Calculate
+                  </button>
+                </div>
+
+                <div
+                  class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200"
+                >
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">
+                      Generate Payslips
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      Create PDF payslips for all employees
+                    </p>
+                  </div>
+                  <button
+                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm"
+                  >
+                    Generate
+                  </button>
+                </div>
+
+                <div
+                  class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200"
+                >
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">
+                      Process Payments
+                    </p>
+                    <p class="text-xs text-gray-500">Initiate bank transfers</p>
+                  </div>
+                  <button
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                  >
+                    Process
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payroll Summary -->
+          <div class="bg-gray-50 p-5 rounded-xl">
+            <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+              <div
+                class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center mr-2"
+              >
+                <i class="fas fa-file-invoice-dollar text-purple-600"></i>
+              </div>
+              Payroll Summary (May 2024)
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div
+                class="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+              >
+                <div class="text-sm text-gray-500">Total Employees</div>
+                <div class="text-2xl font-bold text-gray-800">142</div>
+              </div>
+
+              <div
+                class="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+              >
+                <div class="text-sm text-gray-500">Total Basic Salary</div>
+                <div class="text-2xl font-bold text-gray-800">LKR 6.2M</div>
+              </div>
+
+              <div
+                class="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+              >
+                <div class="text-sm text-gray-500">Total Deductions</div>
+                <div class="text-2xl font-bold text-gray-800">LKR 1.1M</div>
+              </div>
+
+              <div
+                class="bg-white p-4 rounded-lg shadow-sm border border-green-200 bg-green-50"
+              >
+                <div class="text-sm text-green-600">Net Payroll</div>
+                <div class="text-2xl font-bold text-green-700">LKR 5.8M</div>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <button
+                class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 mr-3"
+              >
+                <i class="fas fa-download mr-2"></i> Export Report
+              </button>
+              <button
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                <i class="fas fa-paper-plane mr-2"></i> Submit Payroll
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beautiful Salary Details Modal -->
+    <div
+      id="salaryModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl transform transition-all"
+      >
+        <!-- Modal Header -->
+        <div
+          class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white relative"
+        >
+          <div class="absolute top-4 right-4">
+            <button
+              type="button"
+              id="closeModal"
+              class="text-white hover:text-blue-200 text-xl transition-transform hover:rotate-90 duration-300"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center">
+            <div
+              class="w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center mr-4"
+            >
+              <i class="fas fa-money-bill-wave text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold">Salary Details</h3>
+              <p class="text-blue-200 mt-1">
+                Complete salary information for employee
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 max-h-[70vh] overflow-y-auto">
+          <!-- Profile Header -->
+          <div class="flex items-center mb-6 pb-6 border-b border-gray-100">
+            <div class="relative">
+              <div
+                class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shadow-inner"
+              >
+                <i class="fas fa-user text-blue-600 text-3xl"></i>
+              </div>
+              <div
+                class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-md"
+              >
+                <div
+                  id="viewStatusIndicator"
+                  class="w-3 h-3 rounded-full bg-green-500"
+                ></div>
+              </div>
+            </div>
+
+            <div class="ml-5">
+              <h2 id="viewEmployeeName" class="text-xl font-bold text-gray-800">
+                Mr. John Doe
+              </h2>
+              <div class="flex items-center mt-2">
+                <span
+                  id="viewEmployeeDept"
+                  class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium mr-2"
+                >
+                  Operations
+                </span>
+                <span
+                  id="viewSalaryStatus"
+                  class="px-3 py-1 status-paid rounded-full text-xs font-medium"
+                >
+                  Paid
+                </span>
+              </div>
+              <p class="text-sm text-gray-500 mt-2">
+                <i class="fas fa-id-badge mr-1"></i>
+                Employee ID: <span id="viewEmployeeId">EMP001</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Salary Breakdown -->
+          <div class="bg-gray-50 p-5 rounded-xl mb-5">
+            <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+              <div
+                class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mr-2"
+              >
+                <i class="fas fa-receipt text-blue-600"></i>
+              </div>
+              Salary Breakdown (May 2024)
+            </h4>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  Basic Salary
+                </p>
+                <p id="viewBasicSalary" class="font-medium text-lg">
+                  LKR 45,000
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  Allowances
+                </p>
+                <p
+                  id="viewAllowances"
+                  class="font-medium text-lg text-green-600"
+                >
+                  + LKR 8,500
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  Deductions
+                </p>
+                <p id="viewDeductions" class="font-medium text-lg text-red-600">
+                  - LKR 3,750
+                </p>
+              </div>
+
+              <div class="bg-blue-50 p-3 rounded-lg">
+                <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  Net Salary
+                </p>
+                <p id="viewNetSalary" class="font-bold text-lg text-blue-700">
+                  LKR 49,750
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detailed Breakdown -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+            <!-- Allowances Details -->
+            <div class="bg-green-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-plus-circle text-green-600"></i>
+                </div>
+                Allowances
+              </h4>
+
+              <div class="space-y-3">
+                <div class="flex justify-between">
+                  <p class="text-sm text-gray-700">Travel Allowance</p>
+                  <p class="text-sm font-medium">LKR 5,000</p>
+                </div>
+                <div class="flex justify-between">
+                  <p class="text-sm text-gray-700">Overtime (8 hours)</p>
+                  <p class="text-sm font-medium">LKR 2,000</p>
+                </div>
+                <div class="flex justify-between">
+                  <p class="text-sm text-gray-700">Attendance Bonus</p>
+                  <p class="text-sm font-medium">LKR 1,500</p>
+                </div>
+                <div
+                  class="border-t border-green-200 pt-2 mt-2 flex justify-between"
+                >
+                  <p class="text-sm font-medium text-gray-800">
+                    Total Allowances
+                  </p>
+                  <p class="text-sm font-medium text-green-700">LKR 8,500</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deductions Details -->
+            <div class="bg-red-50 p-5 rounded-xl">
+              <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+                <div
+                  class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center mr-2"
+                >
+                  <i class="fas fa-minus-circle text-red-600"></i>
+                </div>
+                Deductions
+              </h4>
+
+              <div class="space-y-3">
+                <div class="flex justify-between">
+                  <p class="text-sm text-gray-700">ETF Contribution (3%)</p>
+                  <p class="text-sm font-medium">LKR 1,350</p>
+                </div>
+                <div class="flex justify-between">
+                  <p class="text-sm text-gray-700">EPF Contribution (8%)</p>
+                  <p class="text-sm font-medium">LKR 3,600</p>
+                </div>
+                <div class="flex justify-between">
+                  <p class="text-sm text-gray-700">Tax</p>
+                  <p class="text-sm font-medium">LKR 0</p>
+                </div>
+                <div
+                  class="border-t border-red-200 pt-2 mt-2 flex justify-between"
+                >
+                  <p class="text-sm font-medium text-gray-800">
+                    Total Deductions
+                  </p>
+                  <p class="text-sm font-medium text-red-700">LKR 4,950</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Information -->
+          <div class="bg-gray-50 p-5 rounded-xl">
+            <h4 class="font-semibold text-gray-700 mb-4 flex items-center">
+              <div
+                class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center mr-2"
+              >
+                <i class="fas fa-credit-card text-purple-600"></i>
+              </div>
+              Payment Information
+            </h4>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  Payment Date
+                </p>
+                <p id="viewPaymentDate" class="font-medium">25 May 2024</p>
+              </div>
+
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  Payment Method
+                </p>
+                <p id="viewPaymentMethod" class="font-medium">Bank Transfer</p>
+              </div>
+
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  Bank Name
+                </p>
+                <p id="viewBankName" class="font-medium">Commercial Bank</p>
+              </div>
+
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  Account Number
+                </p>
+                <p id="viewAccountNumber" class="font-medium">XXXX-XXXX-7890</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="bg-gray-50 px-6 py-4 flex justify-end rounded-b-2xl">
+          <button
+            type="button"
+            id="closeViewBtn"
+            class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl hover:from-blue-700 hover:to-blue-900 transition-all shadow-md hover:shadow-lg flex items-center"
+          >
+            <i class="fas fa-times mr-2"></i>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Salary Modal -->
+    <div
+      id="editSalaryModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="modal-content bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl transform transition-all"
+      >
+        <!-- Modal Header -->
+        <div
+          class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white relative"
+        >
+          <div class="absolute top-4 right-4">
+            <button
+              type="button"
+              id="closeEditModal"
+              class="text-white hover:text-blue-200 text-xl transition-transform hover:rotate-90 duration-300"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center">
+            <div
+              class="w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center mr-4"
+            >
+              <i class="fas fa-money-bill-wave text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold" id="editModalTitle">
+                Add Salary Record
+              </h3>
+              <p class="text-blue-200 mt-1">
+                Create new salary record for employee
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 max-h-[70vh] overflow-y-auto">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+            <!-- Employee Selection -->
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Select Employee</label
+              >
+              <select
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">-- Select Employee --</option>
+                <option value="EMP001">John Doe (EMP001) - Operations</option>
+                <option value="EMP002">
+                  Jane Smith (EMP002) - Customer Service
+                </option>
+                <option value="EMP003">
+                  Robert Johnson (EMP003) - Maintenance
+                </option>
+              </select>
+            </div>
+
+            <!-- Basic Salary -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Basic Salary (LKR)</label
+              >
+              <input
+                type="number"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                placeholder="0.00"
+              />
+            </div>
+
+            <!-- Payment Date -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Payment Date</label
+              >
+              <input
+                type="date"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <!-- Allowances -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Allowances (LKR)</label
+              >
+              <input
+                type="number"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                placeholder="0.00"
+              />
+            </div>
+
+            <!-- Deductions -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Deductions (LKR)</label
+              >
+              <input
+                type="number"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                placeholder="0.00"
+              />
+            </div>
+
+            <!-- Payment Method -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Payment Method</label
+              >
+              <select
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="bank">Bank Transfer</option>
+                <option value="cash">Cash</option>
+                <option value="cheque">Cheque</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Status</label
+              >
+              <select
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="mb-5">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Notes</label
+            >
+            <textarea
+              rows="3"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Additional notes..."
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div
+          class="bg-gray-50 px-6 py-4 flex justify-end space-x-3 rounded-b-2xl"
+        >
+          <button
+            type="button"
+            id="cancelEditBtn"
+            class="px-5 py-2.5 text-gray-700 rounded-xl border border-gray-300 hover:bg-gray-100 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            id="saveSalaryBtn"
+            class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl hover:from-blue-700 hover:to-blue-900 transition-all shadow-md hover:shadow-lg flex items-center"
+          >
+            <i class="fas fa-save mr-2"></i>
+            Save Record
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+      // Tab functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const tabs = document.querySelectorAll(".tab-button");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            const tabId = tab.getAttribute("data-tab");
+
+            // Update active tab
+            tabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+
+            // Show selected tab content
+            tabContents.forEach((content) => {
+              content.classList.add("hidden");
+              if (content.id === tabId) {
+                content.classList.remove("hidden");
+              }
+            });
+          });
+        });
+
+        // Modal functionality
+        const viewButtons = document.querySelectorAll(".view-btn");
+        const viewModal = document.getElementById("salaryModal");
+        const closeViewBtn = document.getElementById("closeViewBtn");
+
+        viewButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            viewModal.classList.add("active");
+          });
+        });
+
+        closeViewBtn.addEventListener("click", () => {
+          viewModal.classList.remove("active");
+        });
+
+        // Edit modal functionality
+        const addSalaryBtn = document.getElementById("addSalaryBtn");
+        const editButtons = document.querySelectorAll(".edit-btn");
+        const editModal = document.getElementById("editSalaryModal");
+        const closeEditBtn = document.getElementById("closeEditModal");
+        const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+        addSalaryBtn.addEventListener("click", () => {
+          document.getElementById("editModalTitle").textContent =
+            "Add Salary Record";
+          editModal.classList.add("active");
+        });
+
+        editButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            document.getElementById("editModalTitle").textContent =
+              "Edit Salary Record";
+            editModal.classList.add("active");
+          });
+        });
+
+        closeEditBtn.addEventListener("click", () => {
+          editModal.classList.remove("active");
+        });
+
+        cancelEditBtn.addEventListener("click", () => {
+          editModal.classList.remove("active");
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener("click", (event) => {
+          if (event.target.classList.contains("modal")) {
+            document.querySelectorAll(".modal").forEach((modal) => {
+              modal.classList.remove("active");
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,49 +1,21 @@
-
-body {  
-font-family: "Inter", sans-serif;
-overflow-x: hidden;
+/* Profile Modal Styles */
+.profile-modal {
+transition: all 0.3s ease-out;
 }
-.dashboard-card {
-background: white;
-border-radius: 12px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-transition: all 0.3s ease;
-border: 1px solid #e2e8f0;
-}
-
-.dashboard-card:hover {
-transform: translateY(-3px);
-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.07);
-}
-.status-active {
-background-color: #dcfce7;
-color: #166534;
-}
-.status-inactive {
-background-color: #fee2e2;
-color: #b91c1c;
-}
-.modal {
-transition: all 0.3s ease;
+.profile-modal:not(.show) {
 opacity: 0;
 visibility: hidden;
+transform: scale(0.9);
 }
-.modal.active {
+.profile-modal.show {
 opacity: 1;
 visibility: visible;
-}
-.modal-content {
-transform: translateY(-20px);
-transition: transform 0.3s ease;
-}
-.modal.active .modal-content {
-transform: translateY(0);
+transform: scale(1);
 }
 
 .sidebar {
 height: 100vh;
 overflow-y: auto;
-font-size: 0.9rem;
 }
 
 .main-content {
@@ -82,4 +54,3 @@ border-radius: 3px;
 .sidebar-nav::-webkit-scrollbar-thumb:hover {
 background: rgba(255, 255, 255, 0.5);
 }
-

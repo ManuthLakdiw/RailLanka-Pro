@@ -1,0 +1,42 @@
+.support-card {
+transition: all 0.3s ease;
+}
+.support-card:hover {
+transform: translateY(-5px);
+box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.floating-label {
+transition: all 0.2s ease;
+transform-origin: left top;
+}
+.input-field:focus + .floating-label,
+.input-field:not(:placeholder-shown) + .floating-label {
+transform: translateY(-18px) scale(0.85);
+color: #3b82f6;
+}
+.ticket-priority {
+transition: all 0.3s ease;
+}
+.ticket-priority:hover {
+transform: scale(1.05);
+}
+.knowledge-content {
+max-height: 0;
+overflow: hidden;
+transition: max-height 0.3s ease-out;
+}
+.knowledge-content.expanded {
+max-height: 500px;
+transition: max-height 0.5s ease-in;
+}
+.knowledge-toggle {
+cursor: pointer;
+}
+.knowledge-toggle i {
+transition: transform 0.3s ease;
+}
+.knowledge-toggle.expanded i {
+transform: rotate(180deg);
+}

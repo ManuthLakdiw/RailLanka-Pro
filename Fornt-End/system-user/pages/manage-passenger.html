@@ -9,6 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -20,23 +21,27 @@
     <link rel="stylesheet" href="../styles/normalize.css" />
     <link rel="stylesheet" href="../styles/manage-pasenger.css" />
   </head>
-  <body class="min-h-screen flex">
+  <body class="min-h-screen flex overflow-hidden bg-gray-50">
     <!-- Sidebar -->
-    <div class="sidebar w-64 min-h-screen text-white flex flex-col">
+    <div
+      class="sidebar w-64 bg-blue-900 text-white flex flex-col flex-shrink-0"
+    >
       <div class="p-5 border-b border-blue-400">
         <div class="flex items-center space-x-3">
-          <img class="" src="../assets/logo.svg" alt="logo" />
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+            <img src="../assets/logo.svg" alt="" />
+          </div>
           <h1 class="text-xl font-bold">RailLanka Pro</h1>
         </div>
         <p class="text-blue-200 text-sm mt-2">Admin Dashboard</p>
       </div>
 
-      <div class="p-4 flex-1">
+      <div class="sidebar-nav p-4 flex-1 overflow-y-auto">
         <ul class="space-y-1">
           <li>
             <a
               href="./admin-dashboard.html"
-              class="nav-link flex items-center p-3 rounded-lg"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
             >
               <i class="fas fa-tachometer-alt mr-3"></i>
               <span>Dashboard</span>
@@ -45,7 +50,7 @@
           <li>
             <a
               href="./manage-train.html"
-              class="nav-link flex items-center p-3 rounded-lg"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
             >
               <i class="fas fa-subway mr-3"></i>
               <span>Manage Trains</span>
@@ -54,7 +59,7 @@
           <li>
             <a
               href="./manage-station.html"
-              class="nav-link flex items-center p-3 rounded-lg"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
             >
               <i class="fas fa-road mr-3"></i>
               <span>Manage Stations</span>
@@ -63,7 +68,7 @@
           <li>
             <a
               href="./manage-schedule.html"
-              class="nav-link flex items-center p-3 rounded-lg"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
             >
               <i class="fas fa-calendar-alt mr-3"></i>
               <span>Manage Schedule</span>
@@ -72,7 +77,7 @@
           <li>
             <a
               href="./manage-station-master.html"
-              class="nav-link flex items-center p-3 rounded-lg"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
             >
               <i class="fas fa-user-tie mr-3"></i>
               <span>Station Masters</span>
@@ -81,7 +86,7 @@
           <li>
             <a
               href="./manage-counter.html"
-              class="nav-link flex items-center p-3 rounded-lg"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
             >
               <i class="fas fa-user-friends mr-3"></i>
               <span>Counter Staff</span>
@@ -90,7 +95,7 @@
           <li>
             <a
               href="./manage-employee.html"
-              class="nav-link flex items-center p-3 rounded-lg"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
             >
               <i class="fas fa-users mr-3"></i>
               <span>Employees</span>
@@ -98,47 +103,59 @@
           </li>
           <li>
             <a
-              href="#"
-              class="nav-link active flex items-center p-3 rounded-lg"
+              href="./manage-passenger.html"
+              class="flex items-center p-3 rounded-lg bg-blue-800 text-white"
             >
               <i class="fas fa-users-between-lines mr-3"></i>
-              <span class="font-bold">Passengers</span>
+              <span>Passengers</span>
             </a>
           </li>
           <li>
             <a
               href="./report.html"
-              class="nav-link flex items-center p-3 rounded-lg"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
             >
               <i class="fas fa-file-invoice mr-3"></i>
               <span>Reports</span>
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+            <a
+              href="#"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
+            >
               <i class="fas fa-cog mr-3"></i>
               <span>System Settings</span>
             </a>
           </li>
+          <li>
+            <a
+              href="./contact-it-support.html"
+              class="flex items-center p-3 rounded-lg text-blue-200 hover:bg-blue-800"
+            >
+              <i class="fas fa-headset mr-3"></i>
+              <span>IT Support</span>
+            </a>
+          </li>
         </ul>
 
-        <div class="mt-8 p-4 bg-blue-700 rounded-lg">
+        <!-- <div class="mt-8 p-4 bg-blue-800 rounded-lg">
           <h3 class="font-medium">Quick Stats</h3>
           <div class="mt-3 space-y-2">
             <div class="flex justify-between text-sm">
-              <span class="text-blue-200">Total Passengers</span>
-              <span class="font-bold">1,245</span>
+              <span class="text-blue-200">All Trains</span>
+              <span class="font-bold">3</span>
             </div>
             <div class="flex justify-between text-sm">
-              <span class="text-blue-200">Active Today</span>
-              <span class="font-bold">327</span>
+              <span class="text-blue-200">Resolved Today</span>
+              <span class="font-bold">7</span>
             </div>
             <div class="flex justify-between text-sm">
-              <span class="text-blue-200">Blocked Accounts</span>
-              <span class="font-bold">18</span>
+              <span class="text-blue-200">Avg. Response Time</span>
+              <span class="font-bold">2.4h</span>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="p-4 border-t border-blue-400">
@@ -149,8 +166,8 @@
             <i class="fas fa-user"></i>
           </div>
           <div>
-            <p class="font-medium">Admin User</p>
-            <p id="adminEmail" class="text-blue-200 text-sm">
+            <p class="font-normal">Admin User</p>
+            <p id="adminEmail" class="text-blue-200 text-xs">
               admin@raillanka.lk
             </p>
           </div>
@@ -159,9 +176,9 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col">
+    <div class="main-content flex-1 flex flex-col">
       <!-- Header -->
-      <header class="bg-white shadow-sm">
+      <header class="sticky-header bg-white shadow-sm">
         <div class="max-w-full mx-auto px-6 py-3">
           <div class="flex justify-between items-center">
             <div>
@@ -186,9 +203,9 @@
               <div class="relative group">
                 <button class="flex items-center space-x-2 text-gray-700">
                   <div
-                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
+                    class="w-8 h-8 bg-blue-200 rounded-full flex items-center justify-center"
                   >
-                    <i class="fas fa-user text-blue-700"></i>
+                    <i class="fas fa-user text-blue-800"></i>
                   </div>
                   <span id="adminUsername">Admin User</span>
                   <i
