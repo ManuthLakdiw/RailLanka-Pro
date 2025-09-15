@@ -96,7 +96,7 @@ public class CounterServiceImpl implements CounterService {
 
         new Thread(() -> {
             emailService.sendCounterCredentials(
-                    "CounterRegTemplate",
+                    "counter-credential-email",
                     counterDto ,
                     counter.getCounterId()
                     );

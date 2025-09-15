@@ -69,6 +69,7 @@ public class StationMasterServiceImpl implements StationMasterService {
 
         userRepository.save(user);
 
+
         String formattedFirstName = staffDto.getFirstname().substring(0, 1).toUpperCase() +
                 staffDto.getFirstname().substring(1).toLowerCase();
 
@@ -95,7 +96,7 @@ public class StationMasterServiceImpl implements StationMasterService {
 
         new Thread(() -> {
             emailService.sendStationMasterCredentials(
-                    "StationMasterRegTemplate",
+                    "station-master-credential-email",
                     staffDto ,
                     stationMaster.getStationMasterId()
             );
