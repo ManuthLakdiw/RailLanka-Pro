@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RailLanka Pro - Support request Confirmation</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f1f5f9; line-height: 1.5;">
+<div th:with="
+        priorityColorLow='#10b981',
+        priorityColorMedium='#f59e0b',
+        priorityColorHigh='#ef4444',
+        priorityColorCritical='#8b5cf6',
+        priorityBgLow='#d1fae5',
+        priorityBgMedium='#fef3c7',
+        priorityBgHigh='#fee2e2',
+        priorityBgCritical='#ede9fe',
+        currentColor=${priority.toLowerCase() == 'low' ? priorityColorLow :
+                      (priority.toLowerCase() == 'medium' ? priorityColorMedium :
+                      (priority.toLowerCase() == 'high' ? priorityColorHigh : priorityColorCritical))},
+        currentBg=${priority.toLowerCase() == 'low' ? priorityBgLow :
+                   (priority.toLowerCase() == 'medium' ? priorityBgMedium :
+                   (priority.toLowerCase() == 'high' ? priorityBgHigh : priorityBgCritical))}">
+
+  <!-- Email Container -->
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f1f5f9;">
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="680" style="max-width: 680px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #10b981 0%, #10b981dd 100%); padding: 32px; text-align: center; color: white;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                  <td align="center">
+                    <!-- Logo -->
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto 16px;">
+                      <tr>
+                        <td>
+                          <img src="cid:logo" alt="RailLanka Pro Logo" style="width: 50px; height: auto;">
+                        </td>
+                        <td style="padding-left: 12px; font-size: 24px; font-weight: bold; color: white; vertical-align: middle;">
+                          RailLanka Pro
+                        </td>
+                      </tr>
+                    </table>
+                    <h1 style="margin: 0; font-size: 20px; font-weight: 600;">Support Request Successfully Submitted</h1>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 32px;">
+
+              <!-- Success Message -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
+                <tr>
+                  <td style="background-color: #d1fae5; border-left: 4px solid #10b981; border-radius: 8px; padding: 16px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                      <tr>
+                        <td width="30" style="vertical-align: top;">
+                          <span style="color: #10b981; font-size: 20px;">🎉</span>
+                        </td>
+                        <td style="vertical-align: top; color: #1f2937; font-size: 16px;">
+                          <strong style="color: #10b981;">Thank you!</strong> Your support request has been successfully submitted to our customer support team.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Ticket ID -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
+                <tr>
+                  <td style="background-color: #e0f2fe; color: #0277bd; padding: 12px 16px; border-radius: 8px; font-size: 18px; font-weight: bold;">
+                    🎫 Your Support ID: <span th:text="${ticketId}">RL-1234</span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Your Details -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
+                <tr>
+                  <td>
+                    <div style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px;">
+                      📋 Your Request Details
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Info Grid -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
+                <tr>
+                  <!-- Name & Email -->
+                  <td width="50%" style="padding-right: 8px; vertical-align: top;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                      <tr>
+                        <td style="background-color: #f9fafb; border-left: 3px solid #10b981; padding: 16px; border-radius: 8px;">
+                          <div style="font-size: 12px; color: #6b7280; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+                            👤 YOUR DETAILS
+                          </div>
+                          <div style="font-weight: 500; color: #1f2937;" th:text="${requesterName} + ' (' + ${requesterEmail} + ')'">
+                            John Doe (john@example.com)
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <!-- Category -->
+                  <td width="50%" style="padding-left: 8px; vertical-align: top;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                      <tr>
+                        <td style="background-color: #f9fafb; border-left: 3px solid #10b981; padding: 16px; border-radius: 8px;">
+                          <div style="font-size: 12px; color: #6b7280; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+                            🏷️ CATEGORY
+                          </div>
+                          <div style="font-weight: 500; color: #1f2937;" th:text="${category}">
+                            Software Issue
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Issue Description -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
+                <tr>
+                  <td>
+                    <div style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px;">
+                      📝 Your Message
+                    </div>
+                    <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; line-height: 1.6; color: #1f2937;" th:text="${description}">
+                      The application crashes when trying to generate monthly reports. This happens consistently when filtering by date range.
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- What happens next -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-bottom: 24px;">
+                <tr>
+                  <td style="background-color: #f0f9ff; border-left: 4px solid #0284c7; border-radius: 8px; padding: 16px;">
+                    <div style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px;">
+                      🔄 What Happens Next?
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; color: #1f2937;">
+                      <li style="margin-bottom: 8px;">Our support team will review your request within 2-4 business hours</li>
+                      <li style="margin-bottom: 8px;">You'll receive updates via email using this Support ID: <strong th:text="${ticketId}">RL-1234</strong></li>
+                      <li style="margin-bottom: 8px;">For urgent matters, please call our support hotline</li>
+                      <li>Please keep this email for your records</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Contact Info -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                  <td style="background-color: #f9fafb; border-radius: 8px; padding: 20px; text-align: center;">
+                    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 12px;">
+                      Need immediate assistance?
+                    </div>
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto;">
+                      <tr>
+                        <td style="padding: 8px 12px; color: #6b7280; font-weight: 500;">
+                          📧 support@raillanka.lk
+                        </td>
+                        <td style="padding: 8px 12px; color: #6b7280; font-weight: 500;">
+                          📞 +94 11 2 345 678
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="padding: 8px 12px; color: #6b7280; font-weight: 500; text-align: center;">
+                          🕐 8:00 AM - 6:00 PM (Mon-Sat)
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f9fafb; border-top: 1px solid #e5e7eb; padding: 24px; text-align: center; color: #6b7280; font-size: 13px;">
+              <p style="margin: 4px 0;">© 2023 RailLanka Pro. All rights reserved.</p>
+              <p style="margin: 4px 0;">Sri Lanka Railways Management System</p>
+              <p style="margin: 4px 0;">This is an automated confirmation message.</p>
+              <div style="margin-top: 12px;">
+                <a href="https://raillanka.lk/privacy" style="color: #6b7280; text-decoration: none; margin: 0 8px;">Privacy Policy</a>
+                <a href="https://raillanka.lk/terms" style="color: #6b7280; text-decoration: none; margin: 0 8px;">Terms of Service</a>
+                <a href="https://raillanka.lk/help" style="color: #6b7280; text-decoration: none; margin: 0 8px;">Help Center</a>
+              </div>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>
