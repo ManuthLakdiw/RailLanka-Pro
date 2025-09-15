@@ -164,11 +164,40 @@ $(document).ready(function () {
         }
 
         // Simulate form submission
-        const ticketId = "RL-" + Math.floor(1000 + Math.random() * 9000);
+        const ticketId = "SI-" + Math.floor(1000 + Math.random() * 9000);
         $("#ticketId").text("#" + ticketId);
 
-        // Show success modal
-        $("#successModal").fadeIn();
+        const formData = new FormData();
+        formData.append("ticketId", ticketId);
+        formData.append("requesterName", requesterName);
+        formData.append("requesterEmail", requesterEmail);
+        formData.append("subject", subject);
+        formData.append("description", description);
+        formData.append("category", category);
+        formData.append("priority", priority);
+
+        for (let i = 0; i < attachments.length; i++) {
+            formData.append("attachments", attachments[i], attachments[i].name);
+        }
+
+        const requestOptions = {
+            method: "POST",
+            body: formData,
+            redirect: "follow"
+        };
+
+        const submitBtn = $("#submitBtn");
+        const originalBtnText = submitBtn.text();
+        submitBtn.text("Requesing...");
+        fetchWithTokenRefresh("http://localhost:8080/api/v1/raillankapro/customer/support", requestOptions)
+        .then(({result}) => {
+            if (result.code === 200) {
+                $("#successModal").fadeIn();
+                submitBtn.text(originalBtnText);
+            }
+        })
+        .catch((error) => console.error(error));
+
     });
 
     // Close modal
