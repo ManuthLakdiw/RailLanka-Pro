@@ -82,6 +82,36 @@ public class AuthController {
         ));
     }
 
+    @PostMapping(value = "/reset/password/verify" , params = "email")
+    public ResponseEntity<ApiResponse<String>> sendVerificationCode(@RequestParam("email") String email) {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "otp send",
+                authService.sendVerificationCode(email)
+        ));
+
+    }
+
+    @PostMapping(value = "/reset/password/verify/code" , params = {"email","code"})
+    public ResponseEntity<ApiResponse<Boolean>> verifyCode(@RequestParam("email") String email , @RequestParam("code") String code) {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "code verification",
+                authService.verifyVerificationCode(email,code)
+        ));
+
+    }
+
+    @PostMapping(value = "/reset/password")
+    public ResponseEntity<ApiResponse<Boolean>> resetPassword(@RequestBody AuthDto authDto) {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "reset password",
+                authService.resetPassword(authDto)
+        ));
+
+    }
+
 
 
 

@@ -13,4 +13,10 @@ public interface AuthService {
     AuthResponseDto authenticate(AuthDto authDto);
 
     AuthResponseDto reGenerateAccessTokenUsingRefreshToken(String refreshToken);
+
+     String sendVerificationCode(String email);
+
+     boolean verifyVerificationCode(String email , String otp);
+
+    Boolean resetPassword(AuthDto authDto);
 }
