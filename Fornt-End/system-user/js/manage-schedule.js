@@ -179,7 +179,7 @@ $(document).ready(function () {
 
     closeUpdateModalButton.on("click" , function() {
         closeModal("updateScheduleModal")
-        updateErroMsgReset();
+        updateFormReset();
     });
 
 
@@ -1013,6 +1013,7 @@ $(document).ready(function () {
 
                 $(`input[name="frequency"][value="${data.scheduleFrequency}"]`).prop("checked", true);
                 $("#updateDesctiption").val(data.description)
+                
 
                 if (data.stops && data.stops.length > 0) {
                     // 🧹 Clear old/default stops
@@ -1433,12 +1434,17 @@ $(document).ready(function () {
         return iconColors[index];
     }
 
-    function updateErroMsgReset(){
+    function updateFormReset(){
         $("#updateMainArrivalTimeError").addClass("hidden");
         $("#updateStopsContainer .stop-item").each(function (index) {
             const $error = $(this).find(".error-msg"); 
             $error.addClass("hidden");
         });
+        $("#schedulUpdateForm")[0].reset();
+
+        $("#updateScheduleId").val("");
+    
+        $("#updateStopsContainer").empty();
     }
 
 });
