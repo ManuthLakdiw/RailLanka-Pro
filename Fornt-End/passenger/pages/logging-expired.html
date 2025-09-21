@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Session Expired - Rail Lanka Pro</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #1d4ed8;
+        --secondary: #2563eb;
+        --light: #f0f9ff;
+        --dark: #1f2937;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+        color: #1f2937;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 450px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .header {
+        background: var(--primary);
+        padding: 25px;
+        text-align: center;
+        color: white;
+      }
+
+      .header i {
+        font-size: 64px;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .message {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #4b5563;
+        line-height: 1.6;
+      }
+
+      .countdown {
+        text-align: center;
+        font-size: 15px;
+        color: #6b7280;
+        margin-bottom: 25px;
+      }
+
+      .countdown span {
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .btn {
+        padding: 15px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+      }
+
+      .btn-outline:hover {
+        background: #f0f7ff;
+      }
+
+      .footer {
+        padding: 20px;
+        text-align: center;
+        background: #f9fafb;
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .footer a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @media (max-width: 480px) {
+        .card {
+          border-radius: 15px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+
+        .header i {
+          font-size: 54px;
+        }
+
+        .content {
+          padding: 25px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <i class="fas fa-exclamation-triangle pulse"></i>
+          <h1>Session Expired</h1>
+        </div>
+
+        <div class="content">
+          <div class="message">
+            <p>
+              Your login session has expired due to inactivity. For security
+              reasons, please log in again to continue using Rail Lanka Pro.
+            </p>
+          </div>
+
+          <div class="countdown">
+            <p>
+              Redirecting to login in <span id="countdown">10</span> seconds
+            </p>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" onclick="redirectToLogin()">
+              <i class="fas fa-sign-in-alt"></i> Login Now
+            </button>
+
+            <button class="btn btn-outline" onclick="goToHome()">
+              <i class="fas fa-home"></i> Back to Home
+            </button>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>Need help? <a href="#">Contact Support</a></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Countdown timer
+      const countdownElement = document.getElementById("countdown");
+      if (countdownElement) {
+        let seconds = 10;
+        const countdown = setInterval(() => {
+          seconds--;
+          countdownElement.textContent = seconds;
+          if (seconds <= 0) {
+            clearInterval(countdown);
+            redirectToLogin();
+          }
+        }, 1000);
+      }
+
+      // Redirect to login page
+      function redirectToLogin() {
+        window.location.href = "./anim.html";
+      }
+
+      function goToHome() {
+        window.location.href = "/passenger/index.html";
+      }
+
+      // Clear the countdown if user interacts with the page
+      document.addEventListener("click", function () {
+        clearInterval(countdown);
+        countdownElement.textContent = "0";
+        document.querySelector(".countdown p").textContent =
+          "Redirect paused due to user activity";
+      });
+    </script>
+  </body>
+</html>

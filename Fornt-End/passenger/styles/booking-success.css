@@ -1,0 +1,109 @@
+body {
+font-family: "Inter", sans-serif;
+background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+min-height: 100vh;
+}
+
+.success-animation {
+animation: successScale 0.5s ease-out;
+}
+
+@keyframes successScale {
+0% {
+transform: scale(0.8);
+opacity: 0;
+}
+100% {
+transform: scale(1);
+opacity: 1;
+}
+}
+
+.ticket-card {
+background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+border-radius: 16px;
+box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+overflow: hidden;
+}
+
+.ticket-strip {
+background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);
+height: 12px;
+}
+
+.ticket-notch {
+position: absolute;
+width: 24px;
+height: 24px;
+background: #f0f9ff;
+border-radius: 50%;
+top: 50%;
+transform: translateY(-50%);
+}
+
+.ticket-notch-left {
+left: -12px;
+}
+
+.ticket-notch-right {
+right: -12px;
+}
+
+.journey-line {
+position: relative;
+height: 2px;
+background: #3b82f6;
+margin: 20px 0;
+}
+
+.journey-line::before {
+content: "";
+position: absolute;
+left: 0;
+top: 50%;
+transform: translateY(-50%);
+width: 12px;
+height: 12px;
+background: #3b82f6;
+border-radius: 50%;
+}
+
+.journey-line::after {
+content: "";
+position: absolute;
+right: 0;
+top: 50%;
+transform: translateY(-50%);
+width: 12px;
+height: 12px;
+background: #3b82f6;
+border-radius: 50%;
+}
+
+.download-btn {
+transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+}
+
+.confetti {
+position: absolute;
+width: 10px;
+height: 10px;
+background: #3b82f6;
+opacity: 0.7;
+}
+
+@keyframes confettiFall {
+0% {
+transform: translateY(-100px) rotate(0deg);
+opacity: 1;
+}
+100% {
+transform: translateY(100vh) rotate(360deg);
+opacity: 0;
+}
+}

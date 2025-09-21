@@ -1,0 +1,3341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Rail Lanka Pro - Premium Railway Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../passenger/styles/index.css" />
+    <script
+      type="text/javascript"
+      src="https://www.payhere.lk/lib/payhere.js"
+    ></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              inter: ["Inter", "sans-serif"],
+            },
+            colors: {
+              primary: {
+                800: "#1e40af",
+                700: "#1d4ed8",
+                600: "#2563eb",
+                200: "#bfdbfe",
+              },
+              gray: {
+                50: "#f9fafb",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style></style>
+    <meta http-equiv="Content-Security-Policy" />
+  </head>
+  <body
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 font-inter"
+  >
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 navbar-blur">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center space-x-3">
+            <img
+              class="relative left-2 bottom-1 w-[40px]"
+              src="../system-user/assets/logo-blue.svg"
+              alt=""
+            />
+            <span
+              class="text-xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent"
+              >RailLanka-Pro</span
+            >
+          </div>
+
+          <!-- Desktop Menu -->
+          <div class="hidden lg:flex space-x-6">
+            <a
+              id="homeLink"
+              href="#"
+              class="nav-link text-primary-600 font-medium hover:text-primary-500 transition-all duration-300 relative group"
+              data-page="home"
+            >
+              Home
+              <span
+                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"
+              ></span>
+            </a>
+            <a
+              href="#"
+              class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-all duration-300 relative group"
+              data-page="about"
+            >
+              About Us
+              <span
+                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"
+              ></span>
+            </a>
+            <a
+              href="#"
+              class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-all duration-300 relative group"
+              data-page="gallery"
+            >
+              Gallery
+              <span
+                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"
+              ></span>
+            </a>
+            <a
+              href="#"
+              class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-all duration-300 relative group"
+              data-page="services"
+            >
+              Our Services
+              <span
+                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"
+              ></span>
+            </a>
+            <a
+              href="#"
+              class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-all duration-300 relative group"
+              data-page="contact"
+            >
+              Contact
+              <span
+                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"
+              ></span>
+            </a>
+          </div>
+
+          <!-- Controls -->
+          <div class="flex items-center space-x-4">
+            <!-- Dark Mode Toggle -->
+            <button
+              id="theme-toggle"
+              class="w-12 h-6 bg-gray-300 dark:bg-gray-700 rounded-full relative transition-colors duration-300"
+            >
+              <div
+                class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 dark:left-6 transition-all duration-300 flex items-center justify-center"
+              >
+                <i
+                  class="fas fa-sun text-xs text-yellow-500 dark:text-blue-400"
+                ></i>
+              </div>
+            </button>
+
+            <!-- Auth Buttons -->
+            <!-- <div class="hidden sm:flex space-x-2">
+              <button
+                class="px-4 py-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all duration-300 font-medium"
+              >
+                Sign In
+              </button>
+              <button
+                class="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium"
+              >
+                Sign Up
+              </button>
+            </div> -->
+            <div id="authContainer" class="hidden sm:flex space-x-2">
+              <!-- This will be dynamically populated by JavaScript -->
+            </div>
+            <!-- Mobile Menu Button -->
+            <button
+              id="mobile-menu-btn"
+              class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300"
+            >
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div
+          id="mobile-menu"
+          class="lg:hidden hidden mobile-menu mt-4 p-4 -mx-4"
+        >
+          <div class="flex flex-col space-y-3">
+            <a
+              href="#"
+              class="nav-link block py-2 text-primary-600 font-semibold"
+              data-page="home"
+              >Home</a
+            >
+            <a
+              href="#"
+              class="nav-link block py-2 text-gray-600 dark:text-gray-300"
+              data-page="about"
+              >About Us</a
+            >
+            <a
+              href="#"
+              class="nav-link block py-2 text-gray-600 dark:text-gray-300"
+              data-page="gallery"
+              >Gallery</a
+            >
+            <a
+              href="#"
+              class="nav-link block py-2 text-gray-600 dark:text-gray-300"
+              data-page="services"
+              >Our Services</a
+            >
+            <a
+              href="#"
+              class="nav-link block py-2 text-gray-600 dark:text-gray-300"
+              data-page="contact"
+              >Contact</a
+            >
+            <!-- <div
+              class="flex space-x-2 pt-3 border-t border-gray-200 dark:border-gray-700"
+            >
+              <button
+                class="flex-1 py-2 text-primary-600 bg-primary-50 dark:bg-primary-900/20 rounded-lg"
+              >
+                Sign In
+              </button>
+              <button
+                class="flex-1 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg"
+              >
+                Sign Up
+              </button>
+            </div> -->
+            <div
+              id="mobileAuthContainer"
+              class="flex space-x-2 pt-3 border-t border-gray-200 dark:border-gray-700"
+            >
+              <!-- This will be dynamically populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Profile Modal -->
+    <div
+      id="profileModal"
+      class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl w-11/12 max-w-5xl max-h-[90vh] overflow-hidden transform scale-95 opacity-0 transition-all duration-300 shadow-2xl"
+      >
+        <!-- Modal Header -->
+        <div
+          class="bg-gradient-to-r from-primary-600 to-primary-800 p-6 text-white relative"
+        >
+          <div class="absolute top-4 right-4">
+            <button
+              id="closeProfileModal"
+              class="text-white hover:text-gray-200 transition-colors duration-200 p-2 rounded-full hover:bg-white/10"
+            >
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <div
+              class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-user text-2xl"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold">My Profile</h2>
+              <p class="mt-1 opacity-90">View and manage my account details</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto max-h-[60vh]">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Personal Details Card -->
+            <div
+              class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-5 rounded-2xl shadow-md"
+            >
+              <h3
+                class="text-lg font-semibold text-primary-700 dark:text-primary-300 mb-4 flex items-center"
+              >
+                <i class="fas fa-user-circle mr-2 text-primary-600"></i>
+                Personal Information
+              </h3>
+
+              <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-white dark:bg-gray-600 p-3 rounded-lg">
+                    <label
+                      class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                      >Title</label
+                    >
+                    <p
+                      class="mt-1 font-medium text-gray-800 dark:text-white"
+                      id="profileTitle"
+                    >
+                      Mr.
+                    </p>
+                  </div>
+                  <div class="bg-white dark:bg-gray-600 p-3 rounded-lg">
+                    <label
+                      class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                      >Username</label
+                    >
+                    <p
+                      class="mt-1 font-medium text-gray-800 dark:text-white"
+                      id="profileUsername"
+                    >
+                      johndoe
+                    </p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-white dark:bg-gray-600 p-3 rounded-lg">
+                    <label
+                      class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                      >First Name</label
+                    >
+                    <p
+                      class="mt-1 font-medium text-gray-800 dark:text-white"
+                      id="profileFirstName"
+                    >
+                      John
+                    </p>
+                  </div>
+                  <div class="bg-white dark:bg-gray-600 p-3 rounded-lg">
+                    <label
+                      class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                      >Last Name</label
+                    >
+                    <p
+                      class="mt-1 font-medium text-gray-800 dark:text-white"
+                      id="profileLastName"
+                    >
+                      Doe
+                    </p>
+                  </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-600 p-3 rounded-lg">
+                  <label
+                    class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                    >Email</label
+                  >
+                  <p
+                    class="mt-1 font-medium text-gray-800 dark:text-white"
+                    id="profileEmail"
+                  >
+                    john.doe@example.com
+                  </p>
+                </div>
+
+                <div class="bg-white dark:bg-gray-600 p-3 rounded-lg">
+                  <label
+                    class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                    >Contact Number</label
+                  >
+                  <p
+                    class="mt-1 font-medium text-gray-800 dark:text-white"
+                    id="profileContact"
+                  >
+                    +94 77 123 4567
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Booking History Card -->
+            <div
+              class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-5 rounded-2xl shadow-md"
+            >
+              <h3
+                class="text-lg font-semibold text-primary-700 dark:text-primary-300 mb-4 flex items-center"
+              >
+                <i class="fas fa-ticket-alt mr-2 text-primary-600"></i> Your
+                Bookings
+              </h3>
+
+              <!-- Fixed height scrollable container -->
+              <div
+                class="max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-700 mb-4"
+              >
+                <div class="space-y-4" id="bookingHistory">
+                  <!-- Booking Item 1 -->
+                  <div
+                    class="bg-white dark:bg-gray-600 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-300"
+                  >
+                    <div class="flex justify-between items-start mb-3">
+                      <div>
+                        <span
+                          class="font-semibold text-gray-800 dark:text-white"
+                          >Colombo to Kandy</span
+                        >
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                          Express Train • 1st Class
+                        </p>
+                      </div>
+                      <span
+                        class="text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100 px-3 py-1.5 rounded-full flex items-center"
+                      >
+                        <i class="fas fa-check-circle mr-1.5"></i> Completed
+                      </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                      <div
+                        class="flex items-center text-gray-600 dark:text-gray-300"
+                      >
+                        <i
+                          class="far fa-calendar-alt mr-2 text-primary-600"
+                        ></i>
+                        <span>15 Oct 2023</span>
+                      </div>
+                      <div
+                        class="flex items-center text-gray-600 dark:text-gray-300"
+                      >
+                        <i class="far fa-clock mr-2 text-primary-600"></i>
+                        <span>08:30 AM</span>
+                      </div>
+                    </div>
+                    <div
+                      class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700"
+                    >
+                      <p class="text-xs text-gray-500 dark:text-gray-400">
+                        Booking ID: RL23654879
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Booking Item 2 -->
+                  <div
+                    class="bg-white dark:bg-gray-600 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-300"
+                  >
+                    <div class="flex justify-between items-start mb-3">
+                      <div>
+                        <span
+                          class="font-semibold text-gray-800 dark:text-white"
+                          >Kandy to Galle</span
+                        >
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                          Coastal Line • 2nd Class
+                        </p>
+                      </div>
+                      <span
+                        class="text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100 px-3 py-1.5 rounded-full flex items-center"
+                      >
+                        <i class="fas fa-arrow-right mr-1.5"></i> Upcoming
+                      </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                      <div
+                        class="flex items-center text-gray-600 dark:text-gray-300"
+                      >
+                        <i
+                          class="far fa-calendar-alt mr-2 text-primary-600"
+                        ></i>
+                        <span>22 Oct 2023</span>
+                      </div>
+                      <div
+                        class="flex items-center text-gray-600 dark:text-gray-300"
+                      >
+                        <i class="far fa-clock mr-2 text-primary-600"></i>
+                        <span>10:45 AM</span>
+                      </div>
+                    </div>
+                    <div
+                      class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700"
+                    >
+                      <p class="text-xs text-gray-500 dark:text-gray-400">
+                        Booking ID: RL23654880
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Booking Item 3 -->
+                  <div
+                    class="bg-white dark:bg-gray-600 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-300"
+                  >
+                    <div class="flex justify-between items-start mb-3">
+                      <div>
+                        <span
+                          class="font-semibold text-gray-800 dark:text-white"
+                          >Galle to Matara</span
+                        >
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                          Local Train • 3rd Class
+                        </p>
+                      </div>
+                      <span
+                        class="text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 px-3 py-1.5 rounded-full flex items-center"
+                      >
+                        <i class="fas fa-clock mr-1.5"></i> Pending
+                      </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                      <div
+                        class="flex items-center text-gray-600 dark:text-gray-300"
+                      >
+                        <i
+                          class="far fa-calendar-alt mr-2 text-primary-600"
+                        ></i>
+                        <span>25 Oct 2023</span>
+                      </div>
+                      <div
+                        class="flex items-center text-gray-600 dark:text-gray-300"
+                      >
+                        <i class="far fa-clock mr-2 text-primary-600"></i>
+                        <span>02:15 PM</span>
+                      </div>
+                    </div>
+                    <div
+                      class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700"
+                    >
+                      <p class="text-xs text-gray-500 dark:text-gray-400">
+                        Booking ID: RL23654881
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div
+            class="mt-8 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4"
+          >
+            <button
+              id="changePasswordButton"
+              class="px-5 py-2.5 border border-primary-600 text-primary-600 dark:text-primary-400 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 font-medium flex items-center justify-center"
+            >
+              <i class="fas fa-key mr-2"></i> Change Password
+            </button>
+            <button
+              id="editProfileButton"
+              class="px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium flex items-center justify-center transform hover:-translate-y-0.5"
+            >
+              <i class="fas fa-edit mr-2"></i> Edit Profile
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div
+      id="editProfileModal"
+      class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl w-11/12 max-w-2xl max-h-[90vh] overflow-hidden transform scale-95 opacity-0 transition-all duration-300"
+      >
+        <!-- Modal Header -->
+        <div
+          class="bg-gradient-to-r from-primary-600 to-primary-800 p-6 text-white"
+        >
+          <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Edit Profile</h2>
+            <button
+              id="closeEditProfileModal"
+              class="text-white hover:text-gray-200"
+            >
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+          <p class="mt-2">Update your personal information</p>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto max-h-[60vh]">
+          <form id="editProfileForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label
+                  for="editTitle"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Title</label
+                >
+                <select
+                  id="editTitle"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="Mr">Mr.</option>
+                  <option value="Mrs">Mrs.</option>
+                  <option value="Ms">Ms.</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  for="editUsername"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Username</label
+                >
+                <input
+                  type="text"
+                  id="editUsername"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label
+                  for="editFirstName"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >First Name</label
+                >
+                <input
+                  type="text"
+                  id="editFirstName"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  for="editLastName"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Last Name</label
+                >
+                <input
+                  type="text"
+                  id="editLastName"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                for="editEmail"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >Email</label
+              >
+              <input
+                type="email"
+                id="editEmail"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                required
+              />
+              <p id="emailError" class="text-xs text-red-500 mt-2 ml-1 hidden">
+                This email is already exists!
+              </p>
+            </div>
+
+            <div>
+              <label
+                for="editContact"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Contact Number
+              </label>
+              <input
+                type="tel"
+                id="editContact"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                required
+                pattern="^07\d{8}$"
+                title="Enter a valid Sri Lankan mobile number (0712345678)"
+              />
+            </div>
+          </form>
+
+          <!-- Action Buttons -->
+          <div class="mt-6 flex justify-end space-x-4">
+            <button
+              id="cancelEditProfile"
+              class="px-5 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              id="saveProfileChanges"
+              class="px-5 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div
+      id="changePasswordModal"
+      class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl w-11/12 max-w-2xl max-h-[90vh] overflow-hidden transform scale-95 opacity-0 transition-all duration-300"
+      >
+        <!-- Modal Header -->
+        <div
+          class="bg-gradient-to-r from-primary-600 to-primary-800 p-6 text-white"
+        >
+          <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Change Password</h2>
+            <button
+              id="closeChangePasswordModal"
+              class="text-white hover:text-gray-200"
+            >
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+          <p class="mt-2">Update your password for enhanced security</p>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto max-h-[60vh]">
+          <form id="changePasswordForm" class="space-y-4">
+            <div>
+              <label
+                for="currentPassword"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >Current Password</label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="currentPassword"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                />
+                <button
+                  type="button"
+                  class="absolute right-3 top-2 text-gray-500 hover:text-gray-700 toggle-password"
+                  data-target="currentPassword"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label
+                for="newPassword"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >New Password</label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="newPassword"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                />
+                <button
+                  type="button"
+                  class="absolute right-3 top-2 text-gray-500 hover:text-gray-700 toggle-password"
+                  data-target="newPassword"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">
+                Must be at least 8 characters with uppercase, lowercase, and
+                number
+              </p>
+            </div>
+
+            <div>
+              <label
+                for="confirmPassword"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >Confirm New Password</label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                />
+                <button
+                  type="button"
+                  class="absolute right-3 top-2 text-gray-500 hover:text-gray-700 toggle-password"
+                  data-target="confirmPassword"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div
+              id="passwordError"
+              class="hidden p-3 text-sm text-red-700 bg-red-100 rounded-lg"
+            ></div>
+          </form>
+
+          <!-- Action Buttons -->
+          <div class="mt-6 flex justify-end space-x-4">
+            <button
+              id="cancelChangePassword"
+              class="px-5 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              id="saveNewPassword"
+              class="px-5 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium"
+            >
+              Update Password
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="global-alert"
+      class="fixed top-4 left-1/2 transform -translate-x-1/2 z-[60] w-full max-w-md hidden"
+    >
+      <div class="mx-4 p-4 rounded-lg shadow-lg border-l-4">
+        <div class="flex items-start">
+          <div class="flex-shrink-0 alert-icon"></div>
+          <div class="ml-3 flex-1">
+            <p class="text-sm font-medium alert-message"></p>
+          </div>
+          <div class="ml-4 flex-shrink-0 flex">
+            <button
+              class="inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150 alert-close"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="home-page" class="page active">
+      <!-- Hero Section -->
+      <section class="hero-section" id="heroSection">
+        <!-- Video Background -->
+        <video autoplay muted class="hero-video" id="heroVideo">
+          <source
+            src="https://cdn.pixabay.com/video/2022/09/21/132140-752588954_large.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+
+        <div class="hero-overlay"></div>
+
+        <div
+          class="hero-content container mx-auto px-4 h-full flex items-center justify-center text-center"
+        >
+          <div class="max-w-4xl">
+            <h1 class="text-6xl md:text-6xl font-bold text-white mb-6">
+              Discover Sri Lanka By Rail
+            </h1>
+            <p class="text-lg md:text-xl text-white mb-10 opacity-90">
+              Experience the beauty of Sri Lanka's landscapes with our
+              comfortable and reliable train services
+            </p>
+            <button
+              onclick="scrollToBooking()"
+              class="bg-gradient-to-r from-primary-600 to-primary-700 text-white text-lg px-8 py-4 rounded-xl transform hover:scale-105 transition-all duration-300 font-medium"
+            >
+              Book Your Journey
+              <i class="arrow-icon fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Booking Section -->
+      <section
+        id="booking"
+        class="py-20 bg-gradient-to-br from-primary-200 to-blue-100 dark:from-gray-900 dark:to-gray-800"
+      >
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent"
+          >
+            Plan Your Journey
+          </h2>
+
+          <div
+            class="max-w-6xl mx-auto glass-morphism rounded-3xl p-6 md:p-10 shadow-2xl"
+          >
+            <!-- Progress Bar -->
+            <div class="mb-10">
+              <div class="flex justify-between mb-4 text-sm font-medium">
+                <span class="text-primary-600">Select Route</span>
+                <span class="text-gray-500 dark:text-gray-400"
+                  >Choose Train</span
+                >
+                <span class="text-gray-500 dark:text-gray-400"
+                  >Select Class</span
+                >
+                <span class="text-gray-500 dark:text-gray-400">Payment</span>
+              </div>
+              <div class="progress-container h-2">
+                <div
+                  id="progress-fill"
+                  class="progress-fill"
+                  style="width: 20%"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Step 1: Route Selection -->
+            <div class="booking-step active" id="step-1">
+              <h3 class="text-2xl font-bold mb-6 text-center">
+                Where would you like to go?
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    >From</label
+                  >
+                  <select
+                    id="departureStation"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-800 transition-all duration-300"
+                  >
+                    <option>Colombo Fort</option>
+                    <option>Kandy</option>
+                    <option>Galle</option>
+                    <option>Jaffna</option>
+                    <option>Badulla</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    >To</label
+                  >
+                  <select
+                    id="arrivalStation"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-800 transition-all duration-300"
+                  >
+                    <option selected disabled value="">
+                      select Departure Fisrt
+                    </option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    >Departure Date</label
+                  >
+                  <input
+                    id="myDate"
+                    type="date"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-800 transition-all duration-300"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    >Passengers</label
+                  >
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="passenger-counter">
+                      <span class="font-medium">Adults</span>
+                      <div class="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          id="adult-minus"
+                          class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center"
+                        >
+                          <i class="fas fa-minus text-xs"></i>
+                        </button>
+                        <span id="adult-count" class="font-bold">1</span>
+                        <button
+                          type="button"
+                          id="adult-plus"
+                          class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center"
+                        >
+                          <i class="fas fa-plus text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="passenger-counter">
+                      <span class="font-medium">Children</span>
+                      <div class="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          id="child-minus"
+                          class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center"
+                        >
+                          <i class="fas fa-minus text-xs"></i>
+                        </button>
+                        <span id="child-count" class="font-bold">0</span>
+                        <button
+                          type="button"
+                          id="child-plus"
+                          class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center"
+                        >
+                          <i class="fas fa-plus text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="md:col-span-2 mt-6">
+                  <button
+                    id="search-trains"
+                    class="bg-gradient-to-r from-primary-600 to-primary-700 text-white w-full text-lg py-3 rounded-xl hover:shadow-lg transition-all duration-300"
+                  >
+                    Search Trains <i class="fas fa-search ml-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Train Selection -->
+            <div class="booking-step" id="step-2">
+              <h3 class="text-2xl font-bold mb-6 text-center">
+                Available Trains
+              </h3>
+
+              <!-- Search and filter options -->
+              <div
+                class="mb-6 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md"
+              >
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="relative">
+                    <input
+                      id="searchTrainTxtField"
+                      type="text"
+                      placeholder="Search trains..."
+                      class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700"
+                    />
+                    <i
+                      class="fas fa-search absolute left-3 top-3 text-gray-400"
+                    ></i>
+                  </div>
+
+                  <select
+                    id="classFilter"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700"
+                  >
+                    <option value="">All Classes</option>
+                    <option value="1st">First Class</option>
+                    <option value="2nd">Second Class</option>
+                    <option value="3rd">Third Class</option>
+                  </select>
+
+                  <select
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700"
+                  >
+                    <option value="">Sort by: Recommended</option>
+                    <option value="departure">Departure Time</option>
+                    <option value="arrival">Arrival Time</option>
+                    <option value="duration">Journey Duration</option>
+                    <option value="price">Price (Low to High)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Compact train list -->
+              <div id="compactTrainList" class="space-y-4">
+                <!-- Train 1: Muthu Kumari -->
+                <div
+                  class="train-card bg-white dark:bg-gray-800 rounded-2xl p-5 cursor-pointer border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+                >
+                  <!-- Gradient accent - different color -->
+                  <div
+                    class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-purple-500 to-purple-600"
+                  ></div>
+
+                  <!-- Main content -->
+                  <div class="ml-3">
+                    <div class="flex justify-between items-start mb-4">
+                      <div>
+                        <div class="flex items-center gap-2 mb-1">
+                          <h4 class="text-xl font-bold">Podimanike Express</h4>
+                          <span
+                            class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full flex items-center"
+                          >
+                            <span
+                              class="w-2 h-2 bg-green-500 rounded-full mr-1"
+                            ></span>
+                            Available
+                          </span>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                          <i class="far fa-calendar-alt mr-1"></i>Sep 15, 2025
+                        </p>
+                      </div>
+
+                      <div class="flex flex-col items-end">
+                        <button
+                          class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 font-medium mb-2"
+                        >
+                          Book Now <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                        <button
+                          class="view-details-btn text-xs text-gray-500 hover:text-purple-600 flex items-center"
+                        >
+                          More details
+                          <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Route and timing -->
+                    <div class="flex items-center justify-between mb-5">
+                      <div class="text-center">
+                        <p class="text-2xl font-bold">8:15 AM</p>
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          Galle
+                        </p>
+                      </div>
+
+                      <div class="relative px-4 flex-1 max-w-xs">
+                        <div class="flex items-center justify-center">
+                          <div
+                            class="h-px bg-gray-200 dark:bg-gray-700 w-full"
+                          ></div>
+                          <div class="mx-2 flex items-center">
+                            <div
+                              class="w-2 h-2 rounded-full bg-purple-500"
+                            ></div>
+                            <div class="w-12 h-px bg-purple-400"></div>
+                            <div
+                              class="w-2 h-2 rounded-full bg-purple-500"
+                            ></div>
+                          </div>
+                          <div
+                            class="h-px bg-gray-200 dark:bg-gray-700 w-full"
+                          ></div>
+                        </div>
+                        <p
+                          class="text-center text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          1h 45m
+                        </p>
+                      </div>
+
+                      <div class="text-center">
+                        <p class="text-2xl font-bold">10:00 AM</p>
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          Colombo Fort
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- Classes and price -->
+                    <div class="flex justify-between items-center">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                          >Classes:</span
+                        >
+                        <div class="flex gap-1">
+                          <span
+                            class="px-2.5 py-1 bg-yellow-50 text-yellow-700 text-xs font-medium rounded-full border border-yellow-100"
+                          >
+                            1st
+                          </span>
+                          <span
+                            class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-100"
+                          >
+                            2nd
+                          </span>
+                          <span
+                            class="px-2.5 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full border border-green-100"
+                          >
+                            3rd
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="text-right">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                          From
+                        </p>
+                        <p class="text-xl font-bold text-purple-600">LKR 850</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Expandable details section -->
+                  <div
+                    class="train-details mt-5 pt-5 border-t border-gray-100 dark:border-gray-700"
+                  >
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Full route information -->
+                      <div>
+                        <h5
+                          class="font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i class="fas fa-route mr-2 text-primary-500"></i>
+                          Full Route Schedule
+                        </h5>
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
+                          <!-- Timeline -->
+                          <div class="relative">
+                            <!-- Start -->
+                            <div class="flex justify-between items-center mb-4">
+                              <div class="flex items-center">
+                                <div
+                                  class="w-3 h-3 rounded-full bg-primary-500 mr-3"
+                                ></div>
+                                <span class="font-medium">Bambalapitiya</span>
+                              </div>
+                              <span class="text-sm text-gray-500">4:00 PM</span>
+                            </div>
+
+                            <!-- Intermediate stops -->
+                            <div
+                              class="border-l-2 border-primary-200 dark:border-primary-800 ml-1.5 pl-5 space-y-4"
+                            >
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Matara</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >4:20 - 4:22 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i>Waiting
+                                  Room, Restrooms, Parking, Food Court, Lavatory
+                                </p>
+                              </div>
+
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Thalpe</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >4:50 - 4:53 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i>Waiting
+                                  Room, Restrooms, Parking
+                                </p>
+                              </div>
+
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Galle</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >5:00 - 5:03 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i
+                                  >Restrooms, WiFi, Lavatory
+                                </p>
+                              </div>
+                            </div>
+
+                            <!-- End -->
+                            <div class="flex justify-between items-center mt-4">
+                              <div class="flex items-center">
+                                <div
+                                  class="w-3 h-3 rounded-full bg-primary-500 mr-3"
+                                ></div>
+                                <span class="font-medium">Colombo Fort</span>
+                              </div>
+                              <span class="text-sm text-gray-500">6:00 PM</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Additional information -->
+                      <div>
+                        <h5
+                          class="font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i
+                            class="fas fa-info-circle mr-2 text-primary-500"
+                          ></i>
+                          Train Information
+                        </h5>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Schedule ID
+                            </p>
+                            <p id="scheduleId" class="text-sm font-medium">
+                              SCH00000-00002
+                            </p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Train Type
+                            </p>
+                            <p class="text-sm font-medium">NORMAL</p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Frequency
+                            </p>
+                            <p class="text-sm font-medium">Week Days</p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Total Duration
+                            </p>
+                            <p class="text-sm font-medium">2h 0m</p>
+                          </div>
+                        </div>
+
+                        <h5
+                          class="font-semibold mb-2 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i
+                            class="fas fa-concierge-bell mr-2 text-primary-500"
+                          ></i>
+                          Station Facilities
+                        </h5>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-restroom text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Restrooms</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-parking text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Parking</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-wifi text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>WiFi</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-utensils text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Food Court</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-universal-access text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Accessibility</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-toilet text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Lavetory</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Additional booking button at bottom of expanded view -->
+                    <div class="mt-6 text-center">
+                      <button
+                        class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
+                      >
+                        Book This Train <i class="fas fa-arrow-right ml-2"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Train 2: Podimanike Express -->
+                <div
+                  class="train-card bg-white dark:bg-gray-800 rounded-2xl p-5 cursor-pointer border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+                >
+                  <!-- Gradient accent - different color -->
+                  <div
+                    class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-purple-500 to-purple-600"
+                  ></div>
+
+                  <!-- Main content -->
+                  <div class="ml-3">
+                    <div class="flex justify-between items-start mb-4">
+                      <div>
+                        <div class="flex items-center gap-2 mb-1">
+                          <h4 class="text-xl font-bold">Podimanike Express</h4>
+                          <span
+                            class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full flex items-center"
+                          >
+                            <span
+                              class="w-2 h-2 bg-green-500 rounded-full mr-1"
+                            ></span>
+                            Available
+                          </span>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                          <i class="far fa-calendar-alt mr-1"></i>Sep 15, 2025
+                        </p>
+                      </div>
+
+                      <div class="flex flex-col items-end">
+                        <button
+                          class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 font-medium mb-2"
+                        >
+                          Book Now <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                        <button
+                          class="view-details-btn text-xs text-gray-500 hover:text-purple-600 flex items-center"
+                        >
+                          More details
+                          <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Route and timing -->
+                    <div class="flex items-center justify-between mb-5">
+                      <div class="text-center">
+                        <p class="text-2xl font-bold">8:15 AM</p>
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          Galle
+                        </p>
+                      </div>
+
+                      <div class="relative px-4 flex-1 max-w-xs">
+                        <div class="flex items-center justify-center">
+                          <div
+                            class="h-px bg-gray-200 dark:bg-gray-700 w-full"
+                          ></div>
+                          <div class="mx-2 flex items-center">
+                            <div
+                              class="w-2 h-2 rounded-full bg-purple-500"
+                            ></div>
+                            <div class="w-12 h-px bg-purple-400"></div>
+                            <div
+                              class="w-2 h-2 rounded-full bg-purple-500"
+                            ></div>
+                          </div>
+                          <div
+                            class="h-px bg-gray-200 dark:bg-gray-700 w-full"
+                          ></div>
+                        </div>
+                        <p
+                          class="text-center text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          1h 45m
+                        </p>
+                      </div>
+
+                      <div class="text-center">
+                        <p class="text-2xl font-bold">10:00 AM</p>
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          Colombo Fort
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- Classes and price -->
+                    <div class="flex justify-between items-center">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                          >Classes:</span
+                        >
+                        <div class="flex gap-1">
+                          <span
+                            class="px-2.5 py-1 bg-yellow-50 text-yellow-700 text-xs font-medium rounded-full border border-yellow-100"
+                          >
+                            1st
+                          </span>
+                          <span
+                            class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-100"
+                          >
+                            2nd
+                          </span>
+                          <span
+                            class="px-2.5 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full border border-green-100"
+                          >
+                            3rd
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="text-right">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                          From
+                        </p>
+                        <p class="text-xl font-bold text-purple-600">LKR 850</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Expandable details section -->
+                  <div
+                    class="train-details mt-5 pt-5 border-t border-gray-100 dark:border-gray-700"
+                  >
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Full route information -->
+                      <div>
+                        <h5
+                          class="font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i class="fas fa-route mr-2 text-primary-500"></i>
+                          Full Route Schedule
+                        </h5>
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
+                          <!-- Timeline -->
+                          <div class="relative">
+                            <!-- Start -->
+                            <div class="flex justify-between items-center mb-4">
+                              <div class="flex items-center">
+                                <div
+                                  class="w-3 h-3 rounded-full bg-primary-500 mr-3"
+                                ></div>
+                                <span class="font-medium">Bambalapitiya</span>
+                              </div>
+                              <span class="text-sm text-gray-500">4:00 PM</span>
+                            </div>
+
+                            <!-- Intermediate stops -->
+                            <div
+                              class="border-l-2 border-primary-200 dark:border-primary-800 ml-1.5 pl-5 space-y-4"
+                            >
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Matara</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >4:20 - 4:22 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i>Waiting
+                                  Room, Restrooms, Parking, Food Court, Lavatory
+                                </p>
+                              </div>
+
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Thalpe</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >4:50 - 4:53 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i>Waiting
+                                  Room, Restrooms, Parking
+                                </p>
+                              </div>
+
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Galle</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >5:00 - 5:03 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i
+                                  >Restrooms, WiFi, Lavatory
+                                </p>
+                              </div>
+                            </div>
+
+                            <!-- End -->
+                            <div class="flex justify-between items-center mt-4">
+                              <div class="flex items-center">
+                                <div
+                                  class="w-3 h-3 rounded-full bg-primary-500 mr-3"
+                                ></div>
+                                <span class="font-medium">Colombo Fort</span>
+                              </div>
+                              <span class="text-sm text-gray-500">6:00 PM</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Additional information -->
+                      <div>
+                        <h5
+                          class="font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i
+                            class="fas fa-info-circle mr-2 text-primary-500"
+                          ></i>
+                          Train Information
+                        </h5>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <p
+                              class="shedule-id text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Schedule ID
+                            </p>
+                            <p class="text-sm font-medium">SCH00000-00002</p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Train Type
+                            </p>
+                            <p class="text-sm font-medium">NORMAL</p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Frequency
+                            </p>
+                            <p class="text-sm font-medium">Week Days</p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Total Duration
+                            </p>
+                            <p class="text-sm font-medium">2h 0m</p>
+                          </div>
+                        </div>
+
+                        <h5
+                          class="font-semibold mb-2 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i
+                            class="fas fa-concierge-bell mr-2 text-primary-500"
+                          ></i>
+                          Station Facilities
+                        </h5>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-restroom text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Restrooms</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-parking text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Parking</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-wifi text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>WiFi</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-utensils text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Food Court</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-universal-access text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Accessibility</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Additional booking button at bottom of expanded view -->
+                    <div class="mt-6 text-center">
+                      <button
+                        class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
+                      >
+                        Book This Train <i class="fas fa-arrow-right ml-2"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Train 3: Udarata Express -->
+                <div
+                  class="train-card bg-white dark:bg-gray-800 rounded-2xl p-5 cursor-pointer border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+                >
+                  <!-- Gradient accent - different color -->
+                  <div
+                    class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-teal-500 to-teal-600"
+                  ></div>
+
+                  <!-- Main content -->
+                  <div class="ml-3">
+                    <div class="flex justify-between items-start mb-4">
+                      <div>
+                        <div class="flex items-center gap-2 mb-1">
+                          <h4 class="text-xl font-bold">Udarata Express</h4>
+                          <span
+                            class="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full flex items-center"
+                          >
+                            <span
+                              class="w-2 h-2 bg-orange-500 rounded-full mr-1"
+                            ></span>
+                            Limited
+                          </span>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                          <i class="far fa-calendar-alt mr-1"></i>Sep 15, 2025
+                        </p>
+                      </div>
+
+                      <div class="flex flex-col items-end">
+                        <button
+                          class="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 font-medium mb-2"
+                        >
+                          Book Now <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                        <button
+                          class="view-details-btn text-xs text-gray-500 hover:text-teal-600 flex items-center"
+                        >
+                          More details
+                          <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Route and timing -->
+                    <div class="flex items-center justify-between mb-5">
+                      <div class="text-center">
+                        <p class="text-2xl font-bold">2:30 PM</p>
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          Galle
+                        </p>
+                      </div>
+
+                      <div class="relative px-4 flex-1 max-w-xs">
+                        <div class="flex items-center justify-center">
+                          <div
+                            class="h-px bg-gray-200 dark:bg-gray-700 w-full"
+                          ></div>
+                          <div class="mx-2 flex items-center">
+                            <div class="w-2 h-2 rounded-full bg-teal-500"></div>
+                            <div class="w-12 h-px bg-teal-400"></div>
+                            <div class="w-2 h-2 rounded-full bg-teal-500"></div>
+                          </div>
+                          <div
+                            class="h-px bg-gray-200 dark:bg-gray-700 w-full"
+                          ></div>
+                        </div>
+                        <p
+                          class="text-center text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          2h 15m
+                        </p>
+                      </div>
+
+                      <div class="text-center">
+                        <p class="text-2xl font-bold">4:45 PM</p>
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          Colombo Fort
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- Classes and price -->
+                    <div class="flex justify-between items-center">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                          >Classes:</span
+                        >
+                        <div class="flex gap-1">
+                          <span
+                            class="px-2.5 py-1 bg-yellow-50 text-yellow-700 text-xs font-medium rounded-full border border-yellow-100"
+                          >
+                            1st
+                          </span>
+                          <span
+                            class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-100"
+                          >
+                            2nd
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="text-right">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                          From
+                        </p>
+                        <p class="text-xl font-bold text-teal-600">LKR 1,200</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Expandable details section -->
+                  <div
+                    class="train-details mt-5 pt-5 border-t border-gray-100 dark:border-gray-700"
+                  >
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Full route information -->
+                      <div>
+                        <h5
+                          class="font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i class="fas fa-route mr-2 text-primary-500"></i>
+                          Full Route Schedule
+                        </h5>
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
+                          <!-- Timeline -->
+                          <div class="relative">
+                            <!-- Start -->
+                            <div class="flex justify-between items-center mb-4">
+                              <div class="flex items-center">
+                                <div
+                                  class="w-3 h-3 rounded-full bg-primary-500 mr-3"
+                                ></div>
+                                <span class="font-medium">Bambalapitiya</span>
+                              </div>
+                              <span class="text-sm text-gray-500">4:00 PM</span>
+                            </div>
+
+                            <!-- Intermediate stops -->
+                            <div
+                              class="border-l-2 border-primary-200 dark:border-primary-800 ml-1.5 pl-5 space-y-4"
+                            >
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Matara</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >4:20 - 4:22 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i>Waiting
+                                  Room, Restrooms, Parking, Food Court, Lavatory
+                                </p>
+                              </div>
+
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Thalpe</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >4:50 - 4:53 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i>Waiting
+                                  Room, Restrooms, Parking
+                                </p>
+                              </div>
+
+                              <div>
+                                <div class="flex justify-between items-center">
+                                  <div class="flex items-center">
+                                    <div
+                                      class="w-2.5 h-2.5 rounded-full bg-primary-400 mr-3"
+                                    ></div>
+                                    <span class="text-sm">Galle</span>
+                                  </div>
+                                  <span class="text-xs text-gray-500"
+                                    >5:00 - 5:03 PM</span
+                                  >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 ml-5">
+                                  <i class="fas fa-tag text-xs mr-1"></i
+                                  >Restrooms, WiFi, Lavatory
+                                </p>
+                              </div>
+                            </div>
+
+                            <!-- End -->
+                            <div class="flex justify-between items-center mt-4">
+                              <div class="flex items-center">
+                                <div
+                                  class="w-3 h-3 rounded-full bg-primary-500 mr-3"
+                                ></div>
+                                <span class="font-medium">Colombo Fort</span>
+                              </div>
+                              <span class="text-sm text-gray-500">6:00 PM</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Additional information -->
+                      <div>
+                        <h5
+                          class="font-semibold mb-3 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i
+                            class="fas fa-info-circle mr-2 text-primary-500"
+                          ></i>
+                          Train Information
+                        </h5>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Schedule ID
+                            </p>
+                            <p class="text-sm font-medium">SCH00000-00002</p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Train Type
+                            </p>
+                            <p class="text-sm font-medium">NORMAL</p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Frequency
+                            </p>
+                            <p class="text-sm font-medium">Week Days</p>
+                          </div>
+                          <div>
+                            <p
+                              class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                            >
+                              Total Duration
+                            </p>
+                            <p class="text-sm font-medium">2h 0m</p>
+                          </div>
+                        </div>
+
+                        <h5
+                          class="font-semibold mb-2 text-gray-800 dark:text-gray-200 flex items-center"
+                        >
+                          <i
+                            class="fas fa-concierge-bell mr-2 text-primary-500"
+                          ></i>
+                          Station Facilities
+                        </h5>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-restroom text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Restrooms</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-parking text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Parking</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-wifi text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>WiFi</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-utensils text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Food Court</span>
+                          </div>
+                          <div class="flex items-center py-1">
+                            <i
+                              class="fas fa-universal-access text-primary-500 mr-2 w-4"
+                            ></i>
+                            <span>Accessibility</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Additional booking button at bottom of expanded view -->
+                    <div class="mt-6 text-center">
+                      <button
+                        class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
+                      >
+                        Book This Train <i class="fas fa-arrow-right ml-2"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pagination controls -->
+              <div
+                class="mt-6 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0"
+              >
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  Showing <span id="pageStartNumber">1</span> to
+                  <span id="pageEndCount">3</span> of
+                  <span id="totalCount">24</span> trains
+                </div>
+
+                <div class="flex space-x-2">
+                  <button
+                    id="btnFirst"
+                    class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    <i class="fas fa-angle-double-left"></i>
+                  </button>
+                  <button
+                    id="btnBack"
+                    class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    <i class="fas fa-angle-left"></i>
+                  </button>
+                  <div id="pageNumbers" class="flex items-center gap-1"></div>
+
+                  <!-- <button
+                    class="px-3 py-1 bg-primary-600 text-white rounded-md"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    4
+                  </button> -->
+
+                  <button
+                    id="btnNext"
+                    class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    <i class="fas fa-angle-right"></i>
+                  </button>
+                  <button
+                    id="btnLast"
+                    class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    <i class="fas fa-angle-double-right"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-6 flex justify-between">
+                <button
+                  class="prev-step px-5 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 font-medium"
+                >
+                  <i class="fas fa-arrow-left mr-2"></i> Back
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3: Class Selection -->
+            <div class="booking-step" id="step-3">
+              <h3 class="text-2xl font-bold mb-6 text-center">
+                Select Travel Class
+              </h3>
+
+              <div id="canvas" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="train-class" data-class="first">
+                  <div class="flex justify-between items-start mb-4">
+                    <div>
+                      <h4 class="font-bold text-xl mb-2">First Class</h4>
+                      <span
+                        class="px-2 py-1 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white rounded-full text-xs font-semibold"
+                      >
+                        <i class="fas fa-crown mr-1"></i> VIP
+                      </span>
+                    </div>
+                    <div
+                      class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center"
+                    >
+                      <i class="fas fa-star text-white"></i>
+                    </div>
+                  </div>
+                  <p
+                    class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-sm"
+                  >
+                    Luxurious travel with premium amenities, spacious seating,
+                    and exclusive services.
+                  </p>
+                  <div class="space-y-2 mb-4">
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Reclining leather seats
+                    </div>
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Complimentary meals
+                    </div>
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Priority boarding
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span
+                      id="firstClassPrice"
+                      class="font-bold text-2xl text-primary-600"
+                      >LKR 2,500</span
+                    >
+                    <button
+                      id="fristClassBtn"
+                      class="select-class px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium text-sm"
+                      data-class="first"
+                    >
+                      Select Class
+                    </button>
+                  </div>
+                </div>
+
+                <div class="train-class" data-class="second">
+                  <div class="flex justify-between items-start mb-4">
+                    <div>
+                      <h4 class="font-bold text-xl mb-2">Second Class</h4>
+                      <span
+                        class="px-2 py-1 bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-full text-xs font-semibold"
+                      >
+                        <i class="fas fa-thumbs-up mr-1"></i> Popular
+                      </span>
+                    </div>
+                    <div
+                      class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center"
+                    >
+                      <i class="fas fa-heart text-white"></i>
+                    </div>
+                  </div>
+                  <p
+                    class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-sm"
+                  >
+                    Comfortable travel with adequate legroom and essential
+                    amenities.
+                  </p>
+                  <div class="space-y-2 mb-4">
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Comfortable seating
+                    </div>
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Air conditioning
+                    </div>
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Refreshment service
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span
+                      id="secondClassPrice"
+                      class="font-bold text-2xl text-primary-600"
+                      >LKR 1,200</span
+                    >
+                    <button
+                      class="select-class px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium text-sm"
+                      data-class="second"
+                    >
+                      Select Class
+                    </button>
+                  </div>
+                </div>
+
+                <div class="train-class" data-class="third">
+                  <div class="flex justify-between items-start mb-4">
+                    <div>
+                      <h4 class="font-bold text-xl mb-2">Third Class</h4>
+                      <span
+                        class="px-2 py-1 bg-gradient-to-r from-green-400 to-green-500 text-white rounded-full text-xs font-semibold"
+                      >
+                        <i class="fas fa-dollar-sign mr-1"></i> Budget
+                      </span>
+                    </div>
+                    <div
+                      class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center"
+                    >
+                      <i class="fas fa-leaf text-white"></i>
+                    </div>
+                  </div>
+                  <p
+                    class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-sm"
+                  >
+                    Economical travel option for budget-conscious passengers.
+                  </p>
+                  <div class="space-y-2 mb-4">
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Standard seating
+                    </div>
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Basic amenities
+                    </div>
+                    <div
+                      class="flex items-center text-xs text-gray-600 dark:text-gray-400"
+                    >
+                      <i class="fas fa-check text-green-500 mr-2"></i>
+                      Affordable pricing
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span
+                      id="thirdClassPrice"
+                      class="font-bold text-2xl text-primary-600"
+                      >LKR 600</span
+                    >
+                    <button
+                      class="select-class px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium text-sm"
+                      data-class="third"
+                    >
+                      Select Class
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-10 flex justify-between">
+                <button
+                  id="classSelectionBackBtn"
+                  class="prev-step px-5 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 font-medium"
+                >
+                  <i class="fas fa-arrow-left mr-2"></i> Back
+                </button>
+                <button
+                  id="to-payment"
+                  class="px-5 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
+                >
+                  Continue to Payment <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 4: Payment -->
+            <!-- Step 4: Complete Your Booking -->
+            <div class="booking-step" id="step-4">
+              <h3 class="text-2xl font-bold mb-6 text-center">
+                Complete Your Booking
+              </h3>
+
+              <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                <!-- Passenger Details (Left Column - 3/5 width) -->
+                <div class="lg:col-span-3">
+                  <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 h-full"
+                  >
+                    <h4 class="font-bold text-xl mb-4 text-primary-600">
+                      <i class="fas fa-user mr-2"></i> Passenger Details
+                    </h4>
+                    <form
+                      id="paymentForm"
+                      class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    >
+                      <div class="space-y-2">
+                        <label
+                          class="block text-gray-700 dark:text-gray-300 font-medium"
+                          >First Name</label
+                        >
+                        <input
+                          id="payFirstName"
+                          type="text"
+                          required
+                          class="w-full px-3 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                        />
+                      </div>
+                      <div class="space-y-2">
+                        <label
+                          class="block text-gray-700 dark:text-gray-300 font-medium"
+                          >Last Name</label
+                        >
+                        <input
+                          id="payLastName"
+                          required
+                          type="text"
+                          class="w-full px-3 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                        />
+                      </div>
+                      <div class="space-y-2">
+                        <label
+                          class="block text-gray-700 dark:text-gray-300 font-medium"
+                          >Email</label
+                        >
+                        <input
+                          id="payEmail"
+                          required
+                          type="email"
+                          class="w-full px-3 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                        />
+                      </div>
+                      <div class="space-y-2">
+                        <label
+                          class="block text-gray-700 dark:text-gray-300 font-medium"
+                          >Phone</label
+                        >
+                        <input
+                          id="payPhone"
+                          required
+                          type="tel"
+                          class="w-full px-3 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                        />
+                      </div>
+                      <div class="md:col-span-2 space-y-2">
+                        <label
+                          class="block text-gray-700 dark:text-gray-300 font-medium"
+                          >NIC/Passport Number</label
+                        >
+                        <input
+                          id="payNic"
+                          type="text"
+                          class="w-full px-3 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                        />
+                      </div>
+                      <div
+                        class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 md:col-span-2"
+                      >
+                        <button
+                          type="submit"
+                          id="proceed-to-payment"
+                          class="bg-gradient-to-r from-primary-600 to-primary-700 text-white w-full py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium flex items-center justify-center"
+                        >
+                          <i class="fas fa-lock mr-2"></i> Proceed to Secure
+                          Payment
+                        </button>
+                      </div>
+                    </form>
+
+                    <!-- Payment Action Button -->
+                  </div>
+                </div>
+
+                <!-- Booking Summary (Right Column - 2/5 width) -->
+                <div class="lg:col-span-2">
+                  <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sticky top-20"
+                  >
+                    <h4
+                      class="font-bold text-xl mb-6 text-primary-600 flex items-center"
+                    >
+                      <i class="fas fa-receipt mr-2"></i> Booking Summary
+                    </h4>
+
+                    <div class="space-y-4">
+                      <!-- Journey Details -->
+                      <div
+                        class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl"
+                      >
+                        <h5
+                          class="font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center"
+                        >
+                          <i class="fas fa-route mr-2"></i> Journey Details
+                        </h5>
+                        <div class="space-y-2">
+                          <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400"
+                              >Route</span
+                            >
+                            <span id="route" class="font-medium text-sm"
+                              >Colombo to Kandy</span
+                            >
+                          </div>
+                          <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400"
+                              >Train</span
+                            >
+                            <span id="trainName" class="font-medium text-sm"
+                              >Podimanike Express</span
+                            >
+                          </div>
+                          <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400"
+                              >Class</span
+                            >
+                            <span
+                              class="font-medium text-sm"
+                              id="selected-class"
+                              >First Class</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Date & Time -->
+                      <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
+                        <h5
+                          class="font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center"
+                        >
+                          <i class="far fa-clock mr-2"></i> Date & Time
+                        </h5>
+                        <div class="space-y-2">
+                          <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400"
+                              >Date</span
+                            >
+                            <span id="sumDate" class="font-medium text-sm"
+                              >25 Aug 2023</span
+                            >
+                          </div>
+                          <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400"
+                              >Time</span
+                            >
+                            <span id="sumTime" class="font-medium text-sm"
+                              >06:45 AM</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Passenger Details -->
+                      <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
+                        <h5
+                          class="font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center"
+                        >
+                          <i class="fas fa-users mr-2"></i> Passengers
+                        </h5>
+                        <div class="space-y-2">
+                          <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400"
+                              >Adults</span
+                            >
+                            <span
+                              class="font-medium text-sm"
+                              id="summary-adults"
+                              >1</span
+                            >
+                          </div>
+                          <div class="flex justify-between">
+                            <span class="text-gray-600 dark:text-gray-400"
+                              >Children</span
+                            >
+                            <span
+                              class="font-medium text-sm"
+                              id="summary-children"
+                              >0</span
+                            >
+                          </div>
+                          <div class="flex justify-between" id="seats-summary">
+                            <span class="text-gray-600 dark:text-gray-400"
+                              >Seats</span
+                            >
+                            <span
+                              class="font-medium text-sm"
+                              id="selected-seats"
+                              >Not selected</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Total Price -->
+                      <div
+                        class="mt-6 p-4 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 rounded-xl"
+                      >
+                        <div
+                          class="flex justify-between text-xl font-bold text-primary-600"
+                        >
+                          <span>Total Amount</span>
+                          <span id="total-price">LKR 2,500</span>
+                        </div>
+                        <p
+                          class="text-xs text-gray-500 dark:text-gray-400 mt-2"
+                        >
+                          Inclusive of all taxes and fees
+                        </p>
+                      </div>
+
+                      <p
+                        class="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center leading-relaxed"
+                      >
+                        By completing this booking, you agree to our
+                        <a href="#" class="text-primary-600 hover:underline"
+                          >Terms & Conditions</a
+                        >
+                        and Privacy Policy.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <button
+                  class="prev-step px-5 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 font-medium"
+                >
+                  <i class="fas fa-arrow-left mr-2"></i> Back
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent"
+          >
+            Why Choose Rail Lanka?
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="feature-card rounded-2xl p-6 text-center">
+              <div
+                class="choose-ico w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-primary-600 flex items-center justify-center text-white text-xl mb-4 mx-auto shadow-lg"
+              >
+                <i class="choose-ico fas fa-shield-alt"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Safe & Secure</h3>
+              <p
+                class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm"
+              >
+                Our trains are regularly maintained and operated by experienced
+                staff to ensure your safety throughout the journey.
+              </p>
+            </div>
+
+            <div class="feature-card rounded-2xl p-6 text-center">
+              <div
+                class="choose-ico w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-green-600 flex items-center justify-center text-white text-xl mb-4 mx-auto shadow-lg"
+              >
+                <i class="choose-ico fas fa-clock"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Punctual Services</h3>
+              <p
+                class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm"
+              >
+                We pride ourselves on our punctuality with over 95% of our
+                trains arriving on time at their destinations.
+              </p>
+            </div>
+
+            <div class="feature-card rounded-2xl p-6 text-center">
+              <div
+                class="choose-ico w-16 h-16 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white text-xl mb-4 mx-auto shadow-lg"
+              >
+                <i class="choose-ico fas fa-ticket-alt"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Easy Booking</h3>
+              <p
+                class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm"
+              >
+                Our online booking system makes it simple to reserve your seats
+                in just a few clicks from anywhere.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Call to Action Section -->
+      <section
+        class="py-16 bg-gradient-to-br from-primary-600 via-primary-700 to-blue-800 relative overflow-hidden"
+      >
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="container mx-auto px-4 relative z-10">
+          <div class="max-w-4xl mx-auto text-center text-white">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4">
+              Experience the Journey of a Lifetime
+            </h2>
+            <p class="text-lg md:text-xl mb-8 opacity-90">
+              Book your ticket now and discover the beauty of Sri Lanka from the
+              comfort of our trains.
+            </p>
+            <button
+              id="t-booking"
+              onclick="scrollToBooking()"
+              class="px-8 py-4 bg-white text-primary-700 text-lg font-bold rounded-xl hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 shadow-2xl"
+            >
+              Book Your Ticket
+              <i class="arrow-icon fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div>
+              <h3 class="text-xl font-bold mb-4">Rail Lanka Pro</h3>
+              <p class="text-gray-400 mb-4">
+                Experience the beauty of Sri Lanka's landscapes with our
+                comfortable and reliable train services.
+              </p>
+              <div class="flex space-x-4">
+                <a href="#" class="text-gray-400 hover:text-white">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+              <ul class="space-y-2">
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white">Home</a>
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >About Us</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Services</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white">Gallery</a>
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white">Contact</a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-bold mb-4">Popular Routes</h3>
+              <ul class="space-y-2">
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Colombo to Kandy</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Colombo to Galle</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Kandy to Ella</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Colombo to Jaffna</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="text-gray-400 hover:text-white"
+                    >Colombo to Badulla</a
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+              <ul class="space-y-2">
+                <li class="flex items-center space-x-2">
+                  <i class="fas fa-map-marker-alt text-primary-600"></i>
+                  <span class="text-gray-400"
+                    >123 Railway Avenue, Colombo, Sri Lanka</span
+                  >
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i class="fas fa-phone text-primary-600"></i>
+                  <span class="text-gray-400">+94 11 234 5678</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i class="fas fa-envelope text-primary-600"></i>
+                  <span class="text-gray-400">info@raillankapro.lk</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i class="fas fa-clock text-primary-600"></i>
+                  <span class="text-gray-400"
+                    >Mon - Sun: 5:00 AM - 10:00 PM</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div
+            class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center"
+          >
+            <p class="text-gray-400 text-sm">
+              © 2023 Rail Lanka Pro. All rights reserved.
+            </p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+              <a href="#" class="text-gray-400 hover:text-white text-sm"
+                >Privacy Policy</a
+              >
+              <a href="#" class="text-gray-400 hover:text-white text-sm"
+                >Terms of Service</a
+              >
+              <a href="#" class="text-gray-400 hover:text-white text-sm">FAQ</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- About Us Page -->
+    <div id="about-page" class="page">
+      <section class="py-16 bg-white dark:bg-gray-800 min-h-screen pt-20">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent"
+          >
+            About Us
+          </h2>
+
+          <div class="max-w-4xl mx-auto">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8"
+            >
+              <h3 class="text-xl font-bold mb-4 text-primary-600">Our Story</h3>
+              <p
+                class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-sm"
+              >
+                Rail Lanka Pro was established in 2005 with a vision to
+                revolutionize railway travel in Sri Lanka. We started with just
+                two routes and have now expanded to cover the entire island,
+                connecting major cities and scenic destinations.
+              </p>
+
+              <h3 class="text-xl font-bold mb-4 text-primary-600">
+                Our Mission
+              </h3>
+              <p
+                class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-sm"
+              >
+                To provide safe, comfortable, and reliable railway
+                transportation while showcasing the beautiful landscapes of Sri
+                Lanka. We are committed to sustainable travel and reducing our
+                carbon footprint.
+              </p>
+
+              <h3 class="text-xl font-bold mb-4 text-primary-600">Our Team</h3>
+              <p
+                class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-sm"
+              >
+                Our team consists of experienced railway professionals,
+                hospitality experts, and technology innovators working together
+                to deliver an exceptional travel experience for our passengers.
+              </p>
+
+              <div
+                class="mt-10 p-6 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 rounded-xl"
+              >
+                <h3 class="text-xl font-bold mb-3 text-primary-600">
+                  Our Achievements
+                </h3>
+                <p
+                  class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm"
+                >
+                  - Awarded "Best Railway Service" in Sri Lanka for 5
+                  consecutive years<br />
+                  - Carried over 5 million passengers safely<br />
+                  - Introduced eco-friendly trains reducing carbon emissions by
+                  30%<br />
+                  - First railway company in Sri Lanka to implement online
+                  booking
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Gallery Page -->
+    <div id="gallery-page" class="page">
+      <section class="py-16 bg-white dark:bg-gray-800 min-h-screen pt-20">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent"
+          >
+            Gallery
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="rounded-2xl overflow-hidden shadow-lg">
+              <div
+                class="h-48 bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center"
+              >
+                <i class="fas fa-train text-white text-5xl"></i>
+              </div>
+              <div class="p-4 bg-white dark:bg-gray-800">
+                <h3 class="font-bold text-lg mb-2">Modern Trains</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Our fleet of modern trains equipped with the latest amenities.
+                </p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden shadow-lg">
+              <div
+                class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center"
+              >
+                <i class="fas fa-mountains text-white text-5xl"></i>
+              </div>
+              <div class="p-4 bg-white dark:bg-gray-800">
+                <h3 class="font-bold text-lg mb-2">Scenic Routes</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Experience the breathtaking landscapes of Sri Lanka.
+                </p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden shadow-lg">
+              <div
+                class="h-48 bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center"
+              >
+                <i class="fas fa-concierge-bell text-white text-5xl"></i>
+              </div>
+              <div class="p-4 bg-white dark:bg-gray-800">
+                <h3 class="font-bold text-lg mb-2">First Class Service</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Premium services for our first class passengers.
+                </p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden shadow-lg">
+              <div
+                class="h-48 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center"
+              >
+                <i class="fas fa-utensils text-white text-5xl"></i>
+              </div>
+              <div class="p-4 bg-white dark:bg-gray-800">
+                <h3 class="font-bold text-lg mb-2">Dining Experience</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Enjoy delicious meals while traveling through beautiful
+                  landscapes.
+                </p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden shadow-lg">
+              <div
+                class="h-48 bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center"
+              >
+                <i class="fas fa-couch text-white text-5xl"></i>
+              </div>
+              <div class="p-4 bg-white dark:bg-gray-800">
+                <h3 class="font-bold text-lg mb-2">Comfortable Seating</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Relax in our comfortable and spacious seating arrangements.
+                </p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden shadow-lg">
+              <div
+                class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center"
+              >
+                <i class="fas fa-station-of-the-cross text-white text-5xl"></i>
+              </div>
+              <div class="p-4 bg-white dark:bg-gray-800">
+                <h3 class="font-bold text-lg mb-2">Modern Stations</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Our stations are equipped with modern facilities for your
+                  convenience.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Services Page -->
+    <div id="services-page" class="page">
+      <section class="py-16 bg-white dark:bg-gray-800 min-h-screen pt-20">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent"
+          >
+            Our Services
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div
+              class="bg-gradient-to-br from-gray-50 to-gray-50 dark:from-primary-900/20 dark:to-blue-900/20 rounded-2xl p-6"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-gray-600 flex items-center justify-center text-white text-2xl mb-4"
+              >
+                <i class="fas fa-ticket-alt"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Online Booking</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Book your tickets easily through our online platform with secure
+                payment options.
+              </p>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-white text-2xl mb-4"
+              >
+                <i class="fas fa-concierge-bell"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">First Class Service</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Experience luxury travel with our premium first class services
+                and amenities.
+              </p>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-2xl p-6"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-yellow-600 flex items-center justify-center text-white text-2xl mb-4"
+              >
+                <i class="fas fa-utensils"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Dining Services</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Enjoy delicious meals and beverages during your journey with our
+                onboard dining.
+              </p>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center text-white text-2xl mb-4"
+              >
+                <i class="fas fa-wifi"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Wi-Fi Connectivity</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Stay connected with our free Wi-Fi services available on select
+                trains.
+              </p>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-2xl p-6"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center text-white text-2xl mb-4"
+              >
+                <i class="fas fa-suitcase-rolling"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Luggage Service</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Travel worry-free with our secure luggage handling and storage
+                services.
+              </p>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-2xl p-6"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center text-white text-2xl mb-4"
+              >
+                <i class="fas fa-users"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Group Booking</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Special services and discounts for group travel and corporate
+                bookings.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contact-page" class="page">
+      <section class="py-16 bg-white dark:bg-gray-800 min-h-screen pt-20">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent"
+          >
+            Contact Us
+          </h2>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8"
+            >
+              <h3 class="text-xl font-bold mb-6 text-primary-600">
+                Get in Touch
+              </h3>
+
+              <form class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <label
+                      class="block text-gray-700 dark:text-gray-300 font-medium"
+                      >First Name</label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label
+                      class="block text-gray-700 dark:text-gray-300 font-medium"
+                      >Last Name</label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    >Subject</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    >Message</label
+                  >
+                  <textarea
+                    rows="5"
+                    class="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 bg-white dark:bg-gray-700 transition-all duration-300"
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  class="bg-gradient-to-r from-primary-600 to-primary-700 text-white w-full py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
+                >
+                  Send Message <i class="fas fa-paper-plane ml-2"></i>
+                </button>
+              </form>
+            </div>
+
+            <div class="space-y-6">
+              <div
+                class="bg-gradient-to-br from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 rounded-2xl p-6"
+              >
+                <h3 class="text-xl font-bold mb-4 text-primary-600">
+                  Contact Information
+                </h3>
+
+                <div class="space-y-4">
+                  <div class="flex items-start space-x-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white mt-1"
+                    >
+                      <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-bold">Address</h4>
+                      <p class="text-gray-600 dark:text-gray-400 text-sm">
+                        123 Railway Avenue, Colombo, Sri Lanka
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start space-x-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white mt-1"
+                    >
+                      <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-bold">Phone</h4>
+                      <p class="text-gray-600 dark:text-gray-400 text-sm">
+                        +94 11 234 5678
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start space-x-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white mt-1"
+                    >
+                      <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-bold">Email</h4>
+                      <p class="text-gray-600 dark:text-gray-400 text-sm">
+                        info@raillankapro.lk
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start space-x-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white mt-1"
+                    >
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-bold">Working Hours</h4>
+                      <p class="text-gray-600 dark:text-gray-400 text-sm">
+                        Mon - Sun: 5:00 AM - 10:00 PM
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6"
+              >
+                <h3 class="text-xl font-bold mb-4 text-primary-600">
+                  Follow Us
+                </h3>
+
+                <div class="flex space-x-4">
+                  <a
+                    href="#"
+                    class="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center text-white text-lg"
+                  >
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center text-white text-lg"
+                  >
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center text-white text-lg"
+                  >
+                    <i class="fab fa-instagram"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center text-white text-lg"
+                  >
+                    <i class="fab fa-linkedin-in"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Seat Selection Modal -->
+    <div id="seat-modal" class="modal">
+      <div class="modal-content">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold text-primary-600">Select Your Seats</h3>
+          <button
+            id="close-modal"
+            class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <!-- Carriage Selection Tabs -->
+        <div class="mb-6 flex border-b border-gray-200 dark:border-gray-700">
+          <button
+            class="carriage-tab py-2 px-4 font-medium border-b-2 border-primary-600 text-primary-600"
+            data-carriage="1"
+          >
+            Carriage 1
+          </button>
+          <button
+            class="carriage-tab py-2 px-4 font-medium text-gray-500 dark:text-gray-400"
+            data-carriage="2"
+          >
+            Carriage 2
+          </button>
+        </div>
+
+        <div class="mb-6 p-4 glass-morphism rounded-2xl">
+          <div class="flex flex-wrap justify-center gap-4">
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-5 h-5 bg-gradient-to-br from-green-400 to-green-500 rounded-lg"
+              ></div>
+              <span class="text-xs font-medium">Selected</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-5 h-5 bg-gray-300 dark:bg-gray-600 rounded-lg"
+              ></div>
+              <span class="text-xs font-medium">Available</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-5 h-5 bg-gradient-to-br from-red-400 to-red-500 rounded-lg"
+              ></div>
+              <span class="text-xs font-medium">Occupied</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-5 h-5 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg"
+              ></div>
+              <span class="text-xs font-medium">VIP</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carriage 1 Seat Map -->
+        <div class="carriage-seat-map active" data-carriage="1">
+          <div class="mb-3 text-center">
+            <div
+              class="inline-flex items-center space-x-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full"
+            >
+              <i class="fas fa-steering-wheel text-blue-600 text-sm"></i>
+              <span class="text-blue-600 font-medium text-sm">Driver</span>
+            </div>
+          </div>
+          <div
+            class="seat-map grid grid-cols-4 gap-2 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg place-items-center"
+            data-carriage="1"
+          >
+            <!-- Seats for carriage 1 will be generated dynamically -->
+          </div>
+        </div>
+
+        <!-- Carriage 2 Seat Map -->
+        <div class="carriage-seat-map hidden" data-carriage="2">
+          <div class="mb-3 text-center">
+            <div
+              class="inline-flex items-center space-x-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full"
+            >
+              <i class="fas fa-steering-wheel text-blue-600 text-sm"></i>
+              <span class="text-blue-600 font-medium text-sm">Carrriage 1</span>
+            </div>
+          </div>
+          <div
+            class="seat-map grid grid-cols-4 gap-2 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg place-items-center"
+            data-carriage="2"
+          >
+            <!-- Seats for carriage 2 will be generated dynamically -->
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-between items-center">
+          <div
+            id="selected-seats-summary"
+            class="text-sm text-gray-600 dark:text-gray-400"
+          >
+            No seats selected
+          </div>
+          <button
+            id="confirm-seats"
+            class="px-5 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
+          >
+            Confirm Seats <i class="fas fa-check ml-2"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../passenger/js/index.js"></script>
+  </body>
+</html>

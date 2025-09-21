@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern Profile Modal</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .profile-modal {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: scale(0.9) translateY(20px);
+      }
+
+      .profile-modal.show {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1) translateY(0);
+      }
+
+      .modal-backdrop {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .profile-image-container {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .profile-image-container:hover {
+        transform: scale(1.05);
+      }
+
+      .profile-image-container:hover::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(59, 130, 246, 0.5);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+      }
+
+      .profile-image-container:hover .camera-icon {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .camera-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 10;
+        color: white;
+        font-size: 24px;
+      }
+
+      .floating-input:focus-within label,
+      .floating-input input:not(:placeholder-shown) + label,
+      .floating-input textarea:not(:placeholder-shown) + label {
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        background: white;
+        padding: 0 8px;
+        color: #3b82f6;
+      }
+
+      .toggle-checkbox:checked {
+        right: 0;
+        border-color: #3b82f6;
+      }
+
+      .toggle-checkbox:checked + .toggle-label {
+        background: #3b82f6;
+      }
+
+      .tab-button {
+        transition: all 0.3s ease;
+      }
+
+      .tab-button.active {
+        color: #3b82f6;
+        border-bottom: 2px solid #3b82f6;
+      }
+
+      .animate-in {
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .button-hover {
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+      }
+
+      .button-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+      }
+
+      .social-icon {
+        transition: all 0.3s ease;
+      }
+
+      .social-icon:hover {
+        transform: scale(1.2);
+        color: #3b82f6;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Demo button to show modal -->
+    <button
+      id="demoButton"
+      class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-all"
+    >
+      Open Profile Modal
+    </button>
+
+    <!-- Profile Modal -->
+    <div
+      id="profileModal"
+      class="profile-modal fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
+      <div class="modal-backdrop fixed inset-0" id="modalBackdrop"></div>
+
+      <div
+        class="modal-content bg-white rounded-2xl w-full max-w-4xl overflow-hidden z-50 max-h-[90vh] overflow-y-auto"
+      >
+        <form id="profileForm">
+          <!-- Modal Header -->
+          <div
+            class="bg-gradient-to-r from-indigo-700 to-blue-800 p-6 text-white relative"
+          >
+            <div class="absolute top-4 right-4">
+              <button
+                id="closeProfileModal"
+                type="button"
+                class="text-white hover:text-blue-200 text-xl transition-all hover:rotate-90"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="flex flex-col items-center mt-4">
+              <div class="profile-image-container">
+                <div
+                  class="w-28 h-28 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-4xl mb-3 border-4 border-white shadow-lg"
+                >
+                  <i class="fas fa-user"></i>
+                </div>
+                <div class="camera-icon">
+                  <i class="fas fa-camera"></i>
+                </div>
+              </div>
+              <h3 class="text-2xl font-bold mt-2">Admin User</h3>
+              <p class="text-blue-200">Administrator</p>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="flex border-b border-gray-200">
+            <button
+              type="button"
+              class="tab-button active py-4 px-6 font-medium text-gray-600"
+              data-tab="personal"
+            >
+              <i class="fas fa-user-circle mr-2"></i>Personal Info
+            </button>
+            <button
+              type="button"
+              class="tab-button py-4 px-6 font-medium text-gray-600"
+              data-tab="security"
+            >
+              <i class="fas fa-shield-alt mr-2"></i>Security
+            </button>
+            <button
+              type="button"
+              class="tab-button py-4 px-6 font-medium text-gray-600"
+              data-tab="preferences"
+            >
+              <i class="fas fa-cog mr-2"></i>Preferences
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6 max-h-[50vh] overflow-y-auto">
+            <!-- Personal Info Tab -->
+            <div id="personal-tab" class="tab-content animate-in">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="floating-input relative">
+                  <input
+                    type="text"
+                    id="adminFirstName"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                    placeholder=" "
+                    value="Admin"
+                  />
+                  <label
+                    for="adminFirstName"
+                    class="absolute left-4 top-3 text-gray-500 bg-white px-1 transition-all duration-300 pointer-events-none"
+                    >First Name</label
+                  >
+                  <div class="absolute left-3 top-3 text-gray-400">
+                    <i class="fas fa-user"></i>
+                  </div>
+                </div>
+
+                <div class="floating-input relative">
+                  <input
+                    type="text"
+                    id="adminLastName"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                    placeholder=" "
+                    value="User"
+                  />
+                  <label
+                    for="adminLastName"
+                    class="absolute left-4 top-3 text-gray-500 bg-white px-1 transition-all duration-300 pointer-events-none"
+                    >Last Name</label
+                  >
+                  <div class="absolute left-3 top-3 text-gray-400">
+                    <i class="fas fa-user"></i>
+                  </div>
+                </div>
+
+                <div class="floating-input relative md:col-span-2">
+                  <input
+                    type="email"
+                    id="adminEmail"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 pl-10"
+                    placeholder=" "
+                    value="admin@raillanka.lk"
+                  />
+                  <label
+                    for="adminEmail"
+                    class="absolute left-4 top-3 text-gray-500 bg-white px-1 transition-all duration-300 pointer-events-none"
+                    >Email Address</label
+                  >
+                  <div class="absolute left-3 top-3 text-gray-400">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                </div>
+
+                <div class="floating-input relative md:col-span-2">
+                  <input
+                    type="text"
+                    id="adminPhone"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 pl-10"
+                    placeholder=" "
+                    value="+94 77 123 4567"
+                  />
+                  <label
+                    for="adminPhone"
+                    class="absolute left-4 top-3 text-gray-500 bg-white px-1 transition-all duration-300 pointer-events-none"
+                    >Phone Number</label
+                  >
+                  <div class="absolute left-3 top-3 text-gray-400">
+                    <i class="fas fa-phone"></i>
+                  </div>
+                </div>
+
+                <div class="floating-input relative md:col-span-2">
+                  <textarea
+                    id="adminBio"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 pl-10"
+                    placeholder=" "
+                    rows="3"
+                  >
+Senior Administrator at RailLanka with over 5 years of experience in railway management systems.</textarea
+                  >
+                  <label
+                    for="adminBio"
+                    class="absolute left-4 top-3 text-gray-500 bg-white px-1 transition-all duration-300 pointer-events-none"
+                    >Bio</label
+                  >
+                  <div class="absolute left-3 top-3 text-gray-400">
+                    <i class="fas fa-info-circle"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                  <i class="fas fa-share-alt text-blue-500 mr-2"></i>
+                  Social Profiles
+                </h4>
+                <div class="flex space-x-4">
+                  <a
+                    href="#"
+                    class="social-icon text-gray-500 hover:text-blue-600"
+                  >
+                    <i class="fab fa-twitter text-xl"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="social-icon text-gray-500 hover:text-blue-600"
+                  >
+                    <i class="fab fa-linkedin text-xl"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="social-icon text-gray-500 hover:text-blue-600"
+                  >
+                    <i class="fab fa-github text-xl"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="social-icon text-gray-500 hover:text-blue-600"
+                  >
+                    <i class="fab fa-facebook text-xl"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security Tab (hidden by default) -->
+            <div id="security-tab" class="tab-content hidden animate-in">
+              <div class="space-y-6">
+                <div class="floating-input relative">
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 pl-10"
+                    placeholder=" "
+                  />
+                  <label
+                    for="currentPassword"
+                    class="absolute left-4 top-3 text-gray-500 bg-white px-1 transition-all duration-300 pointer-events-none"
+                    >Current Password</label
+                  >
+                  <div class="absolute left-3 top-3 text-gray-400">
+                    <i class="fas fa-lock"></i>
+                  </div>
+                </div>
+
+                <div class="floating-input relative">
+                  <input
+                    type="password"
+                    id="newPassword"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 pl-10"
+                    placeholder=" "
+                  />
+                  <label
+                    for="newPassword"
+                    class="absolute left-4 top-3 text-gray-500 bg-white px-1 transition-all duration-300 pointer-events-none"
+                    >New Password</label
+                  >
+                  <div class="absolute left-3 top-3 text-gray-400">
+                    <i class="fas fa-key"></i>
+                  </div>
+                </div>
+
+                <div class="floating-input relative">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 pl-10"
+                    placeholder=" "
+                  />
+                  <label
+                    for="confirmPassword"
+                    class="absolute left-4 top-3 text-gray-500 bg-white px-1 transition-all duration-300 pointer-events-none"
+                    >Confirm Password</label
+                  >
+                  <div class="absolute left-3 top-3 text-gray-400">
+                    <i class="fas fa-key"></i>
+                  </div>
+                </div>
+
+                <div
+                  class="flex items-center justify-between p-4 bg-blue-50 rounded-lg"
+                >
+                  <div>
+                    <h4 class="font-medium text-blue-800">
+                      Two-Factor Authentication
+                    </h4>
+                    <p class="text-sm text-blue-600">
+                      Add an extra layer of security to your account
+                    </p>
+                  </div>
+                  <div
+                    class="relative inline-block w-12 mr-2 align-middle select-none"
+                  >
+                    <input
+                      type="checkbox"
+                      name="2fa"
+                      id="2fa-toggle"
+                      class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                    />
+                    <label
+                      for="2fa-toggle"
+                      class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                    ></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preferences Tab (hidden by default) -->
+            <div id="preferences-tab" class="tab-content hidden animate-in">
+              <div class="space-y-6">
+                <div>
+                  <h4 class="font-medium text-gray-700 mb-3">
+                    Notification Preferences
+                  </h4>
+                  <div class="space-y-3">
+                    <div
+                      class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div class="flex items-center">
+                        <i class="fas fa-envelope text-blue-500 mr-3"></i>
+                        <div>
+                          <p class="font-medium">Email Notifications</p>
+                          <p class="text-sm text-gray-500">
+                            Receive updates via email
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="relative inline-block w-12 mr-2 align-middle select-none"
+                      >
+                        <input
+                          type="checkbox"
+                          name="email-notifications"
+                          id="email-toggle"
+                          class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                          checked
+                        />
+                        <label
+                          for="email-toggle"
+                          class="toggle-label block overflow-hidden h-6 rounded-full bg-blue-600 cursor-pointer"
+                        ></label>
+                      </div>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div class="flex items-center">
+                        <i class="fas fa-sms text-blue-500 mr-3"></i>
+                        <div>
+                          <p class="font-medium">SMS Notifications</p>
+                          <p class="text-sm text-gray-500">
+                            Receive updates via SMS
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="relative inline-block w-12 mr-2 align-middle select-none"
+                      >
+                        <input
+                          type="checkbox"
+                          name="sms-notifications"
+                          id="sms-toggle"
+                          class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                        />
+                        <label
+                          for="sms-toggle"
+                          class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                        ></label>
+                      </div>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div class="flex items-center">
+                        <i class="fas fa-bell text-blue-500 mr-3"></i>
+                        <div>
+                          <p class="font-medium">Push Notifications</p>
+                          <p class="text-sm text-gray-500">
+                            Receive browser notifications
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="relative inline-block w-12 mr-2 align-middle select-none"
+                      >
+                        <input
+                          type="checkbox"
+                          name="push-notifications"
+                          id="push-toggle"
+                          class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                          checked
+                        />
+                        <label
+                          for="push-toggle"
+                          class="toggle-label block overflow-hidden h-6 rounded-full bg-blue-600 cursor-pointer"
+                        ></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="font-medium text-gray-700 mb-3">Appearance</h4>
+                  <div
+                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div class="flex items-center">
+                      <i class="fas fa-moon text-blue-500 mr-3"></i>
+                      <div>
+                        <p class="font-medium">Dark Mode</p>
+                        <p class="text-sm text-gray-500">
+                          Switch to dark theme
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="relative inline-block w-12 mr-2 align-middle select-none"
+                    >
+                      <input
+                        type="checkbox"
+                        name="dark-mode"
+                        id="dark-mode-toggle"
+                        class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                      />
+                      <label
+                        for="dark-mode-toggle"
+                        class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                      ></label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="font-medium text-gray-700 mb-3">
+                    Language & Region
+                  </h4>
+                  <div class="floating-input relative">
+                    <select
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 pl-10 appearance-none"
+                    >
+                      <option selected>English (US)</option>
+                      <option>Sinhala</option>
+                      <option>Tamil</option>
+                    </select>
+                    <div class="absolute left-3 top-3 text-gray-400">
+                      <i class="fas fa-globe"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="bg-gray-50 px-6 py-4 flex justify-between items-center">
+            <div class="text-sm text-gray-500">
+              Last updated: <span class="font-medium">Today, 2:45 PM</span>
+            </div>
+            <div class="flex space-x-3">
+              <button
+                id="cancelProfileBtn"
+                type="button"
+                class="px-5 py-2.5 text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="button-hover px-5 py-2.5 text-white rounded-lg transition-all flex items-center"
+              >
+                <i class="fas fa-save mr-2"></i>
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const profileModal = document.getElementById("profileModal");
+        const modalBackdrop = document.getElementById("modalBackdrop");
+        const demoButton = document.getElementById("demoButton");
+        const closeProfileModal = document.getElementById("closeProfileModal");
+        const cancelProfileBtn = document.getElementById("cancelProfileBtn");
+        const tabButtons = document.querySelectorAll(".tab-button");
+
+        // Show modal on demo button click
+        demoButton.addEventListener("click", function () {
+          profileModal.classList.add("show");
+          document.body.style.overflow = "hidden";
+        });
+
+        // Close modal functions
+        function closeModal() {
+          profileModal.classList.remove("show");
+          document.body.style.overflow = "";
+        }
+
+        modalBackdrop.addEventListener("click", closeModal);
+        closeProfileModal.addEventListener("click", closeModal);
+        cancelProfileBtn.addEventListener("click", closeModal);
+
+        // Tab switching functionality
+        tabButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const tabName = this.getAttribute("data-tab");
+
+            // Update active tab button
+            tabButtons.forEach((btn) => btn.classList.remove("active"));
+            this.classList.add("active");
+
+            // Show selected tab content
+            document.querySelectorAll(".tab-content").forEach((tab) => {
+              tab.classList.add("hidden");
+            });
+
+            const activeTab = document.getElementById(`${tabName}-tab`);
+            activeTab.classList.remove("hidden");
+            activeTab.classList.add("animate-in");
+
+            // Re-trigger animation
+            setTimeout(() => {
+              activeTab.classList.remove("animate-in");
+              void activeTab.offsetWidth; // Trigger reflow
+              activeTab.classList.add("animate-in");
+            }, 10);
+          });
+        });
+
+        // Form submission
+        document
+          .getElementById("profileForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            // Simulate save action
+            const saveButton = this.querySelector('button[type="submit"]');
+            const originalText = saveButton.innerHTML;
+
+            saveButton.innerHTML =
+              '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+            saveButton.disabled = true;
+
+            setTimeout(() => {
+              saveButton.innerHTML = '<i class="fas fa-check mr-2"></i> Saved!';
+              setTimeout(() => {
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+                closeModal();
+              }, 1000);
+            }, 1500);
+          });
+
+        // Enhanced profile image hover effect
+        const profileImage = document.querySelector(".profile-image-container");
+        profileImage.addEventListener("mouseenter", function () {
+          this.querySelector(".camera-icon").style.opacity = "1";
+          this.querySelector(".camera-icon").style.transform =
+            "translate(-50%, -50%) scale(1)";
+        });
+
+        profileImage.addEventListener("mouseleave", function () {
+          this.querySelector(".camera-icon").style.opacity = "0";
+          this.querySelector(".camera-icon").style.transform =
+            "translate(-50%, -50%) scale(0.8)";
+        });
+      });
+    </script>
+  </body>
+</html>

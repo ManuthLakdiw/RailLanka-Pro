@@ -1,0 +1,154 @@
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+overflow: hidden;
+position: relative;
+}
+
+.container {
+position: relative;
+width: 100%;
+max-width: 800px;
+padding: 2rem;
+text-align: center;
+z-index: 10;
+}
+
+.header {
+margin-bottom: 2.5rem;
+}
+
+.header h1 {
+font-size: 2.5rem;
+color: #1e3a8a;
+margin-bottom: 0.5rem;
+text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header p {
+font-size: 1.1rem;
+color: #3b82f6;
+max-width: 500px;
+margin: 0 auto;
+line-height: 1.6;
+}
+
+.animation-container {
+position: relative;
+margin: 0 auto;
+width: 300px;
+height: 300px;
+}
+
+.segment {
+position: absolute;
+border-radius: 50%;
+border: 3px solid transparent;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+.seg1 {
+width: 280px;
+height: 280px;
+border-top-color: #1e40af;
+border-right-color: #1e40af;
+transform: translate(-50%, -50%) rotate(20deg);
+animation: spin 6s linear infinite;
+}
+.seg2 {
+width: 280px;
+height: 280px;
+border-top-color: #3b82f6;
+transform: translate(-50%, -50%) rotate(160deg);
+animation: spin-reverse 10s linear infinite;
+}
+
+.seg3 {
+width: 200px;
+height: 200px;
+border-top-color: #2563eb;
+border-left-color: #2563eb;
+transform: translate(-50%, -50%) rotate(60deg);
+animation: spin 4s linear infinite;
+}
+.seg4 {
+width: 200px;
+height: 200px;
+border-top-color: #60a5fa;
+transform: translate(-50%, -50%) rotate(200deg);
+animation: spin-reverse 8s linear infinite;
+}
+
+.seg5 {
+width: 120px;
+height: 120px;
+border-top-color: #1d4ed8;
+border-right-color: #1d4ed8;
+transform: translate(-50%, -50%) rotate(100deg);
+animation: spin 2s linear infinite;
+}
+.seg6 {
+width: 120px;
+height: 120px;
+border-top-color: #93c5fd;
+transform: translate(-50%, -50%) rotate(250deg);
+animation: spin-reverse 5s linear infinite;
+}
+
+.center-dot {
+position: absolute;
+width: 30px;
+height: 30px;
+background: #1e3a8a;
+border-radius: 50%;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+z-index: 5;
+box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+@keyframes spin {
+0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+}
+100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+}
+}
+
+@keyframes spin-reverse {
+0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+}
+100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+}
+}
+
+img {
+width: 300px;
+margin-bottom: 10px;
+}
+
+
+.footer {
+position: absolute;
+bottom: 20px;
+width: 100%;
+text-align: center;
+color: #3b82f6;
+font-size: 0.9rem;
+}

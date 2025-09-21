@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loading Animation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Loading animation styles */
+      .loader-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+      }
+
+      .loader {
+        width: 80px;
+        height: 80px;
+        position: relative;
+      }
+
+      .loader-inner {
+        position: absolute;
+        border: 4px solid #ffffff;
+        opacity: 1;
+        border-radius: 50%;
+        animation: loader-inner 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      }
+
+      .loader-outer {
+        position: absolute;
+        border: 4px solid #ffffff;
+        opacity: 1;
+        border-radius: 50%;
+        animation: loader-outer 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      }
+
+      @keyframes loader-inner {
+        0% {
+          top: 40px;
+          left: 40px;
+          width: 0;
+          height: 0;
+          opacity: 1;
+        }
+        100% {
+          top: 0;
+          left: 0;
+          width: 80px;
+          height: 80px;
+          opacity: 0;
+        }
+      }
+
+      @keyframes loader-outer {
+        0% {
+          top: 0;
+          left: 0;
+          width: 0;
+          height: 0;
+          opacity: 1;
+        }
+        100% {
+          top: 40px;
+          left: 40px;
+          width: 80px;
+          height: 80px;
+          opacity: 0;
+        }
+      }
+
+      .loader-logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .progress-bar {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: white;
+        border-radius: 4px;
+        transition: width 0.4s ease;
+      }
+
+      .loading-text {
+        position: absolute;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 14px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .content {
+        display: none;
+        padding: 20px;
+      }
+
+      .content.visible {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Animation -->
+    <div class="loader-container" id="loader">
+      <div class="loader">
+        <div class="loader-inner"></div>
+        <div class="loader-outer"></div>
+        <div class="loader-logo">RAIL LANKA PRO</div>
+      </div>
+      <div class="loading-text">Loading your dashboard</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Your content (hidden initially) -->
+    <div class="content" id="content">
+      <h1 class="text-3xl font-bold text-blue-800 mb-6">Dashboard Content</h1>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-blue-100 p-6 rounded-lg shadow">
+          <h2 class="text-xl font-semibold text-blue-800 mb-3">Users</h2>
+          <p class="text-blue-600">Total: 1,243</p>
+        </div>
+        <div class="bg-blue-100 p-6 rounded-lg shadow">
+          <h2 class="text-xl font-semibold text-blue-800 mb-3">Revenue</h2>
+          <p class="text-blue-600">LKR 245,800</p>
+        </div>
+        <div class="bg-blue-100 p-6 rounded-lg shadow">
+          <h2 class="text-xl font-semibold text-blue-800 mb-3">Bookings</h2>
+          <p class="text-blue-600">342 today</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Simulate loading process
+      document.addEventListener("DOMContentLoaded", function () {
+        const loader = document.getElementById("loader");
+        const content = document.getElementById("content");
+        const progressFill = document.getElementById("progress-fill");
+        const loadingText = document.querySelector(".loading-text");
+
+        // Array of loading messages to display
+        const loadingMessages = [
+          "Loading your dashboard",
+          "Fetching user data",
+          "Processing analytics",
+          "Almost ready...",
+          "Welcome to Rail Lanka Pro!",
+        ];
+
+        let progress = 0;
+        let messageIndex = 0;
+
+        // Update progress bar and messages
+        const interval = setInterval(() => {
+          progress += Math.random() * 10;
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+
+            // Final update before showing content
+            progressFill.style.width = progress + "%";
+            loadingText.textContent = loadingMessages[4];
+
+            // After a brief delay, show the content
+            setTimeout(() => {
+              loader.classList.add("fade-out");
+              setTimeout(() => {
+                loader.style.display = "none";
+                content.classList.add("visible");
+              }, 500);
+            }, 800);
+          } else {
+            progressFill.style.width = progress + "%";
+
+            // Change loading message at certain intervals
+            if (progress > 20 && messageIndex === 0) {
+              loadingText.textContent = loadingMessages[1];
+              messageIndex = 1;
+            } else if (progress > 45 && messageIndex === 1) {
+              loadingText.textContent = loadingMessages[2];
+              messageIndex = 2;
+            } else if (progress > 70 && messageIndex === 2) {
+              loadingText.textContent = loadingMessages[3];
+              messageIndex = 3;
+            }
+          }
+        }, 300);
+      });
+    </script>
+  </body>
+</html>

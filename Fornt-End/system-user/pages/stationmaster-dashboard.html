@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RailLanka Pro | Station Master Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3f4f6;
+      }
+      .sidebar {
+        background: linear-gradient(to bottom, #1d4ed8, #2563eb);
+        transition: all 0.3s ease;
+      }
+      .dashboard-card {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+      .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      }
+      .nav-link.active {
+        background: rgba(255, 255, 255, 0.15);
+        border-left: 4px solid white;
+      }
+      .nav-link:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .train-status-arrived {
+        background-color: #10b981;
+        color: white;
+      }
+      .train-status-delayed {
+        background-color: #f59e0b;
+        color: white;
+      }
+      .train-status-scheduled {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .train-status-departed {
+        background-color: #6b7280;
+        color: white;
+      }
+      .counter-status-active {
+        background-color: #10b981;
+        color: white;
+      }
+      .counter-status-break {
+        background-color: #f59e0b;
+        color: white;
+      }
+      .counter-status-closed {
+        background-color: #ef4444;
+        color: white;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 min-h-screen text-white flex flex-col">
+      <div class="p-5 border-b border-blue-400">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-train text-2xl"></i>
+          <h1 class="text-xl font-bold">RailLanka Pro</h1>
+        </div>
+        <p class="text-blue-200 text-sm mt-2">Station Master Dashboard</p>
+      </div>
+
+      <div class="p-4 flex-1">
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="#"
+              class="nav-link active flex items-center p-3 rounded-lg"
+            >
+              <i class="fas fa-tachometer-alt mr-3"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-subway mr-3"></i>
+              <span>Station Trains</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-ticket-alt mr-3"></i>
+              <span>Station Counters</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-user-friends mr-3"></i>
+              <span>Station Employees</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-file-invoice mr-3"></i>
+              <span>Station Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg">
+              <i class="fas fa-cog mr-3"></i>
+              <span>Station Settings</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-8 p-4 bg-blue-700 rounded-lg">
+          <h3 class="font-medium">Station Quick Stats</h3>
+          <div class="mt-3 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Today's Trains</span>
+              <span class="font-bold">18</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Active Counters</span>
+              <span class="font-bold">6</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-blue-200">Today's Revenue</span>
+              <span class="font-bold">LKR 245,800</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-blue-400">
+        <div class="flex items-center space-x-3">
+          <div
+            class="bg-blue-200 text-blue-800 w-10 h-10 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <div>
+            <p class="font-medium">Station Master</p>
+            <p class="text-blue-200 text-sm">master@colombofort.lk</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-sm">
+        <div class="max-w-full mx-auto px-6 py-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">
+                Colombo Fort Station Dashboard
+              </h2>
+              <p class="text-gray-600 text-sm">
+                Welcome back, Station Master Perera
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                  <i class="fas fa-bell text-gray-600"></i>
+                  <span
+                    class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+                  ></span>
+                </button>
+              </div>
+
+              <div class="relative">
+                <button class="flex items-center space-x-2 text-gray-700">
+                  <div
+                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
+                  >
+                    <i class="fas fa-user-tie text-blue-700"></i>
+                  </div>
+                  <span>Station Master</span>
+                  <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Stats Cards -->
+      <div class="px-6 py-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="dashboard-card bg-white rounded-xl p-5">
+            <div class="flex justify-between">
+              <div>
+                <p class="text-gray-500">Today's Trains</p>
+                <p class="text-2xl font-bold mt-1">18</p>
+              </div>
+              <div
+                class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+              >
+                <i class="fas fa-subway text-blue-600 text-xl"></i>
+              </div>
+            </div>
+            <div
+              class="mt-3 pt-3 border-t border-gray-100 flex items-center text-sm text-green-500"
+            >
+              <i class="fas fa-arrow-up mr-1"></i>
+              <span>2 additional trains today</span>
+            </div>
+          </div>
+
+          <div class="dashboard-card bg-white rounded-xl p-5">
+            <div class="flex justify-between">
+              <div>
+                <p class="text-gray-500">Active Counters</p>
+                <p class="text-2xl font-bold mt-1">6/8</p>
+              </div>
+              <div
+                class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"
+              >
+                <i class="fas fa-ticket-alt text-green-600 text-xl"></i>
+              </div>
+            </div>
+            <div
+              class="mt-3 pt-3 border-t border-gray-100 flex items-center text-sm text-blue-500"
+            >
+              <i class="fas fa-info-circle mr-1"></i>
+              <span>2 counters on break</span>
+            </div>
+          </div>
+
+          <div class="dashboard-card bg-white rounded-xl p-5">
+            <div class="flex justify-between">
+              <div>
+                <p class="text-gray-500">Today's Revenue</p>
+                <p class="text-2xl font-bold mt-1">LKR 245,800</p>
+              </div>
+              <div
+                class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"
+              >
+                <i class="fas fa-money-bill-wave text-purple-600 text-xl"></i>
+              </div>
+            </div>
+            <div
+              class="mt-3 pt-3 border-t border-gray-100 flex items-center text-sm text-green-500"
+            >
+              <i class="fas fa-arrow-up mr-1"></i>
+              <span>8% increase from yesterday</span>
+            </div>
+          </div>
+
+          <div class="dashboard-card bg-white rounded-xl p-5">
+            <div class="flex justify-between">
+              <div>
+                <p class="text-gray-500">Staff On Duty</p>
+                <p class="text-2xl font-bold mt-1">14/16</p>
+              </div>
+              <div
+                class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center"
+              >
+                <i class="fas fa-user-friends text-yellow-600 text-xl"></i>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-gray-100">
+              <button
+                class="text-sm bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition"
+              >
+                View Roster
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts and Main Content -->
+      <div class="px-6 py-4 flex-1">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left Column -->
+          <div class="lg:col-span-2">
+            <!-- Today's Train Schedule -->
+            <div class="dashboard-card bg-white rounded-xl p-5 mb-6">
+              <div class="flex justify-between items-center mb-5">
+                <h3 class="font-bold text-lg text-gray-800">
+                  Today's Train Schedule
+                </h3>
+                <div class="flex space-x-2">
+                  <button
+                    class="text-xs bg-blue-600 text-white px-2 py-1 rounded"
+                  >
+                    All
+                  </button>
+                  <button
+                    class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded"
+                  >
+                    Arrivals
+                  </button>
+                  <button
+                    class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded"
+                  >
+                    Departures
+                  </button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="text-left text-gray-600 text-sm">
+                      <th class="pb-3">Train No.</th>
+                      <th class="pb-3">Route</th>
+                      <th class="pb-3">Scheduled</th>
+                      <th class="pb-3">Platform</th>
+                      <th class="pb-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    <tr>
+                      <td class="py-3 font-medium">T-8045</td>
+                      <td class="py-3">Colombo Fort - Badulla</td>
+                      <td class="py-3">08:45</td>
+                      <td class="py-3">Platform 3</td>
+                      <td class="py-3">
+                        <span
+                          class="train-status-departed px-2 py-1 rounded-full text-xs"
+                          >Departed</span
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 font-medium">T-6021</td>
+                      <td class="py-3">Colombo Fort - Kandy</td>
+                      <td class="py-3">09:30</td>
+                      <td class="py-3">Platform 1</td>
+                      <td class="py-3">
+                        <span
+                          class="train-status-arrived px-2 py-1 rounded-full text-xs"
+                          >Arrived</span
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 font-medium">T-3056</td>
+                      <td class="py-3">Colombo Fort - Galle</td>
+                      <td class="py-3">10:15</td>
+                      <td class="py-3">Platform 5</td>
+                      <td class="py-3">
+                        <span
+                          class="train-status-scheduled px-2 py-1 rounded-full text-xs"
+                          >On Time</span
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 font-medium">T-7098</td>
+                      <td class="py-3">Colombo Fort - Jaffna</td>
+                      <td class="py-3">11:20</td>
+                      <td class="py-3">Platform 2</td>
+                      <td class="py-3">
+                        <span
+                          class="train-status-delayed px-2 py-1 rounded-full text-xs"
+                          >Delayed 15min</span
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 font-medium">T-5023</td>
+                      <td class="py-3">Colombo Fort - Matara</td>
+                      <td class="py-3">12:45</td>
+                      <td class="py-3">Platform 4</td>
+                      <td class="py-3">
+                        <span
+                          class="train-status-scheduled px-2 py-1 rounded-full text-xs"
+                          >On Time</span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mt-4 text-center">
+                <button class="text-blue-600 text-sm hover:underline">
+                  View Full Schedule
+                </button>
+              </div>
+            </div>
+
+            <!-- Station Activity -->
+            <div class="dashboard-card bg-white rounded-xl p-5">
+              <h3 class="font-bold text-lg text-gray-800 mb-5">
+                Station Activity
+              </h3>
+              <div class="space-y-4">
+                <div class="flex items-start">
+                  <div
+                    class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3"
+                  >
+                    <i class="fas fa-subway text-blue-600"></i>
+                  </div>
+                  <div>
+                    <p class="font-medium">Train T-6021 has arrived</p>
+                    <p class="text-gray-600 text-sm">
+                      Colombo Fort - Kandy Express arrived at Platform 1
+                    </p>
+                    <p class="text-gray-500 text-xs">30 minutes ago</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div
+                    class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3"
+                  >
+                    <i class="fas fa-ticket-alt text-green-600"></i>
+                  </div>
+                  <div>
+                    <p class="font-medium">Counter #3 reopened</p>
+                    <p class="text-gray-600 text-sm">
+                      Counter staff returned from break
+                    </p>
+                    <p class="text-gray-500 text-xs">45 minutes ago</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div
+                    class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-3"
+                  >
+                    <i class="fas fa-user-plus text-purple-600"></i>
+                  </div>
+                  <div>
+                    <p class="font-medium">New staff shift started</p>
+                    <p class="text-gray-600 text-sm">
+                      2 counter staff began their morning shift
+                    </p>
+                    <p class="text-gray-500 text-xs">1 hour ago</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div
+                    class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center mr-3"
+                  >
+                    <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                  </div>
+                  <div>
+                    <p class="font-medium">Minor delay reported</p>
+                    <p class="text-gray-600 text-sm">
+                      Train T-7098 to Jaffna delayed by 15 minutes
+                    </p>
+                    <p class="text-gray-500 text-xs">2 hours ago</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div>
+            <!-- Station Overview -->
+            <div class="dashboard-card bg-white rounded-xl p-5 mb-6">
+              <h3 class="font-bold text-lg text-gray-800 mb-5">
+                Station Overview
+              </h3>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3"
+                    >
+                      <i class="fas fa-road text-blue-600"></i>
+                    </div>
+                    <div>
+                      <p class="font-medium">Station Status</p>
+                      <p class="text-gray-600 text-sm">Operating normally</p>
+                    </div>
+                  </div>
+                  <span
+                    class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs"
+                    >Active</span
+                  >
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mr-3"
+                    >
+                      <i class="fas fa-users text-green-600"></i>
+                    </div>
+                    <div>
+                      <p class="font-medium">Passenger Flow</p>
+                      <p class="text-gray-600 text-sm">Moderate crowd</p>
+                    </div>
+                  </div>
+                  <div class="w-12 h-2 bg-gray-200 rounded-full">
+                    <div
+                      class="h-2 bg-green-500 rounded-full"
+                      style="width: 65%"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3"
+                    >
+                      <i class="fas fa-ticket-alt text-purple-600"></i>
+                    </div>
+                    <div>
+                      <p class="font-medium">Ticket Sales</p>
+                      <p class="text-gray-600 text-sm">342 tickets today</p>
+                    </div>
+                  </div>
+                  <span
+                    class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs"
+                    >+12%</span
+                  >
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center mr-3"
+                    >
+                      <i class="fas fa-concierge-bell text-yellow-600"></i>
+                    </div>
+                    <div>
+                      <p class="font-medium">Facilities</p>
+                      <p class="text-gray-600 text-sm">All operational</p>
+                    </div>
+                  </div>
+                  <button
+                    class="text-sm bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition"
+                  >
+                    View Status
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-card bg-white rounded-xl p-5">
+              <h3 class="font-bold text-lg text-gray-800 mb-5">
+                Quick Actions
+              </h3>
+              <div class="grid grid-cols-2 gap-3">
+                <button
+                  class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
+                >
+                  <div
+                    class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mb-2"
+                  >
+                    <i class="fas fa-subway text-blue-600"></i>
+                  </div>
+                  <span class="font-medium text-sm">Update Train Status</span>
+                </button>
+
+                <button
+                  class="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition"
+                >
+                  <div
+                    class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mb-2"
+                  >
+                    <i class="fas fa-ticket-alt text-green-600"></i>
+                  </div>
+                  <span class="font-medium text-sm">Counter Management</span>
+                </button>
+
+                <button
+                  class="flex flex-col items-center justify-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition"
+                >
+                  <div
+                    class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mb-2"
+                  >
+                    <i class="fas fa-file-invoice text-purple-600"></i>
+                  </div>
+                  <span class="font-medium text-sm">Daily Report</span>
+                </button>
+
+                <button
+                  class="flex flex-col items-center justify-center p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition"
+                >
+                  <div
+                    class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mb-2"
+                  >
+                    <i class="fas fa-user-friends text-orange-600"></i>
+                  </div>
+                  <span class="font-medium text-sm">Staff Roster</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Counter Status -->
+            <div class="dashboard-card bg-white rounded-xl p-5 mt-6">
+              <h3 class="font-bold text-lg text-gray-800 mb-5">
+                Counter Status
+              </h3>
+              <div class="grid grid-cols-4 gap-2">
+                <div class="text-center p-2 bg-green-100 rounded-lg">
+                  <p class="font-bold">1</p>
+                  <p class="text-xs text-green-700">Active</p>
+                </div>
+                <div class="text-center p-2 bg-green-100 rounded-lg">
+                  <p class="font-bold">2</p>
+                  <p class="text-xs text-green-700">Active</p>
+                </div>
+                <div class="text-center p-2 bg-yellow-100 rounded-lg">
+                  <p class="font-bold">3</p>
+                  <p class="text-xs text-yellow-700">Break</p>
+                </div>
+                <div class="text-center p-2 bg-green-100 rounded-lg">
+                  <p class="font-bold">4</p>
+                  <p class="text-xs text-green-700">Active</p>
+                </div>
+                <div class="text-center p-2 bg-green-100 rounded-lg">
+                  <p class="font-bold">5</p>
+                  <p class="text-xs text-green-700">Active</p>
+                </div>
+                <div class="text-center p-2 bg-red-100 rounded-lg">
+                  <p class="font-bold">6</p>
+                  <p class="text-xs text-red-700">Closed</p>
+                </div>
+                <div class="text-center p-2 bg-green-100 rounded-lg">
+                  <p class="font-bold">7</p>
+                  <p class="text-xs text-green-700">Active</p>
+                </div>
+                <div class="text-center p-2 bg-green-100 rounded-lg">
+                  <p class="font-bold">8</p>
+                  <p class="text-xs text-green-700">Active</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+      // Initialize toastr
+      toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-bottom-right",
+      };
+
+      // Sample data for demonstration
+      document.addEventListener("DOMContentLoaded", function () {
+        // You can add any interactive functionality here
+        console.log("Station Master Dashboard loaded");
+      });
+    </script>
+  </body>
+</html>
