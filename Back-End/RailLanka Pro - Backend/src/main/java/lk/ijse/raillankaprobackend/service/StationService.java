@@ -1,6 +1,8 @@
 package lk.ijse.raillankaprobackend.service;
 
 import lk.ijse.raillankaprobackend.dto.StationDto;
+import lk.ijse.raillankaprobackend.entity.Schedule;
+import lk.ijse.raillankaprobackend.entity.Station;
 import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import org.springframework.data.domain.Page;
 
@@ -51,6 +53,8 @@ public interface StationService {
     List<Map<String,Object>> countStationsByProvince();
 
     Map<String, Long> findTotalAndAssignedStationCounts();
+
+    List<Station> getStationSequence(Schedule schedule, String departureStationName, String destinationStationName);
 
 
 

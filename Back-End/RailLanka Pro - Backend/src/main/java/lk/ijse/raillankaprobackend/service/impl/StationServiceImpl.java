@@ -1,10 +1,13 @@
 package lk.ijse.raillankaprobackend.service.impl;
 
 import lk.ijse.raillankaprobackend.dto.StationDto;
+import lk.ijse.raillankaprobackend.entity.Schedule;
+import lk.ijse.raillankaprobackend.entity.ScheduleIntermediateStop;
 import lk.ijse.raillankaprobackend.entity.Station;
 import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.StationNameAlreadyExistsException;
+import lk.ijse.raillankaprobackend.repository.ScheduleRepository;
 import lk.ijse.raillankaprobackend.repository.StationRepository;
 import lk.ijse.raillankaprobackend.service.StationService;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +17,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author manuthlakdiv
@@ -32,6 +33,7 @@ public class StationServiceImpl implements StationService {
 
     private final StationRepository stationRepository;
     private final ModelMapper modelMapper;
+    private final ScheduleRepository scheduleRepository;
 
     @Override
     public String generateNewStationId() {
@@ -268,6 +270,39 @@ public class StationServiceImpl implements StationService {
                 "total", total,
                 "assigned", assigned
         );
+    }
+
+    @Override
+    public List<Station> getStationSequence(Schedule schedule, String departureStationName, String destinationStationName) {
+
+        Station departureStation = stationRepository.findByName(departureStationName)
+                .orElseThrow(() -> new IllegalArgumentException("Departure Station not found"));
+        Station destinationStation = stationRepository.findByName(destinationStationName)
+                .orElseThrow(() -> new IllegalArgumentException("Destination Station not found"));
+
+        List<Station> stationSequence = new ArrayList<>();
+        stationSequence.add(schedule.getMainDepartureStation());
+
+        List<ScheduleIntermediateStop> stops = schedule.getStops().stream()
+                .sorted(Comparator.comparingInt(ScheduleIntermediateStop::getStopOrder))
+                .collect(Collectors.toList());
+
+        for (ScheduleIntermediateStop stop : stops) {
+            stationSequence.add(stop.getStation());
+        }
+
+        stationSequence.add(schedule.getMainArrivalStation());
+
+        // Departure -> Destination subset එක ලබා දීම
+        int startIndex = stationSequence.indexOf(departureStation);
+        int endIndex = stationSequence.indexOf(destinationStation);
+
+        if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex) {
+            throw new IllegalArgumentException("Invalid departure or destination station for this schedule");
+        }
+
+        return stationSequence.subList(startIndex, endIndex + 1);
+
     }
 
 

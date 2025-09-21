@@ -51,6 +51,12 @@ public class Station {
     @OneToMany(mappedBy = "mainArrivalStation")
     private List<Schedule> arrivalSchedules;
 
+    @OneToMany(mappedBy = "departureStation")
+    private List<Booking> departureBookings;
+
+    @OneToMany(mappedBy = "destinationStation")
+    private List<Booking> destinationBookings;
+
 
 
 

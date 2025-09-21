@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -63,4 +64,97 @@ public interface ScheduleRepository extends JpaRepository<Schedule,String> {
 
 
     List<Schedule> findSchedulesByStatus(boolean status);
+
+
+    @Query("""
+        SELECT DISTINCT s
+        FROM Schedule s
+        JOIN FETCH s.train t
+        JOIN FETCH s.mainDepartureStation ds
+        JOIN FETCH s.mainArrivalStation ars
+        LEFT JOIN FETCH s.stops stp
+        LEFT JOIN FETCH stp.station
+        WHERE (
+            ds.name = :fromStation OR EXISTS (
+                SELECT 1 FROM ScheduleIntermediateStop sis
+                WHERE sis.schedule = s AND sis.station.name = :fromStation
+            )
+        )
+        AND (
+            ars.name = :toStation OR EXISTS (
+                SELECT 1 FROM ScheduleIntermediateStop sis
+                WHERE sis.schedule = s AND sis.station.name = :toStation
+            )
+        )
+    """)
+    List<Schedule> findSchedulesWithRelatedDetails(
+            @Param("fromStation") String fromStation,
+            @Param("toStation") String toStation,
+            @Param("departureDate") LocalDate departureDate
+    );
+
+    @Query("""
+    SELECT DISTINCT s
+    FROM Schedule s
+    JOIN FETCH s.train t
+    JOIN FETCH s.mainDepartureStation ds
+    JOIN FETCH s.mainArrivalStation ars
+    LEFT JOIN FETCH s.stops stp
+    LEFT JOIN FETCH stp.station
+    WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :trainName, '%'))
+      AND (
+          ds.name = :fromStation OR EXISTS (
+              SELECT 1 FROM ScheduleIntermediateStop sis
+              WHERE sis.schedule = s AND sis.station.name = :fromStation
+          )
+      )
+      AND (
+          ars.name = :toStation OR EXISTS (
+              SELECT 1 FROM ScheduleIntermediateStop sis
+              WHERE sis.schedule = s AND sis.station.name = :toStation
+          )
+      )
+
+""")
+    List<Schedule> findSchedulesWithRelatedDetailsByTrainName(
+            @Param("fromStation") String fromStation,
+            @Param("toStation") String toStation,
+            @Param("trainName") String trainName,
+            @Param("departureDate") LocalDate departureDate
+    );
+
+    @Query("""
+    SELECT DISTINCT s
+    FROM Schedule s
+    JOIN FETCH s.train t
+    JOIN FETCH s.mainDepartureStation ds
+    JOIN FETCH s.mainArrivalStation ars
+    LEFT JOIN FETCH s.stops stp
+    LEFT JOIN FETCH stp.station
+    WHERE (:trainClass IS NULL OR t.classes LIKE CONCAT('%', :trainClass, '%'))
+      AND (
+          ds.name = :fromStation OR EXISTS (
+              SELECT 1 FROM ScheduleIntermediateStop sis
+              WHERE sis.schedule = s AND sis.station.name = :fromStation
+          )
+      )
+      AND (
+          ars.name = :toStation OR EXISTS (
+              SELECT 1 FROM ScheduleIntermediateStop sis
+              WHERE sis.schedule = s AND sis.station.name = :toStation
+          )
+      )
+""")
+    List<Schedule> findSchedulesWithRelatedDetailsByClass(
+            @Param("fromStation") String fromStation,
+            @Param("toStation") String toStation,
+            @Param("trainClass") String trainClass,
+            @Param("departureDate") LocalDate departureDate
+    );
+
+
+
+
+
+
 }

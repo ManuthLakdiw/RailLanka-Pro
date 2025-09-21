@@ -1,6 +1,7 @@
 package lk.ijse.raillankaprobackend.service;
 
 import lk.ijse.raillankaprobackend.dto.CounterDto;
+import lk.ijse.raillankaprobackend.dto.SearchTrainDto;
 import lk.ijse.raillankaprobackend.dto.TrainDto;
 import lk.ijse.raillankaprobackend.dto.TrainStationDto;
 import lk.ijse.raillankaprobackend.entity.Train;
@@ -40,6 +41,7 @@ public interface TrainService {
     String updateTrainDetails(TrainDto trainDto);
 
     List<TrainDto> getAllTrains();
+
 
     List<TrainStationDto> getAllStationsByTrainName(String trainName);
 

@@ -33,4 +33,6 @@ public class ScheduleDto {
     private String arrivalStation;
     private String duration;
     private List<ScheduleIntermediateStopDto> stops;
+
+
 }

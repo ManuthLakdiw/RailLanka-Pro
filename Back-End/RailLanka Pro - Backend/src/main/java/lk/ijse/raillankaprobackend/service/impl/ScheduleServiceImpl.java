@@ -1,7 +1,6 @@
 package lk.ijse.raillankaprobackend.service.impl;
 
-import lk.ijse.raillankaprobackend.dto.ScheduleDto;
-import lk.ijse.raillankaprobackend.dto.ScheduleIntermediateStopDto;
+import lk.ijse.raillankaprobackend.dto.*;
 import lk.ijse.raillankaprobackend.entity.Dtypes.ScheduleFrequency;
 import lk.ijse.raillankaprobackend.entity.Schedule;
 import lk.ijse.raillankaprobackend.entity.ScheduleIntermediateStop;
@@ -13,15 +12,22 @@ import lk.ijse.raillankaprobackend.repository.ScheduleRepository;
 import lk.ijse.raillankaprobackend.repository.StationRepository;
 import lk.ijse.raillankaprobackend.repository.TrainRepository;
 import lk.ijse.raillankaprobackend.service.ScheduleService;
+import lk.ijse.raillankaprobackend.service.TicketPriceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author manuthlakdiv
@@ -37,6 +43,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final TrainRepository trainRepository;
     private final StationRepository stationRepository;
+    private final TicketPriceService  ticketPriceService;
 
     @Override
     public String generateNewScheduleId() {
@@ -335,6 +342,360 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         return countsMap;
+    }
+
+    @Override
+    public Page<TrainScheduleInfoDto> searchSchedules(SearchTrainDto searchTrainDto, int pageNo, int pageSize) {
+        Station depStation = stationRepository.findByName(searchTrainDto.getDepartureStation())
+                .orElseThrow(() -> new IllegalArgumentException("Departure Station not found"));
+
+        Station desStation = stationRepository.findByName(searchTrainDto.getDestinationStation())
+                .orElseThrow(() -> new IllegalArgumentException("Arrival Station not found"));
+
+        List<Schedule> allSchedules = scheduleRepository.findSchedulesWithRelatedDetails(
+                searchTrainDto.getDepartureStation(),
+                searchTrainDto.getDestinationStation(),
+                searchTrainDto.getDate()
+        );
+
+        List<TrainScheduleInfoDto> filteredDtos = allSchedules.stream()
+                .filter(schedule -> isTrainRunningOn(searchTrainDto.getDate(), schedule.getScheduleFrequency().name()))
+                .map(s -> {
+                    String durationBetweenStations = getDurationBetweenStations(
+                            s,
+                            searchTrainDto.getDepartureStation(),
+                            searchTrainDto.getDestinationStation()
+                    );
+                    if (durationBetweenStations == null) {
+                        return null;
+                    }
+
+                    TrainScheduleInfoDto.AllCalculatedTicketPriceDto fullTicketPrices = ticketPriceService.calculatePrice(
+                            s,
+                            PriceCalcDto.builder()
+                                    .departure(depStation.getName())
+                                    .destination(desStation.getName())
+                                    .adultCount(searchTrainDto.getAdultCount())
+                                    .childCount(searchTrainDto.getChildCount())
+                                    .build()
+                    );
+                    return TrainScheduleInfoDto.builder()
+                            .scheduleId(s.getScheduleId())
+                            .trainName(s.getTrain().getName())
+                            .trainType(s.getTrain().getTrainType().name())
+                            .trainClass(s.getTrain().getClasses())
+                            .status(s.isStatus())
+                            .date(DateTimeFormatter.ofPattern("MMM d, yyyy").format(searchTrainDto.getDate()))
+                            .scheduleDescription(s.getDescription())
+                            .fullScheduleDuration(getDuration(s.getMainDepartureTime(), s.getMainArrivalTime()))
+                            .selectedDepartureStation(formatStationName(searchTrainDto.getDepartureStation()))
+                            .selectedDestinationStation(formatStationName(searchTrainDto.getDestinationStation()))
+                            .selectedScheduleDuration(durationBetweenStations)
+                            .scheduleFrequency(s.getScheduleFrequency().name())
+                            .departureStationName(s.getMainDepartureStation().getName())
+                            .arrivalStationName(s.getMainArrivalStation().getName())
+                            .departureStationFacilities(s.getMainDepartureStation().getOtherFacilities())
+                            .arrivalStationFacilities(s.getMainArrivalStation().getOtherFacilities())
+                            .mainDepartureTime(formatTime(s.getMainDepartureTime()))
+                            .mainArrivalTime(formatTime(s.getMainArrivalTime()))
+                            .selectedDepartureStationDepartureTime(formatTime(getStationDepartureTime(s, searchTrainDto.getDepartureStation())))
+                            .selectedArrivalStationArrivalTime(formatTime(getStationArrivalTime(s, searchTrainDto.getDestinationStation())))
+                            .intermediateStops(s.getStops().stream()
+                                    .map(st -> new TrainScheduleInfoDto.IntermediateTrainScheduleInfoDto(
+                                            st.getStation().getName(),
+                                            st.getStation().getOtherFacilities(),
+                                            formatTime(st.getArrivalTime()),
+                                            formatTime(st.getDepartureTime()),
+                                            st.getStopOrder()
+                                    )).collect(Collectors.toList()))
+                            .allCalculatedTicketPrice(fullTicketPrices)
+                            .build();
+                })
+                .filter(e -> e != null)
+                .collect(Collectors.toList());
+
+        int start = Math.min((pageNo - 1) * pageSize, filteredDtos.size());
+        int end = Math.min(start + pageSize, filteredDtos.size());
+        List<TrainScheduleInfoDto> pageContent = filteredDtos.subList(start, end);
+
+        return new PageImpl<>(pageContent, PageRequest.of(pageNo - 1, pageSize), filteredDtos.size());
+    }
+
+
+    @Override
+    public Page<TrainScheduleInfoDto> searchSchedulesByTrainName(SearchTrainDto searchTrainDto, String trainName, int pageNo, int pageSize) {
+        System.out.println(trainName);
+
+        Station depStation = stationRepository.findByName(searchTrainDto.getDepartureStation())
+                .orElseThrow(() -> new IllegalArgumentException("Departure Station not found"));
+
+
+        Station desStation = stationRepository.findByName(searchTrainDto.getDestinationStation())
+                .orElseThrow(() -> new IllegalArgumentException("Arrival Station not found"));
+
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+
+        List<Schedule> schedules = scheduleRepository.findSchedulesWithRelatedDetailsByTrainName(
+                searchTrainDto.getDepartureStation(),
+                searchTrainDto.getDestinationStation(),
+                trainName,
+                searchTrainDto.getDate()
+        );
+
+        List<TrainScheduleInfoDto> dtos = schedules.stream()
+                .filter(schedule -> isTrainRunningOn(searchTrainDto.getDate(), schedule.getScheduleFrequency().name()))
+                .map(s -> {
+
+                    String durationBetweenStations = getDurationBetweenStations(
+                            s,
+                            searchTrainDto.getDepartureStation(),
+                            searchTrainDto.getDestinationStation()
+                    );
+                    if (durationBetweenStations == null) {
+                        return null;
+                    }
+
+                    TrainScheduleInfoDto.AllCalculatedTicketPriceDto fullTicketPrices = ticketPriceService.calculatePrice(
+                            s,
+                            PriceCalcDto.builder()
+                                    .departure(depStation.getName())
+                                    .destination(desStation.getName())
+                                    .adultCount(searchTrainDto.getAdultCount())
+                                    .childCount(searchTrainDto.getChildCount())
+                                    .build()
+                    );
+                    return TrainScheduleInfoDto.builder()
+                            .scheduleId(s.getScheduleId())
+                            .trainName(s.getTrain().getName())
+                            .trainType(s.getTrain().getTrainType().name())
+                            .trainClass(s.getTrain().getClasses())
+                            .status(s.isStatus())
+                            .date(DateTimeFormatter.ofPattern("MMM d, yyyy").format(searchTrainDto.getDate()))
+                            .scheduleDescription(s.getDescription())
+                            .fullScheduleDuration(getDuration(s.getMainDepartureTime(), s.getMainArrivalTime()))
+                            .selectedDepartureStation(formatStationName(searchTrainDto.getDepartureStation()))
+                            .selectedDestinationStation(formatStationName(searchTrainDto.getDestinationStation()))
+                            .selectedScheduleDuration(durationBetweenStations)
+                            .scheduleFrequency(s.getScheduleFrequency().name())
+                            .departureStationName(s.getMainDepartureStation().getName())
+                            .arrivalStationName(s.getMainArrivalStation().getName())
+                            .departureStationFacilities(s.getMainDepartureStation().getOtherFacilities())
+                            .arrivalStationFacilities(s.getMainArrivalStation().getOtherFacilities())
+                            .mainDepartureTime(formatTime(s.getMainDepartureTime()))
+                            .mainArrivalTime(formatTime(s.getMainArrivalTime()))
+                            .selectedDepartureStationDepartureTime(formatTime(getStationDepartureTime(s, searchTrainDto.getDepartureStation())))
+                            .selectedArrivalStationArrivalTime(formatTime(getStationArrivalTime(s, searchTrainDto.getDestinationStation())))
+                            .intermediateStops(s.getStops().stream()
+                                    .map(st -> new TrainScheduleInfoDto.IntermediateTrainScheduleInfoDto(
+                                            st.getStation().getName(),
+                                            st.getStation().getOtherFacilities(),
+                                            formatTime(st.getArrivalTime()),
+                                            formatTime(st.getDepartureTime()),
+                                            st.getStopOrder()
+                                    )).collect(Collectors.toList()))
+                            .allCalculatedTicketPrice(fullTicketPrices)
+                            .build();
+                })
+                .filter(e -> e != null)
+                .toList();
+
+        int start = Math.min((pageNo - 1) * pageSize, dtos.size());
+        int end = Math.min(start + pageSize, dtos.size());
+        List<TrainScheduleInfoDto> pageContent = dtos.subList(start, end);
+
+        return new PageImpl<>(pageContent, PageRequest.of(pageNo - 1, pageSize), dtos.size());
+    }
+
+    @Override
+    public Page<TrainScheduleInfoDto> searchSchedulesByTrainClass(SearchTrainDto searchTrainDto, String trainClass, int pageNo, int pageSize) {
+        Station depStation = stationRepository.findByName(searchTrainDto.getDepartureStation())
+                .orElseThrow(() -> new IllegalArgumentException("Departure Station not found"));
+
+
+        Station desStation = stationRepository.findByName(searchTrainDto.getDestinationStation())
+                .orElseThrow(() -> new IllegalArgumentException("Arrival Station not found"));
+
+        if (pageNo < 1) {
+            throw new IllegalArgumentException("Page number cannot be less than 1");
+        }
+
+        List<Schedule> schedules = scheduleRepository.findSchedulesWithRelatedDetailsByClass(
+                searchTrainDto.getDepartureStation(),
+                searchTrainDto.getDestinationStation(),
+                trainClass,
+                searchTrainDto.getDate()
+
+        );
+
+        List<TrainScheduleInfoDto> dtos = schedules.stream()
+                .filter(schedule -> isTrainRunningOn(searchTrainDto.getDate(), schedule.getScheduleFrequency().name()))
+                .map(s -> {
+
+                    String durationBetweenStations = getDurationBetweenStations(
+                            s,
+                            searchTrainDto.getDepartureStation(),
+                            searchTrainDto.getDestinationStation()
+                    );
+                    if (durationBetweenStations == null) {
+                        return null;
+                    }
+
+                    TrainScheduleInfoDto.AllCalculatedTicketPriceDto fullTicketPrices = ticketPriceService.calculatePrice(
+                            s,
+                            PriceCalcDto.builder()
+                                    .departure(depStation.getName())
+                                    .destination(desStation.getName())
+                                    .adultCount(searchTrainDto.getAdultCount())
+                                    .childCount(searchTrainDto.getChildCount())
+                                    .build()
+                    );
+                    return TrainScheduleInfoDto.builder()
+                            .scheduleId(s.getScheduleId())
+                            .trainName(s.getTrain().getName())
+                            .trainType(s.getTrain().getTrainType().name())
+                            .trainClass(s.getTrain().getClasses())
+                            .status(s.isStatus())
+                            .date(DateTimeFormatter.ofPattern("MMM d, yyyy").format(searchTrainDto.getDate()))
+                            .scheduleDescription(s.getDescription())
+                            .fullScheduleDuration(getDuration(s.getMainDepartureTime(), s.getMainArrivalTime()))
+                            .selectedDepartureStation(formatStationName(searchTrainDto.getDepartureStation()))
+                            .selectedDestinationStation(formatStationName(searchTrainDto.getDestinationStation()))
+                            .selectedScheduleDuration(durationBetweenStations)
+                            .scheduleFrequency(s.getScheduleFrequency().name())
+                            .departureStationName(s.getMainDepartureStation().getName())
+                            .arrivalStationName(s.getMainArrivalStation().getName())
+                            .departureStationFacilities(s.getMainDepartureStation().getOtherFacilities())
+                            .arrivalStationFacilities(s.getMainArrivalStation().getOtherFacilities())
+                            .mainDepartureTime(formatTime(s.getMainDepartureTime()))
+                            .mainArrivalTime(formatTime(s.getMainArrivalTime()))
+                            .selectedDepartureStationDepartureTime(formatTime(getStationDepartureTime(s, searchTrainDto.getDepartureStation())))
+                            .selectedArrivalStationArrivalTime(formatTime(getStationArrivalTime(s, searchTrainDto.getDestinationStation())))
+                            .intermediateStops(s.getStops().stream()
+                                    .map(st -> new TrainScheduleInfoDto.IntermediateTrainScheduleInfoDto(
+                                            st.getStation().getName(),
+                                            st.getStation().getOtherFacilities(),
+                                            formatTime(st.getArrivalTime()),
+                                            formatTime(st.getDepartureTime()),
+                                            st.getStopOrder()
+                                    )).collect(Collectors.toList()))
+                            .allCalculatedTicketPrice(fullTicketPrices)
+                            .build();
+                })
+                .filter(e -> e != null)
+                .toList();
+
+        int start = Math.min((pageNo - 1) * pageSize, dtos.size());
+        int end = Math.min(start + pageSize, dtos.size());
+        List<TrainScheduleInfoDto> pageContent = dtos.subList(start, end);
+
+        return new PageImpl<>(pageContent, PageRequest.of(pageNo - 1, pageSize), dtos.size());
+    }
+
+
+
+
+    private LocalTime getStationDepartureTime(Schedule schedule, String stationName) {
+        if (schedule.getMainDepartureStation().getName().equalsIgnoreCase(stationName)) {
+            return schedule.getMainDepartureTime();
+        }
+        return schedule.getStops().stream()
+                .filter(st -> st.getStation().getName().equalsIgnoreCase(stationName))
+                .map(st -> st.getDepartureTime())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Departure station not found"));
+    }
+
+    private LocalTime getStationArrivalTime(Schedule schedule, String stationName) {
+        if (schedule.getMainArrivalStation().getName().equalsIgnoreCase(stationName)) {
+            return schedule.getMainArrivalTime();
+        }
+        return schedule.getStops().stream()
+                .filter(st -> st.getStation().getName().equalsIgnoreCase(stationName))
+                .map(st -> st.getArrivalTime())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Destination station not found"));
+    }
+
+    private String formatStationName(String station) {
+        return station.toUpperCase().charAt(0) + station.substring(1).toLowerCase();
+    }
+
+    private String formatTime(LocalTime localTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh.mm a");
+        return localTime.format(formatter);
+    }
+
+    private String getDurationBetweenStations(Schedule schedule, String departureStation, String destinationStation) {
+        LocalTime departureTime = null;
+        LocalTime arrivalTime = null;
+
+        // 1. Departure station check
+        if (schedule.getMainDepartureStation().getName().equalsIgnoreCase(departureStation)) {
+            departureTime = schedule.getMainDepartureTime();
+        } else {
+            departureTime = schedule.getStops().stream()
+                    .filter(st -> st.getStation().getName().equalsIgnoreCase(departureStation))
+                    .map(st -> st.getDepartureTime())
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        // 2. Destination station check
+        if (schedule.getMainArrivalStation().getName().equalsIgnoreCase(destinationStation)) {
+            arrivalTime = schedule.getMainArrivalTime();
+        } else {
+            arrivalTime = schedule.getStops().stream()
+                    .filter(st -> st.getStation().getName().equalsIgnoreCase(destinationStation))
+                    .map(st -> st.getArrivalTime())
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        if (departureTime == null) {
+            throw new IllegalArgumentException("Departure stop not found");
+        }
+        if (arrivalTime == null) {
+            throw new IllegalArgumentException("Destination stop not found");
+        }
+
+        System.out.println("Departure time: " + departureTime);
+        System.out.println("Arrival time: " + arrivalTime);
+
+        Duration duration = Duration.between(departureTime, arrivalTime);
+
+        if (duration.isNegative()) {
+            System.out.println("Ignoring schedule: destination comes before departure");
+            return null;
+        }
+
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+
+        return hours + " h " + minutes + " m";
+    }
+
+
+    private String getDuration(LocalTime startTime, LocalTime endTime) {
+        Duration duration = Duration.between(
+                startTime,
+                endTime
+        );
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+
+        return hours + " hours " + minutes + " minutes";
+    }
+    private boolean isTrainRunningOn(LocalDate date, String frequency) {
+        DayOfWeek day = date.getDayOfWeek();
+
+        return switch (frequency) {
+            case "DAILY" -> true;
+            case "WEEK_DAYS" -> !(day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY);
+            case "WEEK_ENDS" -> (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY);
+            default -> true;
+        };
     }
 
 

@@ -74,6 +74,8 @@ public interface PDFService {
     ByteArrayOutputStream generateInactiveEmployeesPdf();
 
 
+    ByteArrayOutputStream generateTicketPdf(String bookingId);
+
 
 
 }

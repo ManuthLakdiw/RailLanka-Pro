@@ -71,11 +71,15 @@ $(document).ready(function () {
                 if ($("#rememberDevice").is(":checked")) {
                     localStorage.setItem("accessToken", accessToken);
                     localStorage.setItem("refreshToken", refreshToken);
-                    localStorage.setItem("userName", userName )
+                    localStorage.setItem("userName", userName)
+                    localStorage.setItem("loginTime", getFormattedDateTime());
+
                 } else {
                     sessionStorage.setItem("accessToken", accessToken);
                     sessionStorage.setItem("refreshToken", refreshToken);
                     sessionStorage.setItem("userName", userName )
+                    sessionStorage.setItem("loginTime", getFormattedDateTime());
+
 
                 }
 
@@ -114,4 +118,22 @@ $(document).ready(function () {
         $(this).removeClass("input-highlight");
         $(this).next(".floating-label").removeClass("text-blue-600");
         });
+
+        function getFormattedDateTime() {
+            let now = new Date();
+
+            // Get time in AM/PM format
+            let time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+            // Get today's date in yyyy-mm-dd
+            let todayDate = now.toISOString().split("T")[0]; 
+
+            // Compare with stored date
+            let datePart = (todayDate === new Date().toISOString().split("T")[0]) 
+                            ? "Today" 
+                            : todayDate;
+
+            return datePart + " " + time;
+        }
+
 });

@@ -1,11 +1,11 @@
 package lk.ijse.raillankaprobackend.service;
 
-import lk.ijse.raillankaprobackend.dto.CounterDto;
-import lk.ijse.raillankaprobackend.dto.PassengerDto;
-import lk.ijse.raillankaprobackend.dto.ScheduleDto;
+import lk.ijse.raillankaprobackend.dto.*;
 import lk.ijse.raillankaprobackend.entity.Schedule;
+import lk.ijse.raillankaprobackend.entity.Station;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,6 +47,19 @@ public interface ScheduleService {
     double getAverageDailyTrips();
 
     Map<String,Long> getScheduleCountsByFrequencies();
+
+    Page<TrainScheduleInfoDto> searchSchedules(SearchTrainDto searchTrainDto, int pageNo, int pageSize);
+
+    Page<TrainScheduleInfoDto> searchSchedulesByTrainName(SearchTrainDto searchTrainDto, String trainName, int pageNo, int pageSize);
+
+    Page<TrainScheduleInfoDto> searchSchedulesByTrainClass(SearchTrainDto searchTrainDto, String trainClass, int pageNo, int pageSize);
+
+
+
+
+
+
+
 
 
 

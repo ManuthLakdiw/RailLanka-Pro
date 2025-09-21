@@ -5,11 +5,14 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.*;
+import lk.ijse.raillankaprobackend.dto.BookingDto;
 import lk.ijse.raillankaprobackend.dto.FullEmployeeRecordDto;
+import lk.ijse.raillankaprobackend.dto.PayeeInfoDto;
 import lk.ijse.raillankaprobackend.entity.*;
 import lk.ijse.raillankaprobackend.entity.Dtypes.PassengerType;
 import lk.ijse.raillankaprobackend.entity.projection.StaffProjection;
 import lk.ijse.raillankaprobackend.repository.*;
+import lk.ijse.raillankaprobackend.service.BookingService;
 import lk.ijse.raillankaprobackend.service.PDFService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +40,8 @@ public class PDFServiceImpl implements PDFService {
     private final ScheduleRepository scheduleRepository;
     private final StationMasterRepository stationMasterRepository;
     private final CounterRepository counterRepository;
+    private final BookingRepository bookingRepository;
+    private final BookingService bookingService;
 
 
     // Enhanced Rail Lanka theme colors
@@ -45,6 +51,10 @@ public class PDFServiceImpl implements PDFService {
     private static final Color HEADER_BG = new Color(243, 244, 246);
     private static final Color TEXT_DARK = new Color(31, 41, 55);
     private static final Color TEXT_LIGHT = new Color(107, 114, 128);
+    private static final Color ACCENT_GREEN = new Color(16, 185, 129);
+    private static final Color BORDER_COLOR = new Color(229, 231, 235);
+
+
 
     @Override
     public ByteArrayOutputStream generateEmployeePdfByStation(String stationName) {
@@ -2928,6 +2938,309 @@ public class PDFServiceImpl implements PDFService {
 
         document.add(summaryTable);
     }
+
+
+    @Override
+    public ByteArrayOutputStream generateTicketPdf(String bookingId) {
+        BookingDto bookingDetailsByBookingId = bookingService.getBookingDetailsByBookingId(bookingId);
+        System.out.println("Booking details: " + bookingDetailsByBookingId);
+
+        Document document = new Document(new Rectangle(226, 450));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, out);
+            document.open();
+
+            // Add ticket content
+            addTicketHeader(document, bookingDetailsByBookingId);
+            addJourneyDetails(document, bookingDetailsByBookingId);
+            addPassengerDetails(document, bookingDetailsByBookingId.getPayeeInfo());
+            addBookingDetails(document, bookingDetailsByBookingId);
+            addTicketFooter(document, bookingDetailsByBookingId);
+
+            document.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating ticket PDF", e);
+        }
+
+        return out;
+    }
+
+    private void addTicketHeader(Document document, BookingDto booking) throws DocumentException {
+        // Header table
+        PdfPTable headerTable = new PdfPTable(2);
+        headerTable.setWidthPercentage(100);
+        headerTable.setSpacingAfter(15f);
+
+        // Left cell - Logo and title
+        PdfPCell leftCell = new PdfPCell();
+        leftCell.setBorder(Rectangle.NO_BORDER);
+        leftCell.setPaddingBottom(10f);
+
+        Font titleFont = new Font(Font.HELVETICA, 16, Font.BOLD, PRIMARY_BLUE);
+        Paragraph title = new Paragraph("RAIL LANKA PRO", titleFont);
+        title.setAlignment(Element.ALIGN_LEFT);
+
+        Font subtitleFont = new Font(Font.HELVETICA, 8, Font.NORMAL, TEXT_LIGHT);
+        Paragraph subtitle = new Paragraph("Electronic Travel Ticket", subtitleFont);
+        subtitle.setAlignment(Element.ALIGN_LEFT);
+        subtitle.setSpacingBefore(2f);
+
+        leftCell.addElement(title);
+        leftCell.addElement(subtitle);
+
+        // Right cell - Booking ID and QR code area
+        PdfPCell rightCell = new PdfPCell();
+        rightCell.setBorder(Rectangle.NO_BORDER);
+        rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+        Font idFont = new Font(Font.HELVETICA, 9, Font.BOLD, TEXT_DARK);
+        Paragraph bookingId = new Paragraph(booking.getBookingId(), idFont);
+        bookingId.setAlignment(Element.ALIGN_RIGHT);
+
+        Font statusFont = new Font(Font.HELVETICA, 8, Font.BOLD, ACCENT_GREEN);
+        Paragraph status = new Paragraph("CONFIRMED", statusFont);
+        status.setAlignment(Element.ALIGN_RIGHT);
+        status.setSpacingBefore(2f);
+
+        rightCell.addElement(bookingId);
+        rightCell.addElement(status);
+
+        // Add QR code placeholder
+        addQrCodePlaceholder(rightCell, booking.getBookingId());
+
+        headerTable.addCell(leftCell);
+        headerTable.addCell(rightCell);
+
+        document.add(headerTable);
+
+        // Add separator line
+        addSeparator(document, 1f, PRIMARY_BLUE);
+    }
+
+    private void addQrCodePlaceholder(PdfPCell cell, String bookingId) {
+        try {
+            // Create a simple QR code placeholder
+            Font qrFont = new Font(Font.HELVETICA, 6, Font.NORMAL, TEXT_LIGHT);
+            Paragraph qrText = new Paragraph("[QR Code]", qrFont);
+            qrText.setAlignment(Element.ALIGN_CENTER);
+            qrText.setSpacingBefore(5f);
+
+            cell.addElement(qrText);
+
+            // Add booking ID below QR placeholder
+            Font smallFont = new Font(Font.HELVETICA, 5, Font.NORMAL, TEXT_LIGHT);
+            Paragraph idText = new Paragraph(bookingId, smallFont);
+            idText.setAlignment(Element.ALIGN_CENTER);
+            cell.addElement(idText);
+
+        } catch (Exception e) {
+            // Fallback if QR code generation fails
+            System.out.println("QR code generation placeholder added");
+        }
+    }
+
+    private void addJourneyDetails(Document document, BookingDto booking) throws DocumentException {
+        // Journey section header
+        Font sectionFont = new Font(Font.HELVETICA, 10, Font.BOLD, PRIMARY_BLUE);
+        Paragraph sectionHeader = new Paragraph("JOURNEY DETAILS", sectionFont);
+        sectionHeader.setSpacingBefore(10f);
+        sectionHeader.setSpacingAfter(5f);
+        document.add(sectionHeader);
+
+        // Route information
+        PdfPTable routeTable = new PdfPTable(2);
+        routeTable.setWidthPercentage(100);
+        routeTable.setSpacingAfter(10f);
+
+        addRouteCell(routeTable, "FROM", booking.getDepartureStation(), true);
+        addRouteCell(routeTable, "TO", booking.getDestinationStation(), false);
+
+        // Add train icon between stations
+        PdfPCell iconCell = new PdfPCell();
+        iconCell.setBorder(Rectangle.NO_BORDER);
+        iconCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        iconCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+        Font iconFont = new Font(Font.HELVETICA, 8, Font.NORMAL, SECONDARY_BLUE);
+        Paragraph trainIcon = new Paragraph("⇨", iconFont);
+        trainIcon.setAlignment(Element.ALIGN_CENTER);
+        iconCell.addElement(trainIcon);
+
+        routeTable.addCell(iconCell);
+
+        document.add(routeTable);
+
+        // Train and timing details
+        PdfPTable detailsTable = new PdfPTable(2);
+        detailsTable.setWidthPercentage(100);
+        detailsTable.setSpacingAfter(15f);
+
+        addDetailRow(detailsTable, "Train", booking.getTrainName());
+        addDetailRow(detailsTable, "Class", booking.getTravelClass());
+        addDetailRow(detailsTable, "Date", booking.getFormattedTravelDate());
+        addDetailRow(detailsTable, "Departure", booking.getDepartureTime());
+        addDetailRow(detailsTable, "Arrival", booking.getArrivalTime());
+//        addDetailRow(detailsTable, "Adult Count", String.valueOf(booking.getAdultCount()));
+//        addDetailRow(detailsTable, "Child Count", String.valueOf(booking.getChildCount()));
+//        addDetailRow(detailsTable, "Total Valid Passengers", String.valueOf(booking.getChildCount()+booking.getAdultCount()));
+
+
+        document.add(detailsTable);
+
+        addSeparator(document, 0.5f, BORDER_COLOR);
+    }
+
+    private void addRouteCell(PdfPTable table, String label, String station, boolean isDeparture) {
+        PdfPCell cell = new PdfPCell();
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(5f);
+
+        Font labelFont = new Font(Font.HELVETICA, 7, Font.BOLD, TEXT_LIGHT);
+        Font stationFont = new Font(Font.HELVETICA, 10, Font.BOLD, TEXT_DARK);
+
+        Paragraph labelPara = new Paragraph(label, labelFont);
+        Paragraph stationPara = new Paragraph(station.toUpperCase(), stationFont);
+        stationPara.setSpacingBefore(2f);
+
+        cell.addElement(labelPara);
+        cell.addElement(stationPara);
+
+        table.addCell(cell);
+    }
+
+    private void addDetailRow(PdfPTable table, String label, String value) {
+        Font labelFont = new Font(Font.HELVETICA, 8, Font.BOLD, TEXT_LIGHT);
+        Font valueFont = new Font(Font.HELVETICA, 8, Font.NORMAL, TEXT_DARK);
+
+        PdfPCell labelCell = new PdfPCell(new Phrase(label + ":", labelFont));
+        labelCell.setBorder(Rectangle.NO_BORDER);
+        labelCell.setPadding(3f);
+
+        PdfPCell valueCell = new PdfPCell(new Phrase(value != null ? value : "N/A", valueFont));
+        valueCell.setBorder(Rectangle.NO_BORDER);
+        valueCell.setPadding(3f);
+        valueCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+        table.addCell(labelCell);
+        table.addCell(valueCell);
+    }
+
+    private void addPassengerDetails(Document document, PayeeInfoDto payeeInfo) throws DocumentException {
+        Font sectionFont = new Font(Font.HELVETICA, 10, Font.BOLD, PRIMARY_BLUE);
+        Paragraph sectionHeader = new Paragraph("PASSENGER INFORMATION", sectionFont);
+        sectionHeader.setSpacingBefore(10f);
+        sectionHeader.setSpacingAfter(5f);
+        document.add(sectionHeader);
+
+        PdfPTable passengerTable = new PdfPTable(2);
+        passengerTable.setWidthPercentage(100);
+        passengerTable.setSpacingAfter(15f);
+
+        addDetailRow(passengerTable, "Name", payeeInfo.getFirstName());
+        addDetailRow(passengerTable, "ID Type", "NIC");
+        addDetailRow(passengerTable, "ID Number", payeeInfo.getNicOrPassport());
+
+        document.add(passengerTable);
+
+        addSeparator(document, 0.5f, BORDER_COLOR);
+    }
+
+    private void addBookingDetails(Document document, BookingDto booking) throws DocumentException {
+        Font sectionFont = new Font(Font.HELVETICA, 10, Font.BOLD, PRIMARY_BLUE);
+        Paragraph sectionHeader = new Paragraph("BOOKING DETAILS", sectionFont);
+        sectionHeader.setSpacingBefore(10f);
+        sectionHeader.setSpacingAfter(5f);
+        document.add(sectionHeader);
+
+        PdfPTable bookingTable = new PdfPTable(2);
+        bookingTable.setWidthPercentage(100);
+        bookingTable.setSpacingAfter(10f);
+
+        addDetailRow(bookingTable, "Adults", String.valueOf(booking.getAdultCount()));
+        addDetailRow(bookingTable, "Children", String.valueOf(booking.getChildCount()));
+
+        if (booking.getFormatedselectedSeat() != null &&
+                !booking.getFormatedselectedSeat().equals("No online booking available for this Class!")) {
+            addDetailRow(bookingTable, "Seats", booking.getFormatedselectedSeat());
+        }
+
+        document.add(bookingTable);
+
+        // Total amount with emphasis
+        PdfPTable amountTable = new PdfPTable(1);
+        amountTable.setWidthPercentage(100);
+
+        PdfPCell amountCell = new PdfPCell();
+        amountCell.setBorder(Rectangle.NO_BORDER);
+        amountCell.setBackgroundColor(LIGHT_BG);
+        amountCell.setPadding(8f);
+        amountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        Font amountLabelFont = new Font(Font.HELVETICA, 8, Font.BOLD, TEXT_LIGHT);
+        Font amountFont = new Font(Font.HELVETICA, 12, Font.BOLD, PRIMARY_BLUE);
+
+        Paragraph amountLabel = new Paragraph("TOTAL AMOUNT", amountLabelFont);
+        amountLabel.setAlignment(Element.ALIGN_CENTER);
+
+        Paragraph amount = new Paragraph(booking.getFormattedTotalAmount(), amountFont);
+        amount.setAlignment(Element.ALIGN_CENTER);
+        amount.setSpacingBefore(2f);
+
+        amountCell.addElement(amountLabel);
+        amountCell.addElement(amount);
+
+        amountTable.addCell(amountCell);
+        document.add(amountTable);
+
+        addSeparator(document, 0.5f, BORDER_COLOR);
+    }
+
+    private void addTicketFooter(Document document, BookingDto booking) throws DocumentException {
+        Font footerFont = new Font(Font.HELVETICA, 6, Font.NORMAL, TEXT_LIGHT);
+
+        Paragraph terms = new Paragraph(
+                "• This ticket is valid only for the specified journey and selected total of passengers count\n" +
+                        "• Please carry valid ID proof for verification\n" +
+                        "• Boarding begins 30 minutes before departure\n" +
+                        "• Ticket non-transferable and non-refundable", footerFont);
+        terms.setSpacingBefore(10f);
+        document.add(terms);
+
+        // Generated timestamp
+        String generatedTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Paragraph generated = new Paragraph("Generated: " + generatedTime, footerFont);
+        generated.setAlignment(Element.ALIGN_CENTER);
+        generated.setSpacingBefore(8f);
+        document.add(generated);
+
+        // Contact information
+        Paragraph contact = new Paragraph(
+                "For assistance: support@raillanka.lk | +94 11 234 5678", footerFont);
+        contact.setAlignment(Element.ALIGN_CENTER);
+        contact.setSpacingBefore(3f);
+        document.add(contact);
+    }
+
+
+    private void addSeparator(Document document, float thickness, Color color) throws DocumentException {
+        PdfPTable separator = new PdfPTable(1);
+        separator.setWidthPercentage(100);
+        separator.setSpacingBefore(5f);
+        separator.setSpacingAfter(5f);
+
+        PdfPCell lineCell = new PdfPCell();
+        lineCell.setFixedHeight(thickness);
+        lineCell.setBackgroundColor(color);
+        lineCell.setBorder(Rectangle.NO_BORDER);
+
+        separator.addCell(lineCell);
+        document.add(separator);
+    }
+
+
 
 
 
