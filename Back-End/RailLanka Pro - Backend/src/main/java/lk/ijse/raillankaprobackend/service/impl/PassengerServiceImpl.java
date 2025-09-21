@@ -1,12 +1,14 @@
 package lk.ijse.raillankaprobackend.service.impl;
 
+import lk.ijse.raillankaprobackend.dto.BookingDto;
+import lk.ijse.raillankaprobackend.dto.ChangePasswordDto;
 import lk.ijse.raillankaprobackend.dto.PassengerDto;
 import lk.ijse.raillankaprobackend.entity.*;
-import lk.ijse.raillankaprobackend.entity.Dtypes.IdType;
-import lk.ijse.raillankaprobackend.entity.Dtypes.PassengerType;
-import lk.ijse.raillankaprobackend.entity.Dtypes.SystemUserRole;
+import lk.ijse.raillankaprobackend.entity.Dtypes.*;
+import lk.ijse.raillankaprobackend.exception.EmailAlreadyExistsException;
 import lk.ijse.raillankaprobackend.exception.IdGenerateLimitReachedException;
 import lk.ijse.raillankaprobackend.exception.UserNameAlreadyExistsException;
+import lk.ijse.raillankaprobackend.repository.BookingRepository;
 import lk.ijse.raillankaprobackend.repository.PassengerRepository;
 import lk.ijse.raillankaprobackend.repository.UserRepository;
 import lk.ijse.raillankaprobackend.service.PassengerService;
@@ -20,6 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * @author manuthlakdiv
@@ -36,6 +44,8 @@ public class PassengerServiceImpl implements PassengerService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final BookingRepository bookingRepository;
+
 
     @Transactional
     @Override
@@ -190,6 +200,135 @@ public class PassengerServiceImpl implements PassengerService {
                 .blocked(passenger.isBlocked())
                 .username(passenger.getUser().getUsername())
                 .build();
+    }
+    @Transactional
+    @Override
+    public String updatePassengerDetailsByUserName(String userName, PassengerDto passengerDto) {
+        User user = userRepository.findByUsername(userName).
+                orElseThrow(() -> new IllegalArgumentException("User not found for username: " + userName));
+        String newEmail = passengerDto.getEmail();
+
+
+        Optional<Passenger> existingPassengerByEmail = passengerRepository.findByEmail(newEmail);
+        if (existingPassengerByEmail.isPresent() && !existingPassengerByEmail.get().getPassengerId().equals(user.getPassenger().getPassengerId())) {
+            throw new EmailAlreadyExistsException("Email already exists!");
+        }
+
+        user.getPassenger().setTitle(passengerDto.getTitle());
+        user.getPassenger().setFirstName(formattedName(passengerDto.getFirstName()));
+        user.getPassenger().setLastName(formattedName(passengerDto.getLastName()));
+        user.getPassenger().setPhoneNumber(passengerDto.getPhoneNumber());
+        user.getPassenger().setEmail(passengerDto.getEmail());
+
+        userRepository.save(user);
+
+        return "Profile has been updated successfully.";
+    }
+
+    @Override
+    public PassengerDto getPassengerDetailsByUserName(String userName) {
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new IllegalArgumentException("User not found for username: " + userName));
+        return PassengerDto.builder()
+                .passengerId(user.getPassenger().getPassengerId())
+                .title(user.getPassenger().getTitle()+".")
+                .firstName(formattedName(user.getPassenger().getFirstName()))
+                .lastName(formattedName(user.getPassenger().getLastName()))
+                .email(user.getPassenger().getEmail())
+                .passengerType(user.getPassenger().getPassengerType().name())
+                .idType(user.getPassenger().getIdtype().name())
+                .idNumber(user.getPassenger().getIdNumber())
+                .phoneNumber(user.getPassenger().getPhoneNumber())
+                .username(user.getUsername())
+                .build();
+    }
+
+    @Override
+    public boolean ChangePassword(ChangePasswordDto changePasswordDto) {
+        User user = userRepository.findByUsername(changePasswordDto.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found for username: " + changePasswordDto.getUsername()));
+
+        String currentPassword = changePasswordDto.getCurrentPassword();
+        String password = user.getPassword();
+
+        if (passwordEncoder.matches(currentPassword, password)){
+            user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+            userRepository.save(user);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<BookingDto> getBookingDetailsByUserName(String userName) {
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new IllegalArgumentException("User not found for username: " + userName));
+        List<BookingDto> bookingDtoList = new ArrayList<>();
+        bookingRepository.findByPassenger(user.getPassenger()).forEach(booking -> {
+            String formattedTravelClass;
+            TravelClass travelClass = booking.getTravelClass();
+            formattedTravelClass = switch (travelClass){
+                case FIRST -> "1st Class";
+                case SECOND -> "2nd Class";
+                case THIRD -> "3rd Class";
+            };
+
+            String formattedTrainType;
+            TrainType trainType = booking.getSchedule().getTrain().getTrainType();
+            formattedTrainType = switch (trainType) {
+                case EXPRESS -> "Express Train";
+                case NORMAL -> "Normal Train";
+                case INTERCITY -> "Intercity Train";
+                case SPECIAL -> "Special Train";
+            };
+
+            String status = "";
+            LocalDate bookingDate = booking.getBookedAt().toLocalDate();
+            LocalDate today = LocalDate.now();
+
+            if (bookingDate.isEqual(today)) {
+                status = "Today";
+            } else if (bookingDate.isBefore(today)) {
+                status = "Completed";
+            } else if (bookingDate.isAfter(today)) {
+                status = "Upcoming";
+            }
+
+            BookingDto bookingDto = BookingDto.builder()
+                    .bookingId(booking.getBookingId())
+                    .departureStation(booking.getDepartureStation().getName())
+                    .destinationStation(booking.getDestinationStation().getName())
+                    .trainName(booking.getSchedule().getTrain().getName())
+                    .trainType(formattedTrainType)
+                    .travelClass(formattedTravelClass)
+                    .bookingDate(formatBookingDate(booking.getBookedAt()))
+                    .bookingTime(formatBookingTime(booking.getBookedAt()))
+                    .status(!status.isEmpty() ? status : "no status")
+                    .build();
+
+            bookingDtoList.add(bookingDto);
+
+        });
+
+        return bookingDtoList;
+    }
+
+    @Override
+    public String getPassengerIdByUserName(String userName) {
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new IllegalArgumentException("User not found for username: " + userName));
+        return user.getPassenger().getPassengerId();
+    }
+
+    public String formatBookingDate(LocalDateTime date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+        return date.format(formatter);
+    }
+
+    public String formatBookingTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
+        return dateTime.format(formatter);
     }
 
     private Page<PassengerDto> getPassengerDtos(Page<Passenger> passengerPage) {

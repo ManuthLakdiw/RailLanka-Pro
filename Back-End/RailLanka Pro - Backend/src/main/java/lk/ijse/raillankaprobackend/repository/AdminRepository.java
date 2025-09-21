@@ -4,6 +4,7 @@ import lk.ijse.raillankaprobackend.entity.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +17,6 @@ public interface AdminRepository extends JpaRepository<Admin,String> {
 
     @Query(value = "SELECT admin_id FROM admin ORDER BY admin_id DESC LIMIT 1 FOR UPDATE", nativeQuery = true)
     Optional<String> getLastAdminId();
+
+    Optional<Admin> findByEmail(String email);
 }

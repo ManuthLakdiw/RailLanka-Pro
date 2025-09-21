@@ -9,14 +9,13 @@ import lombok.*;
  * @github https://github.com/ManuthLakdiw
  */
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class AuthResponseDto {
-    private String accessToken;
-    private String refreshToken;
+public class ChangePasswordDto {
+    private String currentPassword;
+    private String newPassword;
     private String username;
-    private String role;
 }

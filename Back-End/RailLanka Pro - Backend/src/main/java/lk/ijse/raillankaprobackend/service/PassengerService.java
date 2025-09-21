@@ -1,8 +1,12 @@
 package lk.ijse.raillankaprobackend.service;
 
+import lk.ijse.raillankaprobackend.dto.BookingDto;
+import lk.ijse.raillankaprobackend.dto.ChangePasswordDto;
 import lk.ijse.raillankaprobackend.dto.CounterDto;
 import lk.ijse.raillankaprobackend.dto.PassengerDto;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * @author manuthlakdiv
@@ -27,5 +31,17 @@ public interface PassengerService {
     Page<PassengerDto> filterPassengerByPassengerType(String passengerType, int pageNo, int pageSize);
 
     PassengerDto getPassengerDetailsByPassengerId(String passengerId);
+
+    String updatePassengerDetailsByUserName(String userName,PassengerDto passengerDto);
+
+    PassengerDto getPassengerDetailsByUserName(String userName);
+
+    boolean ChangePassword(ChangePasswordDto changePasswordDto);
+
+    List<BookingDto> getBookingDetailsByUserName(String userName);
+
+    String getPassengerIdByUserName(String userName);
+
+
 
 }

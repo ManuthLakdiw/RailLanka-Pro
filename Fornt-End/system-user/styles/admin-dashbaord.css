@@ -54,3 +54,31 @@ border-radius: 3px;
 .sidebar-nav::-webkit-scrollbar-thumb:hover {
 background: rgba(255, 255, 255, 0.5);
 }
+
+
+#staffProfileModal {
+  transition: opacity 0.3s ease;
+}
+
+#staffProfileModal > div {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Custom scrollbar for modal */
+#staffProfileModal ::-webkit-scrollbar {
+  width: 6px;
+}
+
+#staffProfileModal ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+#staffProfileModal ::-webkit-scrollbar-thumb {
+  background: #c5c5c5;
+  border-radius: 10px;
+}
+
+#staffProfileModal ::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

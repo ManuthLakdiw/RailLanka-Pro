@@ -8,15 +8,14 @@ import lombok.*;
  * @project RailLanka Pro - Backend
  * @github https://github.com/ManuthLakdiw
  */
-
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Builder
-public class AuthResponseDto {
-    private String accessToken;
-    private String refreshToken;
-    private String username;
-    private String role;
+public class BookingPaymentRequestDto {
+    private Double amount;
+    private String customerName;
+    private String email;
+    private String phone;
 }

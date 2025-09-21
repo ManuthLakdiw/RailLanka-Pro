@@ -3,6 +3,7 @@ package lk.ijse.raillankaprobackend.repository;
 import lk.ijse.raillankaprobackend.entity.Counter;
 import lk.ijse.raillankaprobackend.entity.Dtypes.PassengerType;
 import lk.ijse.raillankaprobackend.entity.Passenger;
+import lk.ijse.raillankaprobackend.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,4 +40,6 @@ public interface PassengerRepository extends JpaRepository <Passenger,String> {
     List<Passenger> findAllByBlocked(boolean blocked);
 
     List<Passenger> findByPassengerTypeAndBlocked(PassengerType passengerType, boolean blocked);
+
+    Optional<Passenger> findByEmail(String newEmail);
 }

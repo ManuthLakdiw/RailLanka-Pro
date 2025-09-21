@@ -22,7 +22,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             StationNameAlreadyExistsException.class,
             TrainNameAlreadyExistsException.class,
-            UserNameAlreadyExistsException.class
+            UserNameAlreadyExistsException.class,
+            EmailAlreadyExistsException.class,
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiResponse<String> alreadyExistsExceptionHandler(Exception ex){

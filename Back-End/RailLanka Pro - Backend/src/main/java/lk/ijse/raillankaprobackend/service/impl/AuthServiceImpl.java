@@ -1,15 +1,16 @@
 package lk.ijse.raillankaprobackend.service.impl;
 
-import lk.ijse.raillankaprobackend.dto.AuthDto;
-import lk.ijse.raillankaprobackend.dto.AuthResponseDto;
-import lk.ijse.raillankaprobackend.dto.RefreshTokenDto;
+import lk.ijse.raillankaprobackend.dto.*;
 import lk.ijse.raillankaprobackend.entity.Admin;
+import lk.ijse.raillankaprobackend.entity.Schedule;
 import lk.ijse.raillankaprobackend.entity.User;
 import lk.ijse.raillankaprobackend.repository.AdminRepository;
+import lk.ijse.raillankaprobackend.repository.ScheduleRepository;
 import lk.ijse.raillankaprobackend.repository.UserRepository;
 import lk.ijse.raillankaprobackend.service.AuthService;
 import lk.ijse.raillankaprobackend.service.EmailService;
 import lk.ijse.raillankaprobackend.service.RefreshTokenService;
+import lk.ijse.raillankaprobackend.service.TicketPriceService;
 import lk.ijse.raillankaprobackend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,6 +38,9 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
     private final EmailService emailService;
     private final AdminRepository adminRepository;
+    private final TicketPriceService ticketPriceService;
+    private final ScheduleRepository scheduleRepository;
+
 
     private final Map<String, String> otpStore = new HashMap<>();
 
@@ -57,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .username(authDto.getUsername())
+                .role(user.getRole().name())
                 .build();
     }
 
@@ -120,6 +125,18 @@ public class AuthServiceImpl implements AuthService {
         }catch (Exception e){
             return false;
         }
+
+    }
+
+    @Override
+    public TrainScheduleInfoDto.AllCalculatedTicketPriceDto calculateClassesTicketPice(String scheduleId, PriceCalcDto priceCalcDto) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new BadCredentialsException("Invalid schedule id"));
+        return ticketPriceService.calculatePrice(schedule, priceCalcDto);
+    }
+
+    @Override
+    public boolean validAccessToken(String accessToken) {
+        return jwtUtil.validateAccessToken(accessToken);
 
     }
 }

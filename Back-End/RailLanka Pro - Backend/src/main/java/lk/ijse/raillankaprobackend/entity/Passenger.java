@@ -5,6 +5,8 @@ import lk.ijse.raillankaprobackend.entity.Dtypes.IdType;
 import lk.ijse.raillankaprobackend.entity.Dtypes.PassengerType;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * @author manuthlakdiv
  * @email manuthlakdiv2006.com
@@ -41,5 +43,7 @@ public class Passenger {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "passenger")
+    private List<Booking> bookings;
 
 }

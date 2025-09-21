@@ -1,5 +1,6 @@
 package lk.ijse.raillankaprobackend.service;
 
+import lk.ijse.raillankaprobackend.dto.ChangePasswordDto;
 import lk.ijse.raillankaprobackend.dto.PassengerDto;
 import lk.ijse.raillankaprobackend.dto.StaffDto;
 
@@ -13,4 +14,14 @@ public interface AdminService {
     String registerAdmin(StaffDto staffDto);
 
     String generateNewAdminId();
+
+    StaffDto getAdminDetailsByUserName(String userName);
+
+    boolean changePassword(ChangePasswordDto changePasswordDto);
+
+    boolean updateAdminDetailsByUserName(StaffDto staffDto);
+
+
+
+
 }

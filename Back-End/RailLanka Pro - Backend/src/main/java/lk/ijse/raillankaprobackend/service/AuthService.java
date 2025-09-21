@@ -2,6 +2,10 @@ package lk.ijse.raillankaprobackend.service;
 
 import lk.ijse.raillankaprobackend.dto.AuthDto;
 import lk.ijse.raillankaprobackend.dto.AuthResponseDto;
+import lk.ijse.raillankaprobackend.dto.PriceCalcDto;
+import lk.ijse.raillankaprobackend.dto.TrainScheduleInfoDto;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author manuthlakdiv
@@ -19,4 +23,8 @@ public interface AuthService {
      boolean verifyVerificationCode(String email , String otp);
 
     Boolean resetPassword(AuthDto authDto);
+
+    TrainScheduleInfoDto.AllCalculatedTicketPriceDto calculateClassesTicketPice(String scheduleId , PriceCalcDto priceCalcDto);
+
+    boolean validAccessToken(String accessToken);
 }

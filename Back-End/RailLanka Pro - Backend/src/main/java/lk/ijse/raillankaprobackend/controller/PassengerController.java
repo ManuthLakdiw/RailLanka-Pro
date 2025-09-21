@@ -1,5 +1,7 @@
 package lk.ijse.raillankaprobackend.controller;
 
+import lk.ijse.raillankaprobackend.dto.BookingDto;
+import lk.ijse.raillankaprobackend.dto.ChangePasswordDto;
 import lk.ijse.raillankaprobackend.dto.PassengerDto;
 import lk.ijse.raillankaprobackend.service.PassengerService;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
@@ -136,6 +138,53 @@ public class PassengerController {
                 200,
                 "fetched by " + id + " id",
                 passengerService.getPassengerDetailsByPassengerId(id)
+        ));
+    }
+
+    @PutMapping(value = "/update/by/username",params = {"username"})
+    public ResponseEntity<ApiResponse<String>> updateByUserName(@RequestParam("username") String userName , @RequestBody PassengerDto passengerDto){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "update by username",
+                passengerService.updatePassengerDetailsByUserName(userName,passengerDto)
+        ));
+    }
+
+    @GetMapping(value = "get/by/username", params = {"username"})
+    public ResponseEntity<ApiResponse<PassengerDto>> getPassengerByUserName(@RequestParam("username") String userName){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "fetched by username",
+                passengerService.getPassengerDetailsByUserName(userName)
+        ));
+    }
+
+    @PutMapping("/change/password")
+    public ResponseEntity<ApiResponse<Boolean>> changePassword(@RequestBody ChangePasswordDto changePasswordDto){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "password changing process",
+                passengerService.ChangePassword(changePasswordDto)
+        ));
+    }
+
+
+    @GetMapping(value = "get/bookings" , params = "username")
+    public ResponseEntity<ApiResponse<List<BookingDto>>> getBookingsByUserName(@RequestParam("username") String userName){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "get bookings by username",
+                passengerService.getBookingDetailsByUserName(userName)
+
+        ));
+    }
+
+    @GetMapping(value = "/get/id/by/username", params = "username")
+    public ResponseEntity<ApiResponse<String>> getPassengerIdByUserName(@RequestParam("username") String userName){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "get passenger id",
+                passengerService.getPassengerIdByUserName(userName)
         ));
     }
 
