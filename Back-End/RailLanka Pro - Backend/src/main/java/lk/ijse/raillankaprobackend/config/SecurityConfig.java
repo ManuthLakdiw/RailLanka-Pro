@@ -34,7 +34,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService ;
+    private final UserDetailsService userDetailsService;
     private final JwtAuthFilter jwtAuthFilter;
     private final PasswordEncoder passwordEncoder;
 
