@@ -128,4 +128,4 @@ When a passenger books a ticket:
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/your-username/rail-lanka-pro.git
+   [git clone https://github.com/your-username/rail-lanka-pro.git](https://github.com/ManuthLakdiw/RailLanka-Pro.git)
