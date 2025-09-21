@@ -1,11 +1,11 @@
 # 🚆 Rail Lanka Pro – Smart Railway Management System
 
-Rail Lanka Pro is a **full-stack, enterprise-level railway management system** built to handle train operations, employee management, passenger bookings, and reporting — all in one place.
+Rail Lanka Pro is a **full-stack, enterprise-level railway management system** built to handle train operations, employee management, passenger bookings, and reporting — all in one place.  
 
 It includes **two separate web applications**:
 
-- 👨‍💻 **Staff/Admin Dashboard** – For staff & admin users
-- 🧳 **Passenger Website** – Public-facing portal for passengers
+- 👨‍💻 **Staff/Admin Dashboard** – For staff & admin users  
+- 🧳 **Passenger Website** – Public-facing portal for passengers  
 
 Designed to improve efficiency, reduce manual errors, and deliver a **professional ticket booking experience**.
 
@@ -13,7 +13,7 @@ Designed to improve efficiency, reduce manual errors, and deliver a **profession
 
 ## 🎥 Demo Video
 
-▶️ **[Watch on YouTube](https://youtu.be/your-demo-video-link)**
+▶️ **[Watch on YouTube](https://youtu.be/your-demo-video-link)**  
 
 ---
 
@@ -63,10 +63,10 @@ The staff dashboard acts as the **central control room** for railway operations.
 
 #### ✅ Reporting
 - Generate PDF reports for:
-    - Train usage statistics
-    - Station activity
-    - Employee list
-    - Revenue summary
+  - Train usage statistics
+  - Station activity
+  - Employee list
+  - Revenue summary
 - Download reports instantly from dashboard
 
 #### ✅ IT Support & Notifications
@@ -89,13 +89,13 @@ The passenger site is **modern, mobile-first, and responsive**, making it easy f
 
 #### 🎟 Booking Logic
 When a passenger books a ticket:
-1. **Seat Locking:** Temporarily reserves the seat to avoid double-booking
-2. **Secure Payment:** Completes transaction via payment gateway
+1. **Seat Locking:** Temporarily reserves the seat to avoid double-booking  
+2. **Secure Payment:** Completes transaction via payment gateway  
 3. **Ticket Handling:**
-    - Saves booking in DB
-    - Generates PDF ticket (using OpenPDF)
-    - Sends ticket via email (Spring Mail + Thymeleaf template)
-    - Makes it downloadable from user portal
+   - Saves booking in DB
+   - Generates PDF ticket (using OpenPDF)
+   - Sends ticket via email (Spring Mail + Thymeleaf template)
+   - Makes it downloadable from user portal
 
 ---
 
