@@ -22,7 +22,7 @@ Designed to improve efficiency, reduce manual errors, and deliver a **profession
 | Staff Dashboard | Passenger Website |
 |-----------------|-----------------|
 | ![Dashboard](./images/staff-dashboard.png) | ![Passenger Website](./Screen-Shots/passenger-home.png) |
-| ![Train Management](./images/train-management.png) | ![Seat Selection](./images/seat-selection.png) |
+| ![Train Management](./images/train-management.png) | ![Seat Selection](./Screen-Shots/seat-selection.png) |
 | ![Reports](./images/report-generation.png) | ![Ticket PDF](./images/ticket-pdf.png) |
 
 > 🖼️ *Recommended: Capture HD screenshots of key features and crop them for a clean look.*
