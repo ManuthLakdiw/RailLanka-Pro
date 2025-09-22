@@ -13,7 +13,9 @@ Designed to improve efficiency, reduce manual errors, and deliver a **profession
 
 ## 🎥 Demo Video
 
-▶️ **[Watch on YouTube]([https://youtu.be/fXlik_M5mSM](https://youtu.be/l3oJTQOwWWo))**  
+▶️ **[Watch on YouTube](https://youtu.be/l3oJTQOwWWo)**  
+See how the system works step by step — from staff dashboard management to passenger ticket booking!
+
 
 ---
 
