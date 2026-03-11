@@ -120,7 +120,7 @@ public class CounterController {
         ), HttpStatus.OK);
     }
 
-    @GetMapping("/count")
+    @GetMapping("/ ")
     public ResponseEntity<ApiResponse<Map<String, Long>>> getCounterStaffCount(){
         return ResponseEntity.ok(new ApiResponse<>(
                 200,

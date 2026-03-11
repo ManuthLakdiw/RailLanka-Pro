@@ -3,10 +3,87 @@ $(document).ready(function() {
 
     // Check both localStorage and sessionStorage
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
     const userName = localStorage.getItem('userName') || sessionStorage.getItem('userName') || 'User';
 
-    if (accessToken) {
-        // User is logged in - show profile dropdown with logout
+    let validUser = false;
+
+
+
+    if (refreshToken) {
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+        "refreshToken": refreshToken
+        });
+
+        const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        fetch("http://localhost:8080/api/v1/raillankapro/auth/valid/refresh", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            console.log(result);
+            if (result.code === 200) {
+                if (result.data) {
+                    validUser = result.data;
+                     authContainer.html(`
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-700">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-blue-700"></i>
+                                </div>
+                                <span>${userName}</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                <div class="px-4 py-2 border-b border-gray-100 text-xs text-gray-500">
+                                    Signed in as <span>${userName}</span>
+                                </div>
+                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700">
+                                    <i class="fas fa-user-circle mr-2"></i>Profile
+                                </a>
+                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700" id="logoutButton">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    `);
+                }else{
+                     authContainer.html(`
+                        <a
+                            href="pages/anim.html"
+                            class="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-medium rounded-lg text-sm px-5 py-2.5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg focus:ring-4 focus:outline-none focus:ring-blue-300 shadow-md"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                            Sign in
+                        </a>
+                    `);
+                }
+            }
+        })
+        .catch((error) => console.error(error));
+
+
         authContainer.html(`
             <div class="relative group">
                 <button class="flex items-center space-x-2 text-gray-700">
@@ -32,21 +109,6 @@ $(document).ready(function() {
             </div>
         `);
 
-        // Add logout functionality
-        $('#logoutButton').on('click', function(e) {
-            e.preventDefault();
-            // Clear token and username from both storages
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('refreshToken');
-            sessionStorage.removeItem('accessToken');
-            sessionStorage.removeItem('userName');
-            sessionStorage.removeItem('refreshToken');
-
-            // Refresh to update UI
-            location.reload();
-        });
-
     } else {
         // User is not logged in - show sign in button
         authContainer.html(`
@@ -71,8 +133,54 @@ $(document).ready(function() {
         `);
     }
 
+    $(document).on('click','#logoutButton', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('accessToken');
+        sessionStorage.removeItem('userName');
+        sessionStorage.removeItem('refreshToken');
+
+
+        const logoutOverlay = $('<div>').addClass('fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50');
+        const logoutModal = $('<div>').addClass('bg-white rounded-lg p-6 max-w-sm mx-4 text-center transform scale-95 opacity-0 transition-all duration-300 shadow-xl');
+
+        logoutModal.html(`
+            <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Securing Your Session</h3>
+            <p class="text-gray-600">Please wait while we securely sign you out...</p>
+            <div class="mt-4 w-full bg-gray-200 rounded-full h-1.5">
+                <div class="bg-blue-600 h-1.5 rounded-full progress-bar" style="width: 0%"></div>
+            </div>
+        `);
+
+        logoutOverlay.append(logoutModal);
+        $('body').append(logoutOverlay);
+
+        setTimeout(() => {
+            logoutModal.removeClass('scale-95 opacity-0').addClass('scale-100 opacity-100');
+            
+            $('.progress-bar').animate({ width: '100%' }, 1800);
+        }, 10);
+
+        setTimeout(() => {
+            setTimeout(() => {
+                logoutModal.removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
+                logoutOverlay.fadeOut(400, function() {
+                    $(this).remove();
+                   location.reload();
+                });
+            }, 200);
+        }, 1800);
+    });
+
 
     $("#accessAdminDashBoardBtn").on("click", function() {
+        if (!validUser){
+            window.location.href = '../../logging-expired.html';
+            return;
+        }
          window.location.href = '/system-user/pages/admin-dashboard.html';
     });
 });

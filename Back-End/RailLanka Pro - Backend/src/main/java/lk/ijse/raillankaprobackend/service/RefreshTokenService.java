@@ -20,5 +20,7 @@ public interface RefreshTokenService {
 
     RefreshTokenDto verifyExpiration(RefreshTokenDto refreshTokenDto);
 
+    boolean isValidRefreshToken(String token);
+
 
 }

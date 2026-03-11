@@ -7,6 +7,8 @@ import lk.ijse.raillankaprobackend.service.TicketBookingPaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author manuthlakdiv
  * @email manuthlakdiv2006.com
@@ -39,4 +41,37 @@ public class TicketBookingPaymentServiceImpl implements TicketBookingPaymentServ
     public TicketBookingPayment saveTicketPayment(TicketBookingPayment ticketBookingPayment) {
         return ticketBookingPaymentRepository.save(ticketBookingPayment);
     }
+
+    @Override
+    public double getTotalRevenue() {
+        List<TicketBookingPayment> all = ticketBookingPaymentRepository.findAll();
+        double totalRevenue = 0;
+        for (TicketBookingPayment ticketBookingPayment : all) {
+            totalRevenue += ticketBookingPayment.getAmount();
+        }
+
+        return format(totalRevenue);
+
+    }
+
+    @Override
+    public double getTodayRevenue() {
+        List<TicketBookingPayment> all = ticketBookingPaymentRepository.findAll();
+        double todayRevenue = 0;
+        for (TicketBookingPayment ticketBookingPayment : all) {
+            if (ticketBookingPayment.getTicket().getBooking().getBookedAt().getDayOfYear() == java.time.LocalDate.now().getDayOfYear()
+                    && ticketBookingPayment.getTicket().getBooking().getBookedAt().getYear() == java.time.LocalDate.now().getYear()){
+                todayRevenue += ticketBookingPayment.getAmount();
+            }
+        }
+        return format(todayRevenue);
+    }
+
+
+    private double format(double amount){
+        double inLakhs = amount / 100000.0;
+        return Math.round(inLakhs * 100.0) / 100.0;
+    }
+
+
 }

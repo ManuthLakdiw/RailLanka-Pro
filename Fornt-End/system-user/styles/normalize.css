@@ -1,7 +1,9 @@
 
 body {  
-font-family: "Inter", sans-serif;
-overflow-x: hidden;
+    font-family: "Inter", sans-serif;
+    overflow-x: hidden;
+    transition: transform 0.8s ease, opacity 0.8s ease;
+
 }
 .dashboard-card {
 background: white;
@@ -83,3 +85,25 @@ border-radius: 3px;
 background: rgba(255, 255, 255, 0.5);
 }
 
+
+
+.main-content {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+    animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateY(-10px) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

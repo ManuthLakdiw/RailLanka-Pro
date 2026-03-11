@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+
     function clearAllTokens() {
         localStorage.removeItem('passengerAccessToken');
         localStorage.removeItem('passengerRefreshToken');
@@ -614,8 +615,8 @@ $(document).ready(function() {
 
 
 
-          payhere.onCompleted = async function onCompleted(orderId) {
-    console.log("Payment completed. OrderID:" + orderId);
+    payhere.onCompleted = async function onCompleted(orderId) {
+     console.log("Payment completed. OrderID:" + orderId);
     
     try {
         // Variables හරියටම set වෙලා ඇත්ද check කරන්න
@@ -1583,83 +1584,96 @@ $(document).ready(function() {
     });
 
     function updateAuthUI() {
-      const accessToken = localStorage.getItem('passengerAccessToken') || sessionStorage.getItem('passengerAccessToken');
+      const refreshToken = localStorage.getItem('passengerRefreshToken') || sessionStorage.getItem('passengerRefreshToken');
       const userName = localStorage.getItem('passengerUserName') || sessionStorage.getItem('passengerUserName');
       const authContainer = $('#authContainer');
       const mobileAuthContainer = $('#mobileAuthContainer');
 
-      if (accessToken) {
-          // User is logged in - show profile dropdown
-          authContainer.html(`
-              <div class="relative group">
-                  <button class="flex items-center space-x-2 px-4 py-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all duration-300 font-medium">
-                      <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                          <i class="fas fa-user text-blue-700"></i>
-                      </div>
-                      <span>${userName}</span>
-                      <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
-                  </button>
+        if (refreshToken) {
+          const myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
 
-                  <!-- Dropdown Menu -->
-                  <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 border border-gray-200 dark:border-gray-700">
-                      <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
-                          Signed in as <span>${userName}</span>
-                      </div>
-                      <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:hover:text-blue-300" id="profileButton">
-                          <i class="fas fa-user-circle mr-2"></i>Profile
-                      </a>
-                      <a href="./../pages/signin.html" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/50 hover:text-red-700 dark:hover:text-red-300" id="logoutButton">
-                          <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                      </a>
-                  </div>
-              </div>
-          `);
-
-          // Mobile view
-          mobileAuthContainer.html(`
-              <div class="w-full">
-                  <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
-                      Signed in as <span class="font-medium">${userName}</span>
-                  </div>
-                  <a href="#" class="block py-3 text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-all duration-300" id="mobileProfileButton">Profile</a>
-                  <a href="#" class="block py-3 text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-all duration-300" id="mobileLogoutButton">Logout</a>
-              </div>
-          `);
-
-          // Add logout functionality
-          $('#logoutButton, #mobileLogoutButton').on('click', function(e) {
-              e.preventDefault();
-              
-              const logoutOverlay = $('<div>').addClass('fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50');
-              const logoutModal = $('<div>').addClass('bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm mx-4 text-center transform scale-95 opacity-0 transition-all duration-300');
-              
-              logoutModal.html(`
-                  <div class="w-16 h-16 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Logging out</h3>
-                  <p class="text-gray-600 dark:text-gray-300">Please wait while we securely sign you out...</p>
-              `);
-              
-              logoutOverlay.append(logoutModal);
-              $('body').append(logoutOverlay);
-              
-              setTimeout(() => {
-                  logoutModal.removeClass('scale-95 opacity-0').addClass('scale-100 opacity-100');
-              }, 10);
-              
-              setTimeout(() => {
-                  clearAllTokens();
-                  setTimeout(() => {
-                      logoutModal.removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
-                      logoutOverlay.fadeOut(400, function() {
-                          $(this).remove();
-                          location.reload();
-                      });
-                  }, 1000);
-              }, 800);
+          const raw = JSON.stringify({
+            "refreshToken": refreshToken
           });
 
+          const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+          };
 
-      } else {
+          fetch("http://localhost:8080/api/v1/raillankapro/auth/valid/refresh", requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+              console.log(result)
+              if (result.code === 200) {
+                if (result.data){
+                  authContainer.html(`
+                      <div class="relative group">
+                          <button class="flex items-center space-x-2 px-4 py-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all duration-300 font-medium">
+                              <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                  <i class="fas fa-user text-blue-700"></i>
+                              </div>
+                              <span>${userName}</span>
+                              <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                          </button>
+
+                          <!-- Dropdown Menu -->
+                          <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 border border-gray-200 dark:border-gray-700">
+                              <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+                                  Signed in as <span>${userName}</span>
+                              </div>
+                              <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-700 dark:hover:text-blue-300" id="profileButton">
+                                  <i class="fas fa-user-circle mr-2"></i>Profile
+                              </a>
+                              <a href="./../pages/signin.html" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/50 hover:text-red-700 dark:hover:text-red-300" id="logoutButton">
+                                  <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                              </a>
+                          </div>
+                      </div>
+                  `);
+
+                  // Mobile view
+                  mobileAuthContainer.html(`
+                      <div class="w-full">
+                          <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                              Signed in as <span class="font-medium">${userName}</span>
+                          </div>
+                          <a href="#" class="block py-3 text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-all duration-300" id="mobileProfileButton">Profile</a>
+                          <a href="#" class="block py-3 text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-all duration-300" id="mobileLogoutButton">Logout</a>
+                      </div>
+                  `);
+                }else{
+                  authContainer.html(`
+                    <button onclick="window.location.href='/passenger/pages/anim.html'"
+                        class="px-4 py-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all duration-300 font-medium">
+                            Sign In
+                        </button>
+                        <button onclick="window.location.href='/passenger/pages/signup.html'" 
+                        class="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
+                            Sign Up
+                        </button>
+                    `);
+
+                    // Mobile view
+                    mobileAuthContainer.html(`
+                        <button onclick="window.location.href='/passenger/pages/anim.html'"
+                        class="flex-1 py-2 text-primary-600 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
+                            Sign In
+                        </button>
+                        <button onclick="window.location.href='/passenger/pages/signin.html'"
+                        class="flex-1 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg">
+                            Sign Up
+                        </button>
+                    `);
+                }
+              }
+            })
+            .catch((error) => console.error(error));         
+
+        } else {
           // User is not logged in - show sign in/up buttons
           authContainer.html(`
               <button onclick="window.location.href='/passenger/pages/anim.html'"
@@ -1685,6 +1699,39 @@ $(document).ready(function() {
           `);
       }
     }
+
+
+    $(document).on('click','#logoutButton, #mobileLogoutButton', function(e) {
+            e.preventDefault();
+            
+            const logoutOverlay = $('<div>').addClass('fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50');
+            const logoutModal = $('<div>').addClass('bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm mx-4 text-center transform scale-95 opacity-0 transition-all duration-300');
+            
+            logoutModal.html(`
+                <div class="w-16 h-16 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Logging out</h3>
+                <p class="text-gray-600 dark:text-gray-300">Please wait while we securely sign you out...</p>
+            `);
+            
+            logoutOverlay.append(logoutModal);
+            $('body').append(logoutOverlay);
+            
+            setTimeout(() => {
+                logoutModal.removeClass('scale-95 opacity-0').addClass('scale-100 opacity-100');
+            }, 10);
+            
+            setTimeout(() => {
+                clearAllTokens();
+                setTimeout(() => {
+                    logoutModal.removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
+                    logoutOverlay.fadeOut(400, function() {
+                        $(this).remove();
+                        location.reload();
+                    });
+                }, 1000);
+            }, 800);
+      });
+
 
 
   function setupProfileModal() {

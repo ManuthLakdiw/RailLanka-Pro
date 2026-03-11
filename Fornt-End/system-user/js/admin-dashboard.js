@@ -1,5 +1,19 @@
 $(document).ready(function() {
 
+    $('body').css('visibility', 'hidden');
+    
+    $('body').css({
+        'visibility': 'visible',
+        'opacity': '0',
+        'transform': 'scale(0.98)'
+    });
+    
+    $('body').animate({
+        opacity: 1
+    }, 1000, function() {
+        $(this).css('transform', 'scale(1)');
+    });
+
 let token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
     if (token) {
@@ -122,6 +136,8 @@ let token = localStorage.getItem('accessToken') || sessionStorage.getItem('acces
             throw error;
         }
     }
+
+
     $('#logoutButton').on('click', function(e) {
         e.preventDefault();
         showLogoutModel();
@@ -150,7 +166,12 @@ const accessToken = localStorage.getItem("accessToken") || sessionStorage.getIte
 
     }
 
-const stringOnlyPattern = /^[A-Za-z\s]+$/;
+    const stringOnlyPattern = /^[A-Za-z\s]+$/;
+
+    loadTrainCart();
+    loadStaffMembersCard();
+    loadRevenueCard();
+
     setupStaffProfileModal();
     setupChangePasswordModal();
     setupEditProfileModal();
@@ -635,6 +656,28 @@ function setupEditProfileModal() {
     
     button.html('<i class="fas fa-spinner fa-spin mr-2"></i> Saving...');
     button.prop('disabled', true);
+
+
+
+    const raw = JSON.stringify({
+    "firstname": "tharindu",
+    "lastname": "gamage",
+    "userName": "admin",
+    "email": "tharindugamage@gmail.com",
+    "phoneNumber": "0742312432"
+    });
+
+const requestOptions = {
+  method: "PUT",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch("http://localhost:8080/api/v1/raillankapro/admin/update/credentials", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
     
     const formData = {
       title: $('#editTitle').val(),
@@ -644,9 +687,7 @@ function setupEditProfileModal() {
       contact: $('#editContact').val()
     };
     
-    // Simulate API call (replace with actual API call)
     setTimeout(() => {
-      // Update profile display with new values
       $('#staffTitle').text(formData.title);
       $('#staffFirstName').text(formData.firstName);
       $('#staffLastName').text(formData.lastName);
@@ -664,8 +705,6 @@ function setupEditProfileModal() {
           button.html(originalText);
           button.prop('disabled', false);
           
-          // Show success notification
-          showAlert('Profile updated successfully!', 'success');
         }, 300);
       }, 1000);
     }, 1500);
@@ -714,6 +753,107 @@ function setupEditProfileModal() {
                 });
             }, 200);
         }, 1800);
+    }
+
+    function loadTrainCart() {
+
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+
+        fetchWithTokenRefresh("http://localhost:8080/api/v1/raillankapro/train/count", requestOptions)
+        .then(({result}) =>{
+            console.log(result)
+            if (result.code === 200) {
+                const trainCount = result.data;
+                animateNumber('activeTrainCount', trainCount.active, 1000);
+                animateNumber('trainInactiveCount', trainCount.inactive, 1000);
+                animateNumber('allTrainsCount', trainCount.total, 1000);
+
+                
+            }
+        })
+        .catch((error) => console.error(error));
+        
+    }
+
+
+    function loadStaffMembersCard() {
+
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+
+        fetchWithTokenRefresh("http://localhost:8080/api/v1/raillankapro/employee/all/count", requestOptions)
+        .then(({result}) =>{
+            console.log(result)
+            if (result.code === 200) {
+                const employeeCount = result.data;
+                animateNumber('totalStaffCount', employeeCount.active, 1000);
+                
+            }
+        })
+        .catch((error) => console.error(error));
+
+         fetchWithTokenRefresh("http://localhost:8080/api/v1/raillankapro/stationmaster/count", requestOptions)
+        .then(({result}) =>{
+            console.log(result)
+            if (result.code === 200) {
+                const stationMaster = result.data;
+                animateNumber('stationMasterCount', stationMaster.active, 1000);
+                
+            }
+        })
+        .catch((error) => console.error(error));
+
+
+         fetchWithTokenRefresh("http://localhost:8080/api/v1/raillankapro/counter/count", requestOptions)
+        .then(({result}) =>{
+            console.log(result)
+            if (result.code === 200) {
+                const counter = result.data;
+                animateNumber('counterStaffCount', counter.active, 1000);
+                
+            }
+        })
+        .catch((error) => console.error(error));
+        
+    }
+
+        function loadRevenueCard() {
+
+            const requestOptions = {
+                method: "GET",
+                redirect: "follow"
+            };
+
+            fetchWithTokenRefresh("http://localhost:8080/api/v1/raillankapro/booking/revenue", requestOptions)
+            .then(({result}) =>{
+                console.log(result)
+                if (result.code === 200) {
+                    const revenue = result.data;
+                    $("#totalRevenue").text(revenue.totalRevenue.toLocaleString()+" Lakhs");
+                    $("#todayRevenue").text(revenue.todayRevenue.toLocaleString())+ "Lahks";
+                    
+                }
+            })
+        }
+
+
+    function animateNumber(id, target, duration = 1000) {
+      let start = 0;
+      let stepTime = Math.abs(Math.floor(duration / target));
+      let element = document.getElementById(id);
+
+      let timer = setInterval(function () {
+        start++;
+        element.textContent = start;
+        if (start >= target) {
+          clearInterval(timer);
+        }
+      }, stepTime);
     }
 
 

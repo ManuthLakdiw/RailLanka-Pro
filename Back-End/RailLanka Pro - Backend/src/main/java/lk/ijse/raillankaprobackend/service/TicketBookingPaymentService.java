@@ -12,4 +12,8 @@ public interface TicketBookingPaymentService {
     String generatePaymentId();
 
     TicketBookingPayment saveTicketPayment(TicketBookingPayment ticketBookingPayment);
+
+    double getTotalRevenue();
+
+    double getTodayRevenue();
 }

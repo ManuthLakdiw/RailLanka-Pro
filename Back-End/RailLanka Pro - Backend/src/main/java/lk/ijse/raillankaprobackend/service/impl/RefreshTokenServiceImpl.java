@@ -101,4 +101,30 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
         return refreshTokenDto;
     }
+
+    @Override
+    public boolean isValidRefreshToken(String token) {
+        System.out.println("DEBUG | Checking validity of refresh token...");
+        System.out.println("DEBUG | Token: " + token);
+        Optional<RefreshToken> byToken = refreshTokenRepository.findByToken(token);
+        if (byToken.isPresent()) {
+            Instant expiry = byToken.get().getExpiryDate();
+            Instant now = Instant.now();
+
+            System.out.println("DEBUG | Token: " + byToken.get().getToken());
+            System.out.println("DEBUG | Expiry Date: " + expiry);
+            System.out.println("DEBUG | Current Time: " + now);
+            System.out.println("DEBUG | Compare Result: " + expiry.compareTo(now));
+
+            if (expiry.compareTo(now) > 0) {
+                return true;
+            } else {
+                refreshTokenRepository.delete(byToken.get());
+                return false;
+            }
+        }
+        System.out.println("DEBUG | Token not found in DB!");
+        return false;
+    }
+
 }

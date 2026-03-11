@@ -1,3 +1,17 @@
+$('body').css('visibility', 'hidden');
+    
+    $('body').css({
+        'visibility': 'visible',
+        'opacity': '0',
+        'transform': 'scale(0.98)'
+    });
+    
+    $('body').animate({
+        opacity: 1
+    }, 1000, function() {
+        $(this).css('transform', 'scale(1)');
+    });
+
 let token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
 if (token) {

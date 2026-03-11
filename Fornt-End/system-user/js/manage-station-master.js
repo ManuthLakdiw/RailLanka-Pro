@@ -1,5 +1,19 @@
 $(document).ready(function () {
 
+    $('body').css('visibility', 'hidden');
+    
+    $('body').css({
+        'visibility': 'visible',
+        'opacity': '0',
+        'transform': 'scale(0.98)'
+    });
+    
+    $('body').animate({
+        opacity: 1
+    }, 1000, function() {
+        $(this).css('transform', 'scale(1)');
+    });
+
     let token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
     if (token) {
@@ -705,10 +719,8 @@ $(document).ready(function () {
             .then(({ result }) => {   
                 console.log(result);
                 if (result.code === 200) {
-                    fetchSmasters(currentPage);
+                    fetchSmasters(currentPage,currentKeyword);
                     loadStationNamesWithCodes();
-                    $("#filterSmaster").val("");
-
                     if (result.data) {
                         toastr.success(result.message);
                     } else {

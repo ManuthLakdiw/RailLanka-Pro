@@ -65,7 +65,6 @@ public class PayHereServiceImpl implements PayHereService {
         log.info("Hash Input: {}", hashInput);
         log.info("Final Hash: {}", finalHash);
 
-        // Build response
         PayHereDto.PersonalDetailDto personalDetail = PayHereDto.PersonalDetailDto.builder()
                 .phone(user.getPassenger().getPhoneNumber())
                 .email(user.getPassenger().getEmail())

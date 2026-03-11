@@ -1,5 +1,7 @@
 package lk.ijse.raillankaprobackend.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.raillankaprobackend.dto.*;
 import lk.ijse.raillankaprobackend.service.*;
 import lk.ijse.raillankaprobackend.util.ApiResponse;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author manuthlakdiv
@@ -35,6 +38,9 @@ public class AuthController {
     private final BookingService bookingService;
     private final  FirstClassBookingSeatService firstClassBookingSeatService;
     private final PDFService pdfService;
+    private final SmsService smsService;
+    private final RefreshTokenService refreshTokenService;
+    private final QRService qrService;
 
 
     @PostMapping("/register/passenger")
@@ -267,6 +273,31 @@ public class AuthController {
 
         return ResponseEntity.ok().headers(headers).body(pdfService.generateTicketPdf(bookingId).toByteArray());
 
+    }
+
+    @PostMapping("/sms/{bookingId}/{phoneNumber}")
+    public ResponseEntity<ApiResponse<String>> sendSms(@PathVariable String bookingId, @PathVariable String phoneNumber){
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "sms",
+                smsService.sendTicketConfirmation(bookingId,phoneNumber)
+        ));
+    }
+
+    @PostMapping("/valid/refresh")
+    public ResponseEntity<ApiResponse<Boolean>> validRefreshToken(@RequestBody Map<String,String> request) {
+        return ResponseEntity.ok(new ApiResponse<>(
+                200,
+                "refresh token validation",
+                refreshTokenService.isValidRefreshToken(request.get("refreshToken"))
+        ));
+    }
+
+    @GetMapping("/qr/{bookingId}")
+    public void getQRCode(@PathVariable("bookingId") String bookingId, HttpServletResponse response) throws Exception {
+        response.setContentType("image/png");
+        byte[] manuthlakdiws = qrService.generateBeautifulBookingQR(bookingId);
+        response.getOutputStream().write(manuthlakdiws);
     }
 
 

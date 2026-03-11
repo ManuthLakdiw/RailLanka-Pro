@@ -146,6 +146,8 @@ public class BookingServiceImpl implements BookingService {
 
         ticketBookingPaymentService.saveTicketPayment(ticketBookingPayment);
 
+
+
         return booking.getBookingId();
 
     }
@@ -220,6 +222,7 @@ public class BookingServiceImpl implements BookingService {
                 .payeeInfo(PayeeInfoDto.builder()
                         .firstName(bookingName)
                         .nicOrPassport(idCard)
+                        .phoneNumber(booking.getTicket().getTicketBookingPayment().getPayeeInfo().getPhoneNumber())
                         .build())
                 .travelClass(formattedTravelClass)
                 .formatedselectedSeat(formattedSeats)
