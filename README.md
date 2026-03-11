@@ -13,7 +13,9 @@ Designed to improve efficiency, reduce manual errors, and deliver a **profession
 
 ## 🎥 Demo Video
 
-▶️ **[Watch on YouTube](https://youtu.be/your-demo-video-link)**  
+▶️ **[Watch on YouTube](https://youtu.be/l3oJTQOwWWo)**  
+See how the system works step by step — from staff dashboard management to passenger ticket booking!
+
 
 ---
 
@@ -21,9 +23,9 @@ Designed to improve efficiency, reduce manual errors, and deliver a **profession
 
 | Staff Dashboard | Passenger Website |
 |-----------------|-----------------|
-| ![Dashboard](./images/staff-dashboard.png) | ![Passenger Website](./Screen-Shots/passenger-home.png) |
-| ![Train Management](./images/train-management.png) | ![Seat Selection](./Screen-Shots/seat-selection.png) |
-| ![Reports](./images/report-generation.png) | ![Ticket PDF](./Screen-Shots/ticket_BKN00000-00015.pdf) |
+| ![Dashboard](./Screen-Shots/staff-index.png) | ![Passenger Website](./Screen-Shots/passenger-home.png) |
+| ![Train Management](./Screen-Shots/train-management.png) | ![Seat Selection](./Screen-Shots/seat-selection.png) |
+| ![Reports](./Screen-Shots/active_schedules_1758468108235.pdf) | ![Ticket PDF](./Screen-Shots/ticket_BKN00000-00015.pdf) |
 
 > 🖼️ *Recommended: Capture HD screenshots of key features and crop them for a clean look.*
 
@@ -128,4 +130,4 @@ When a passenger books a ticket:
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/your-username/rail-lanka-pro.git
+   [git clone https://github.com/your-username/rail-lanka-pro.git](https://github.com/ManuthLakdiw/RailLanka-Pro.git)
