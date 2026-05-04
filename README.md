@@ -37,7 +37,7 @@ This is a monorepo containing both the frontend and backend codebases. Use the l
 
 | Module | Description | Documentation |
 |--------|-------------|---------------|
-| 🎨 **Frontend** | Vanilla HTML/CSS/JS — Staff Dashboard & Passenger Portal | [Frontend README](./Fornt-End/README.md) |
+| 🎨 **Frontend** | HTML, Tailwind CSS & JQuery — Staff Dashboard & Passenger Portal | [Frontend README](./Fornt-End/README.md) |
 | ⚙️ **Backend** | Spring Boot REST API with JWT, JPA, MySQL | [Backend README](./Back-End/README.md) |
 
 ---
@@ -142,7 +142,7 @@ When a passenger books a ticket:
 | Layer | Technologies |
 |------|--------------||
 | **Backend** | Spring Boot 3.5.4, Spring Security, JWT (JJWT 0.11.5), REST APIs |
-| **Frontend** | Vanilla HTML5, CSS3, JavaScript (ES6+) |
+| **Frontend** | HTML5, Tailwind CSS, JQuery (ES6+) |
 | **Database** | MySQL 8+ |
 | **ORM** | Spring Data JPA / Hibernate |
 | **Template Engine** | Thymeleaf (for email templates) |
