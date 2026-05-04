@@ -22,12 +22,38 @@ See how the system works step by step — from staff dashboard management to pas
 ## 📸 Screenshots
 
 | Staff Dashboard | Passenger Website |
-|-----------------|-----------------|
+|-----------------|-----------------||
 | ![Dashboard](./Screen-Shots/staff-index.png) | ![Passenger Website](./Screen-Shots/passenger-home.png) |
 | ![Train Management](./Screen-Shots/train-management.png) | ![Seat Selection](./Screen-Shots/seat-selection.png) |
 | ![Reports](./Screen-Shots/active_schedules_1758468108235.pdf) | ![Ticket PDF](./Screen-Shots/ticket_BKN00000-00015.pdf) |
 
 > 🖼️ *Recommended: Capture HD screenshots of key features and crop them for a clean look.*
+
+---
+
+## 🗂️ Project Navigation
+
+This is a monorepo containing both the frontend and backend codebases. Use the links below to navigate to detailed documentation for each part:
+
+| Module | Description | Documentation |
+|--------|-------------|---------------|
+| 🎨 **Frontend** | Vanilla HTML/CSS/JS — Staff Dashboard & Passenger Portal | [Frontend README](./Fornt-End/README.md) |
+| ⚙️ **Backend** | Spring Boot REST API with JWT, JPA, MySQL | [Backend README](./Back-End/README.md) |
+
+---
+
+## 🏗️ System Architecture Overview
+
+```
+RailLanka Pro/
+├── Back-End/          ← Spring Boot REST API (Java 21, Maven)
+├── Fornt-End/
+│   ├── system-user/   ← Staff / Admin Dashboard (Vanilla JS)
+│   └── passenger/     ← Passenger Booking Portal (Vanilla JS)
+└── Screen-Shots/      ← Project screenshots & sample PDFs
+```
+
+The backend exposes a single REST API (`/api/v1/raillankapro/`) consumed by both frontend applications. Authentication is handled via **JWT Access + Refresh Tokens**, and all protected routes require a valid `Bearer` token.
 
 ---
 
@@ -114,20 +140,56 @@ When a passenger books a ticket:
 ## ⚙️ Tech Stack
 
 | Layer | Technologies |
-|------|--------------|
-| **Backend** | Spring Boot, Spring Security, JWT, REST APIs |
-| **Frontend** | HTML, CSS, JavaScript (Two separate projects) |
-| **Database** | MySQL |
+|------|--------------||
+| **Backend** | Spring Boot 3.5.4, Spring Security, JWT (JJWT 0.11.5), REST APIs |
+| **Frontend** | Vanilla HTML5, CSS3, JavaScript (ES6+) |
+| **Database** | MySQL 8+ |
+| **ORM** | Spring Data JPA / Hibernate |
 | **Template Engine** | Thymeleaf (for email templates) |
-| **PDF Generation** | OpenPDF |
-| **Build Tool** | Maven |
-| **Deployment** | Apache Tomcat / Spring Boot Embedded |
+| **PDF Generation** | OpenPDF 1.3.30 |
+| **QR Code** | ZXing 3.5.3 |
+| **SMS** | Notify.lk API |
+| **Payment** | PayHere Payment Gateway |
+| **Build Tool** | Apache Maven |
+| **Runtime** | Java 21, Spring Boot Embedded Tomcat |
 | **Version Control** | Git + GitHub |
 
 ---
 
-## 🔧 Installation & Setup
+## 🔧 Quick Start
 
-1. **Clone the Repository**
-   ```bash
-   [git clone https://github.com/your-username/rail-lanka-pro.git](https://github.com/ManuthLakdiw/RailLanka-Pro.git)
+### Prerequisites
+- Java 21+
+- Maven 3.8+
+- MySQL 8+
+- A modern web browser (Chrome, Firefox, Edge)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/ManuthLakdiw/RailLanka-Pro.git
+cd RailLanka-Pro
+```
+
+### 2. Setup & Run Backend
+See the full guide → **[Backend README](./Back-End/README.md)**
+
+### 3. Open the Frontend
+See the full guide → **[Frontend README](./Fornt-End/README.md)**
+
+---
+
+## 👨‍💻 Author
+
+**Manuth Lakdiw**  
+- 🐙 GitHub: [@ManuthLakdiw](https://github.com/ManuthLakdiw)  
+- 📧 Email: manuthlakdiv2006.com
+
+---
+
+## 📄 License
+
+This project is developed for educational purposes at **IJSE (Institute of Java & Software Engineering)**.
+
+---
+
+> ⭐ If you found this project helpful, please consider giving it a **star** on GitHub!
